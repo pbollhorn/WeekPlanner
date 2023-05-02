@@ -1,5 +1,10 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +28,47 @@ public class App extends HttpServlet {
 			weekPlan.add(new ArrayList<String>());
 	}
 
+	
+	private void databaseTest() {
+		
+		String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlanner";
+		String username = "postgres";
+		String password = "crawler";
+		
+		try {
+			
+			// Establish connection
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			System.out.println("Connected to PostgreSQL");
+			
+			// Do some stuff
+			String sql = "SELECT * FROM monday";
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			while(result.next() ) {
+				int id = result.getInt("id");
+				String taskDescription = result.getString("task_description");
+				
+				if( taskDescription != null)
+					System.out.println("id="+id+" "+taskDescription+" "+taskDescription.length());
+				else
+					System.out.println("id="+id+" [Empty String]");
+			}
+					
+			// Close connection
+			connection.close();
+		
+		} catch(Exception e) {
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+		}	
+		
+		
+	}
+	
+	
+	
 	private String dayInt2Str(int day) {
 		switch (day) {
 		case 0:
@@ -152,6 +198,9 @@ public class App extends HttpServlet {
 			showWeek(request, response);
 			break;
 		}
+		
+		
+		databaseTest();
 
 	}
 
