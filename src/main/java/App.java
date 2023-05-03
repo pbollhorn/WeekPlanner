@@ -22,14 +22,21 @@ public class App extends HttpServlet {
 		// For debugging purposes
 		System.out.println("Running constructor for App class");
 
-		// Initialize weekPlan
+		// Initialize empty weekPlan and read in data from database
 		weekPlan = new ArrayList<ArrayList<String>>();
-		for (int day = 0; day < 7; day++)
+		for (int day = 0; day < 7; day++) {
 			weekPlan.add(new ArrayList<String>());
+			databaseReadDay(dayInt2Str(day));
+		}
+
 	}
 
 	
-	private void databaseTest() {
+	private void databaseReadDay(String day) {
+		
+		day = day.toLowerCase();
+		ArrayList<String> dayPlan = weekPlan.get(dayStr2Int(day));
+		dayPlan.clear(); // TODO: Is this line necessary?
 		
 		String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlanner";
 		String username = "postgres";
@@ -42,19 +49,60 @@ public class App extends HttpServlet {
 			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
 			System.out.println("Connected to PostgreSQL");
 			
-			// Do some stuff
-			String sql = "SELECT * FROM monday";
+			// Read day plan from appropriate table
+			String sql = "SELECT * FROM " + day + " ORDER BY task_order ASC";
+			System.out.println(sql);
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(sql);
 			while(result.next() ) {
 				int id = result.getInt("id");
 				String taskDescription = result.getString("task_description");
-				
-				if( taskDescription != null)
-					System.out.println("id="+id+" "+taskDescription+" "+taskDescription.length());
-				else
-					System.out.println("id="+id+" [Empty String]");
+				if( taskDescription != null) {
+					dayPlan.add(taskDescription);
+					System.out.println("id=" + id + " task_description=" + taskDescription);
+				}
+
 			}
+					
+			// Close connection
+			connection.close();
+		
+		} catch(Exception e) {
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+		}	
+		
+		
+	}
+	
+	
+	
+	private void databaseUpdateDay(String day) {
+		
+		day = day.toLowerCase();
+		ArrayList<String> dayPlan = weekPlan.get(dayStr2Int(day));
+		
+		String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlanner";
+		String username = "postgres";
+		String password = "crawler";
+		
+		try {
+			
+			// Establish connection
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			System.out.println("Connected to PostgreSQL");
+			
+			
+			
+			// Loop over tasks and update appropriate table with the new day plan
+			for(int task=0;task<dayPlan.size();task++) {
+				String sql = "UPDATE " + day + " SET task_description = '" + dayPlan.get(task) +"' WHERE task_order = " + task;
+				System.out.println(sql);
+				Statement statement = connection.createStatement();
+				statement.execute(sql);
+			}
+			
 					
 			// Close connection
 			connection.close();
@@ -90,20 +138,23 @@ public class App extends HttpServlet {
 	}
 
 	private int dayStr2Int(String day) {
+		
+		day = day.toLowerCase();
+		
 		switch (day) {
-		case "Monday":
+		case "monday":
 			return 0;
-		case "Tuesday":
+		case "tuesday":
 			return 1;
-		case "Wednesday":
+		case "wednesday":
 			return 2;
-		case "Thursday":
+		case "thursday":
 			return 3;
-		case "Friday":
+		case "friday":
 			return 4;
-		case "Saturday":
+		case "saturday":
 			return 5;
-		case "Sunday":
+		case "sunday":
 			return 6;
 		}
 		return -1;
@@ -155,6 +206,11 @@ public class App extends HttpServlet {
 				dayPlan.add(task);
 		}
 
+		
+		// HERE I SHOULD UPDATE DATABASE
+		databaseUpdateDay(dayInt2Str(day));
+		
+		
 		// Go back to front page
 		response.sendRedirect("index.html");
 	}
@@ -186,6 +242,12 @@ public class App extends HttpServlet {
 			throws ServletException, IOException {
 
 		String action = request.getParameter("action");
+		
+		
+		// TODO: This avoid NullPointer exception if I accidentely run App.java instead of the project
+		if(action==null)
+			return;
+		
 
 		switch (action) {
 		case "planDay":
@@ -199,8 +261,6 @@ public class App extends HttpServlet {
 			break;
 		}
 		
-		
-		databaseTest();
 
 	}
 
