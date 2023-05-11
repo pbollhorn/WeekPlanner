@@ -3,7 +3,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -173,9 +172,10 @@ public class App extends HttpServlet
 		String day = request.getParameter("day");
 		ArrayList<String> dayPlan = weekPlan.get(dayStr2Int(day));
 
+		response.setContentType("text/html");
 		PrintWriter pw = response.getWriter();
-		pw.println("<body>"); // this somehow gets the HTML code below to work
-		pw.println("<form method=\"get\" action=\"App\">");
+		pw.println("<html><body>");
+		pw.println("<form method=\"post\" action=\"App\">");
 		pw.println("<b>Plan " + day + ":</b><br>");
 		pw.println("<input type=\"hidden\" name=\"action\" value=\"submitDay\" />");
 		pw.println("<input type=\"hidden\" name=\"day\" value=\"" + day + "\" />");
@@ -194,6 +194,7 @@ public class App extends HttpServlet
 
 		pw.println("<input type=submit><input type=reset value=\"Undo changes\">");
 		pw.println("</form>");
+		pw.println("</html></body>");
 		pw.close();
 	}
 
@@ -227,8 +228,9 @@ public class App extends HttpServlet
 	private void showWeek(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 
+		response.setContentType("text/html");
 		PrintWriter pw = response.getWriter();
-		pw.println("<body>"); // this somehow gets the HTML code below to work
+		pw.println("<html><body>");
 		pw.println("<h1>Your week plan</h1>");
 		pw.println("<a href=\"index.html\">Back to front page</a><br><br>");
 
@@ -246,6 +248,7 @@ public class App extends HttpServlet
 			}
 			pw.println("<br>");
 		}
+		pw.println("</html></body>");
 		pw.close();
 	}
 
@@ -254,7 +257,7 @@ public class App extends HttpServlet
 
 		String action = request.getParameter("action");
 
-		// TODO: This avoid NullPointer exception if I accidentely run App.java instead
+		// TODO: This avoid NullPointer exception if I accidently run App.java instead
 		// of the project
 		if (action == null)
 			return;
@@ -264,11 +267,28 @@ public class App extends HttpServlet
 		case "planDay":
 			planDay(request, response);
 			break;
-		case "submitDay":
-			submitDay(request, response);
-			break;
 		case "showWeek":
 			showWeek(request, response);
+			break;
+		}
+
+	}
+	
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+
+		String action = request.getParameter("action");
+
+		// TODO: This avoid NullPointer exception if I accidently run App.java instead
+		// of the project
+		if (action == null)
+			return;
+
+		switch (action)
+		{
+		case "submitDay":
+			submitDay(request, response);
 			break;
 		}
 
