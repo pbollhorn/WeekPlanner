@@ -4,21 +4,17 @@
   <display-name>WeekPlanner</display-name>
      
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
+    <welcome-file>Controller</welcome-file>
   </welcome-file-list>
   
+  
   <servlet>  
-    <servlet-name>AppServlet</servlet-name>  
-    <servlet-class>App</servlet-class>  
+    <servlet-name>ControllerServlet</servlet-name>  
+    <servlet-class>weekplanner.Controller</servlet-class>  
   </servlet>  
   <servlet-mapping>  
-    <servlet-name>AppServlet</servlet-name>  
-    <url-pattern>/App</url-pattern>  
+    <servlet-name>ControllerServlet</servlet-name>  
+    <url-pattern>/Controller</url-pattern>  
   </servlet-mapping>
-  
+    
 </web-app>
