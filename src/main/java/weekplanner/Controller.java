@@ -1,6 +1,6 @@
 package weekplanner;
 
-import java.io.IOException;  
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.RequestDispatcher;
@@ -59,6 +59,7 @@ public class Controller extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		// Get inputs from form: text, hidden input, and submit buttons
 		String listNumber = request.getParameter("listNumber");
 		String taskNumber = request.getParameter("taskNumber");
 		String taskDescription = request.getParameter("taskDescription");
@@ -67,9 +68,6 @@ public class Controller extends HttpServlet
 		String moveUp = request.getParameter("moveUp");
 		String moveDown = request.getParameter("moveDown");
 		String add = request.getParameter("add");
-		
-		
-		
 		
 		// For debugging
 		System.out.println(request.getParameterMap().keySet());
@@ -82,17 +80,27 @@ public class Controller extends HttpServlet
 		System.out.println("moveDown= "+moveDown);
 		System.out.println("add= "+add);
 		
-		// Catch the buttons pressed
+		// Identify the submit button pressed
 		if(add!=null)
 		{
 			Model.addTask(Integer.parseInt(listNumber));
 		}
-		
-		if(delete!=null)
+		else if(delete!=null)
 		{
 			Model.deleteTask(Integer.parseInt(listNumber),Integer.parseInt(taskNumber));
 		}
-		
+		else if(save!=null)
+		{
+			Model.saveTask(Integer.parseInt(listNumber), Integer.parseInt(taskNumber), taskDescription);
+		}
+		else if(moveUp!=null)
+		{
+			Model.moveTaskUp(Integer.parseInt(listNumber), Integer.parseInt(taskNumber));
+		}
+		else if(moveDown!=null)
+		{
+			Model.moveTaskDown(Integer.parseInt(listNumber), Integer.parseInt(taskNumber));
+		}		
 		
 		// Read everything fresh from the database and show the view again
 		Model.databaseReadEverything();
@@ -101,66 +109,6 @@ public class Controller extends HttpServlet
 
 		return;
 		
-		
-//		// Get submit buttons and hidden input
-//		String day = request.getParameter("submitDay");
-//		String save = request.getParameter("save");
-//		String add = request.getParameter("add");
-//		
-//		ArrayList<String> dayPlan = weekPlan.get(dayStr2Int(day));
-//		dayPlan.clear();
-//		
-//		// Loop over tasks and break when a null task is met
-//		for(int i=0;;i++)
-//		{
-//			String task_description = request.getParameter("task"+i);
-//			if( task_description == null)
-//				break;
-//			
-//			// Trim the task description of leading and trailing whitespace
-//			task_description = task_description.trim();
-//				
-//			// If task description is not an empty string, then put it in dayPlan
-//			if( ! task_description.isEmpty() )
-//			{
-//				dayPlan.add(task_description);
-//			}
-//				
-//		}
-//		
-//		// Now update database
-//		Model.databaseUpdateDay(day, dayPlan);		
-//		
-//		
-//		// Save button is pressed
-//		if(save!=null)
-//		{		
-//			// Forward to front page
-//			doGet(request, response);
-//			
-//			// For debugging
-//			System.out.println("Reached end of if(save!=null) statement");
-//		}
-//		
-//		
-//		// Input button is pressed
-//		if(add!=null)
-//		{
-//			// Add an empty task to dayPlan
-//			dayPlan.add("");
-//			
-//			// Show plan_day.jsp again
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("/plan_day.jsp?day="+day);
-//			dispatcher.forward(request, response);
-//			
-//			// For debugging
-//			System.out.println("Reached end of if(add!=null) statement");
-//			
-//		}
-		
-		
-		
-
 	}
 
 }

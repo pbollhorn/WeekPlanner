@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 public class Model
 {
@@ -25,43 +24,43 @@ public class Model
 			String sql;
 			
 			// Create list table including the Monday - Sunday lists
-			sql = "CREATE TABLE list(id SERIAL PRIMARY KEY, name TEXT, \"order\" INT)";
+			sql = "CREATE TABLE list(id SERIAL PRIMARY KEY, name TEXT, number INT)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Monday', 0)";
+			sql = "INSERT INTO list (name, number) VALUES ('Monday', 0)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Tuesday', 1)";
+			sql = "INSERT INTO list (name, number) VALUES ('Tuesday', 1)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Wednesday', 2)";
+			sql = "INSERT INTO list (name, number) VALUES ('Wednesday', 2)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Thursday', 3)";
+			sql = "INSERT INTO list (name, number) VALUES ('Thursday', 3)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Friday', 4)";
+			sql = "INSERT INTO list (name, number) VALUES ('Friday', 4)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Saturday', 5)";
+			sql = "INSERT INTO list (name, number) VALUES ('Saturday', 5)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Sunday', 6)";
+			sql = "INSERT INTO list (name, number) VALUES ('Sunday', 6)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Within next week', 7)";
+			sql = "INSERT INTO list (name, number) VALUES ('Within next week', 7)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Within a month', 8)";
+			sql = "INSERT INTO list (name, number) VALUES ('Within a month', 8)";
 			System.out.println(sql);
 			statement.execute(sql);
-			sql = "INSERT INTO list (name, \"order\") VALUES ('Within a year', 9)";
+			sql = "INSERT INTO list (name, number) VALUES ('Within a year', 9)";
 			System.out.println(sql);
 			statement.execute(sql);
 			
 			
 			// Create task table
-			sql = "CREATE TABLE task(id SERIAL PRIMARY KEY, description TEXT, \"order\" INT, list_id INT, CONSTRAINT fk_list FOREIGN KEY(list_id) REFERENCES list(id))";
+			sql = "CREATE TABLE task(id SERIAL PRIMARY KEY, description TEXT, number INT, list_id INT, CONSTRAINT fk_list FOREIGN KEY(list_id) REFERENCES list(id))";
 			System.out.println(sql);
 			statement.execute(sql);
 
@@ -96,8 +95,8 @@ public class Model
 			Statement statement = connection.createStatement();
 			ResultSet result;
 
-			// Start by reading in all list id and names into taskLists
-			String sql = "SELECT * FROM list ORDER BY \"order\" ASC";
+			// Start by reading in all list_id and names into taskLists
+			String sql = "SELECT * FROM list ORDER BY number ASC";
 			System.out.println(sql);
 			result = statement.executeQuery(sql);
 			while (result.next())
@@ -113,7 +112,7 @@ public class Model
 			{
 				int id = Controller.taskLists.get(i).id;
 				
-				sql = "SELECT description FROM task WHERE list_id=" + id +" ORDER BY \"order\" ASC";
+				sql = "SELECT description FROM task WHERE list_id=" + id +" ORDER BY number ASC";
 				System.out.println(sql);
 				result = statement.executeQuery(sql);
 				while (result.next())
@@ -142,6 +141,218 @@ public class Model
 	}
 	
 	
+	
+	public static void moveTaskDown(int listNumber, int taskNumber)
+	{
+
+		try
+		{
+			// Establish connection
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			System.out.println("Connected to PostgreSQL");
+			Statement statement = connection.createStatement();
+			ResultSet result;
+			String sql;
+				
+			// Get list_id
+			int list_id= -1;
+			sql = "SELECT id FROM list WHERE number="+listNumber;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				list_id = result.getInt(1);
+			}
+			
+			// Get current count of tasks
+			int count = -1;
+			sql = "SELECT COUNT(number) FROM task WHERE list_id="+list_id;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				count = result.getInt(1);
+			}
+			
+			
+			// Return immediately if taskNumber is >= count-1, because then task cannot be moved further down
+			if(taskNumber>=count-1)
+				return;
+			
+			
+			// Get task_id of task to be moved down
+			int task_id_A = -1;
+			sql = "SELECT id FROM task WHERE number=" + taskNumber + " AND list_id=" + list_id;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				task_id_A = result.getInt(1);
+			}
+			
+			// Get task_id of task to be moved up
+			int task_id_B = -1;
+			sql = "SELECT id FROM task WHERE number=" + (taskNumber+1) + " AND list_id=" + list_id;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				task_id_B = result.getInt(1);
+			}
+			
+			
+			// Update task_id_A
+			sql = "UPDATE task SET number=number+1 WHERE id=" + task_id_A + " AND list_id="+list_id;
+			System.out.println(sql);
+			statement.execute(sql);			
+
+			// Update task_id_B
+			sql = "UPDATE task SET number=number-1 WHERE id=" + task_id_B + " AND list_id="+list_id;
+			System.out.println(sql);
+			statement.execute(sql);
+
+			// Close connection
+			result.close();
+			statement.close();
+			connection.close();
+			
+			
+
+		} catch (Exception e)
+		{
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	
+	public static void moveTaskUp(int listNumber, int taskNumber)
+	{
+	
+		// Return immediately if taskNumber is 0, because then task cannot be moved further up
+		if(taskNumber==0)
+			return;
+		
+		try
+		{
+			// Establish connection
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			System.out.println("Connected to PostgreSQL");
+			Statement statement = connection.createStatement();
+			ResultSet result;
+			String sql;
+				
+			// Get list_id
+			int list_id= -1;
+			sql = "SELECT id FROM list WHERE number="+listNumber;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				list_id = result.getInt(1);
+			}			
+			
+			
+			// Get task_id of task to be moved up
+			int task_id_A = -1;
+			sql = "SELECT id FROM task WHERE number=" + taskNumber + " AND list_id=" + list_id;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				task_id_A = result.getInt(1);
+			}
+			
+			// Get task_id of task to be moved down
+			int task_id_B = -1;
+			sql = "SELECT id FROM task WHERE number=" + (taskNumber-1) + " AND list_id=" + list_id;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				task_id_B = result.getInt(1);
+			}
+			
+			
+			// Update task_id_A
+			sql = "UPDATE task SET number=number-1 WHERE id=" + task_id_A + " AND list_id="+list_id;
+			System.out.println(sql);
+			statement.execute(sql);			
+
+			// Update task_id_B
+			sql = "UPDATE task SET number=number+1 WHERE id=" + task_id_B + " AND list_id="+list_id;
+			System.out.println(sql);
+			statement.execute(sql);
+
+			// Close connection
+			result.close();
+			statement.close();
+			connection.close();
+			
+			
+
+		} catch (Exception e)
+		{
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	
+	public static void saveTask(int listNumber, int taskNumber, String taskDescription)
+	{
+		
+		try
+		{
+			// Establish connection
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			System.out.println("Connected to PostgreSQL");
+			Statement statement = connection.createStatement();
+			ResultSet result;
+			String sql;
+				
+			// Get list_id
+			int list_id= -1;
+			sql = "SELECT id FROM list WHERE number="+listNumber;
+			System.out.println(sql);
+			result = statement.executeQuery(sql);
+			if(result.next())
+			{
+				list_id = result.getInt(1);
+			}			
+			
+			// Update task
+			sql = "UPDATE task SET description='" + taskDescription + "' WHERE number="+taskNumber+" AND list_id="+list_id;
+			System.out.println(sql);
+			statement.execute(sql);
+			
+			// Close connection
+			result.close();
+			statement.close();
+			connection.close();
+			
+			
+
+		} catch (Exception e)
+		{
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	
 	public static void deleteTask(int listNumber, int taskNumber)
 	{
 		
@@ -157,7 +368,7 @@ public class Model
 			
 			// Get list_id
 			int list_id= -1;
-			sql = "SELECT id FROM list WHERE \"order\"="+listNumber;
+			sql = "SELECT id FROM list WHERE number="+listNumber;
 			System.out.println(sql);
 			result = statement.executeQuery(sql);
 			if(result.next())
@@ -167,12 +378,12 @@ public class Model
 			System.out.println(list_id);
 					
 			// Delete task
-			sql = "DELETE FROM task WHERE \"order\"=" + taskNumber + " AND list_id="+list_id;
+			sql = "DELETE FROM task WHERE number=" + taskNumber + " AND list_id="+list_id;
 			System.out.println(sql);
 			statement.execute(sql);
 			
 			// Change order of the other tasks
-			sql = "UPDATE task SET \"order\"=\"order\"-1 WHERE \"order\">" + taskNumber + " AND list_id="+list_id;
+			sql = "UPDATE task SET number=number-1 WHERE number>" + taskNumber + " AND list_id="+list_id;
 			System.out.println(sql);
 			statement.execute(sql);
 			
@@ -210,28 +421,26 @@ public class Model
 			
 			// Get list_id
 			int list_id= -1;
-			sql = "SELECT id FROM list WHERE \"order\"="+listNumber;
+			sql = "SELECT id FROM list WHERE number="+listNumber;
 			System.out.println(sql);
 			result = statement.executeQuery(sql);
 			if(result.next())
 			{
 				list_id = result.getInt(1);
 			}
-			System.out.println(list_id);
 			
-			// Get max task number
-			int max = -1;
-			sql = "SELECT MAX(\"order\") FROM task WHERE list_id="+list_id;
+			// Get current count of tasks
+			int count = -1;
+			sql = "SELECT COUNT(number) FROM task WHERE list_id="+list_id;
 			System.out.println(sql);
 			result = statement.executeQuery(sql);
 			if(result.next())
 			{
-				max = result.getInt(1);
+				count = result.getInt(1);
 			}
-			System.out.println(max);
 					
-			// Add new empty task at end of task list
-			sql = "INSERT INTO task (description, \"order\", list_id) VALUES ('', " + max + ", " + list_id +")";
+			// Add new empty task at end of task list, number for the new task is "count"
+			sql = "INSERT INTO task (description, number, list_id) VALUES ('[EMPTY]', " + count + ", " + list_id +")";
 			System.out.println(sql);
 			statement.execute(sql);
 			
@@ -249,123 +458,13 @@ public class Model
 		}
 
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 	
 	
-	
-	
-	
-	
-	
-//	public static ArrayList<String> databaseReadDay(String day)
-//	{
-//		day = day.toLowerCase();
-//		ArrayList<String> dayPlan = new ArrayList<String>();
-//
-//		String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlanner";
-//		String username = "postgres";
-//		String password = "crawler";
-//
-//		try
-//		{
-//
-//			// Establish connection
-//			Class.forName("org.postgresql.Driver");
-//			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
-//			System.out.println("Connected to PostgreSQL");
-//
-//			// Read day plan from appropriate table
-//			String sql = "SELECT * FROM " + day + " ORDER BY task_order ASC";
-//			System.out.println(sql);
-//			Statement statement = connection.createStatement();
-//			ResultSet result = statement.executeQuery(sql);
-//			while (result.next())
-//			{
-//				int id = result.getInt("id");
-//				String taskDescription = result.getString("task_description");
-//				dayPlan.add(taskDescription);
-//				System.out.println("id=" + id + " task_description=" + taskDescription);
-//			}
-//
-//			
-//			// Close connection
-//			connection.close();
-//
-//		} catch (Exception e)
-//		{
-//			System.out.println("Error in connecting to PostgreSQL server");
-//			e.printStackTrace();
-//		}
-//		
-//		
-//		return dayPlan;
-//
-//	}
-	
-	
-	
-	
-//	public static void databaseUpdateDay(String day,ArrayList<String> dayPlan)
-//	{
-//		day = day.toLowerCase();
-//
-//		String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlanner";
-//		String username = "postgres";
-//		String password = "crawler";
-//
-//		try
-//		{
-//			// Establish connection
-//			Class.forName("org.postgresql.Driver");
-//			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
-//			System.out.println("Connected to PostgreSQL");
-//
-//			
-//			// Delete all rows in day table without deleting the table 
-//			String sql = "DELETE FROM " + day;
-//			System.out.println(sql);
-//			Statement statement = connection.createStatement();
-//			statement.execute(sql);
-//			
-//			
-//			// Loop over tasks and update appropriate table with the new day plan
-//			for (int task = 0; task < dayPlan.size(); task++)
-//			{
-//				sql = "INSERT INTO " + day + " (task_description,task_order) VALUES ('" + dayPlan.get(task) + "',"+task+")";
-//				System.out.println(sql);
-//				statement.execute(sql);
-//			}
-//
-//			// Close connection
-//			connection.close();
-//
-//		} catch (Exception e)
-//		{
-//			System.out.println("Error in connecting to PostgreSQL server");
-//			e.printStackTrace();
-//		}
-//
-//	}
-
-	
+		
 	public static void main(String[] args)
 	{
-		
-		databaseCreateTables();
-		
-		
+		databaseCreateTables();		
 	}
-	
-	
-	
+
 }
