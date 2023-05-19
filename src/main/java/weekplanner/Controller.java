@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.nio.charset.Charset;
+
 public class Controller extends HttpServlet
 {
 	// TODO: Nyt her i version 0.5.0:
 	// TODO: Hele uge planen skal være på forsiden
 	// TODO: Hver task skal være på sin egen form, så jeg ved hvilken task POST request kommer fra
-	// TODO: Forsæt med at indarbejde den nye SQL struktur. Husk at tilføje order for list.
+	// TODO: Forsæt med at indarbejde den nye SQL struktur. Husk at tilføje number til list.
 	// TODO: Når der skal læses fra Databasen, så læs det hele hver gang
 	// TODO: Når der skal skrives til Databasen, så skriv hver enkelt individul ting med det samme
 
@@ -28,6 +30,9 @@ public class Controller extends HttpServlet
 	{
 		// For debugging purposes
 		System.out.println("Running Controller constructor");
+		Charset charset = Charset.defaultCharset();
+        System.out.println("Default encoding for this Java installation: " + charset.displayName());
+		
 
 		// Initialize empty tasksLists and read in data from database
 		taskLists = new ArrayList<TaskList>();
