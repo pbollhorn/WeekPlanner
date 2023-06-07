@@ -8,8 +8,10 @@ import java.sql.Statement;
 public class Model
 {
 	private static String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlannerDB2";
+	//private static String jdbcURL = "jdbc:postgresql://16.16.155.85:5432/WeekPlannerDB2";
 	private static String username = "postgres";
 	private static String password = "crawler";
+		
 	
 	public static void databaseCreateTables()
 	{
