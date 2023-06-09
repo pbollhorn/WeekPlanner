@@ -67,8 +67,6 @@ public class Controller extends HttpServlet
 		         
 		System.out.println("Controlleren er blevet kaldt");
 		
-
-		
 		String action = request.getParameter("action");
 		
 		
@@ -87,7 +85,6 @@ public class Controller extends HttpServlet
 		    
 		    // Test the read in data
 		    System.out.println(plan.username);
-		    System.out.println(plan.tasks[0]);
 			
 			return;
 		}

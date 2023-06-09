@@ -3,7 +3,7 @@
 /* Set the background color */
 body
 {
-	background-color: white;
+	background-color: lightgray;
 }
 
 
@@ -33,7 +33,7 @@ header {
 	left: 0;
 	width: 100%;
 	height: 10vh;
-	background-color: blue;
+	background-color: gray;
 	color: white;
 }
 
@@ -52,7 +52,7 @@ footer
 	left: 0;
 	width: 100%;
 	height: 10vh;
-	background-color: blue;
+	background-color: gray;
 	color: white;;
 }
 

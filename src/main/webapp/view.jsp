@@ -9,6 +9,8 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <title>Week Planner</title>
 
+<script src="manipulateDOM.js" defer></script>
+<script src="createTrialData.js" defer></script>
 <script src="script.js" defer></script>
 </head>
 <body>
@@ -20,12 +22,9 @@
 	</header>
 
 
-	<main>
+	<main> 
 
-
-
-
-			<%
+			<!-- 	<%
 			// Loop through all the lists
 			for(int listNumber=0; listNumber<Controller.taskLists.size(); listNumber++)
 			{
@@ -43,8 +42,7 @@
  					out.println("<input type='text' id='"+id+"' value='" + taskDescription + "'>");
  				}
 			}
-			%>
-
+			%>  -->
 
 	</main>
 
