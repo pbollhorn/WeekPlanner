@@ -6,7 +6,7 @@
  	<welcome-file-list>
 <!--    	<welcome-file>controller</welcome-file>-->
 <!--    	<welcome-file>view.jsp</welcome-file>-->
-    	<welcome-file>test.html</welcome-file>
+    	<welcome-file>view.html</welcome-file>
  	</welcome-file-list>
   
     <!-- Specify ControllerServlet with URL "/controller" -->

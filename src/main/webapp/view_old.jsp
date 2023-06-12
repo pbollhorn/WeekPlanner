@@ -27,7 +27,7 @@
 	<main>
 		
 		<div class="task">
-			<div class ="back_element"><input type="tex"></div>
+			<div class ="back_element"><input type="text"></div>
 			<div class ="front_element">Element 1</div>
 		</div>
 
