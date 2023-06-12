@@ -1,12 +1,5 @@
 package weekplanner;
 
-
-
-
-
-
-
-public class Plan
-{
+public class Plan {
 	String username;
 }

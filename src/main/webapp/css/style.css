@@ -1,11 +1,33 @@
 @charset "UTF-8";
 
 /* Set the background color */
-body
-{
+body {
 	background-color: lightgray;
 }
 
+.task {
+	position: relative;
+	
+	width: 100%;
+	margin-left:1vw;
+	margin-right:1vw;
+	
+	border: 15px solid green;
+	padding: 50px;
+}
+
+.back_element, .front_element {
+	position: absolute;
+
+	/* 	margin: 1vh; */
+	/* 	border: 1vh; */
+	/* 	padding: 1vh; */
+
+	/* 	top: 0; */
+	/* 	left: 0; */
+	/* 	background-color: yellow; */
+	/* 	width: 100vw; */
+}
 
 /* Place the navbar at the bottom of the page, and make it stick */
 /* .navbar */
@@ -17,15 +39,9 @@ body
 /*   bottom: 0; */
 /*   width: 100%; */
 /* } */
-
-
-
-input
-{
-	width: 100%;
+input {
+ 	width: 100%;
 }
-
-
 
 header {
 	position: fixed;
@@ -37,16 +53,12 @@ header {
 	color: white;
 }
 
-
-main
-{
+main {
 	margin-top: 11vh;
 	margin-bottom: 11vh;
 }
 
-
-footer
-{
+footer {
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -57,18 +69,18 @@ footer
 }
 
 nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  text-align: center;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
 }
 
 nav ul li {
-  display: inline-block;
-  margin: 10px;
+	display: inline-block;
+	margin: 10px;
 }
 
 nav ul li a {
-  text-decoration: none;
-  color: #fff;
+	text-decoration: none;
+	color: #fff;
 }

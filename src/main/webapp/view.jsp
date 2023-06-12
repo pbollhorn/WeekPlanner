@@ -3,16 +3,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
 <title>Week Planner</title>
 
-<script src="manipulateDOM.js" defer></script>
-<script src="createTrialData.js" defer></script>
-<script src="script.js" defer></script>
+<script src="js/manipulateDOM.js" defer></script>
+<script src="js/createTrialData.js" defer></script>
+<script src="js/script.js" defer></script>
 </head>
+
 <body>
 
 
@@ -22,27 +24,13 @@
 	</header>
 
 
-	<main> 
-
-			<!-- 	<%
-			// Loop through all the lists
-			for(int listNumber=0; listNumber<Controller.taskLists.size(); listNumber++)
-			{
-				// Write the name of the list
-				String listName = Controller.taskLists.get(listNumber).name;
-				out.println("<h3>" + listName + "</h3>");
+	<main>
 		
- 				// Loop through all tasks for the day
- 				for(int taskNumber=0; taskNumber < Controller.taskLists.get(listNumber).tasks.size(); taskNumber++)
- 				{	
- 					String taskDescription = Controller.taskLists.get(listNumber).tasks.get(taskNumber);
-					String id = "task_" + taskNumber + "_list_" + listNumber; 
- 					
- 					// Make input box for each individual task
- 					out.println("<input type='text' id='"+id+"' value='" + taskDescription + "'>");
- 				}
-			}
-			%>  -->
+		<div class="task">
+			<div class ="back_element"><input type="tex"></div>
+			<div class ="front_element">Element 1</div>
+		</div>
+
 
 	</main>
 
@@ -50,11 +38,11 @@
 		<nav>
 			<ul>
 				<li><a href="#">+</a></li>
-				<li><a href="#">✘</a></li>
+				<li><p onclick="deleteTask()">✘</p></li>
 				<li><a href="#">↑</a></li>
 				<li><a href="#">↓</a></li>
 				<li><a href="#">←</a></li>
-				<li><a href="#">✔</a></li>
+				<li><p onclick="markTaskDone()">✔</p></li>
 			</ul>
 		</nav>
 	</footer>
