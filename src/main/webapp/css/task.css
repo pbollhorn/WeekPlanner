@@ -3,10 +3,6 @@
 which has 2 child divs overlapping each other.
 The reason for this is to prevent the keyboard
 on mobile devices popping up, when it is not desired. */
-body {
-	margin: 0.4rem;
-	font-family: Verdana;
-}
 
 /* .task is a div that has 2 child divs overlapping each other:
 .background: Has a background color and a transparent input box
@@ -17,27 +13,23 @@ body {
 	width: 100%;
 }
 
-.task .background {
-	background-color: yellow;
-}
-
-/* div with height of 1.6rem and some padding,
+/* div with height of 1.8rem and some border and padding,
 so transparent input box with height 1.0rem
 will be approximately vertically centered */
 .task div {
 	position: absolute;
 	box-sizing: border-box;
 	margin: 0;
-	border: 0;
+	border: 0.1rem solid;
+	border-color: rgb(0, 0, 0, 0);
 	padding-left: 0.3rem;
 	padding-right: 0.3rem;
 	padding-top: 0.2rem;
-	padding-bottom: 0.2rem;
-	height: 1.6rem;
+	height: 1.8rem;
 	width: 100%;
 }
 
-/* transparent input box with height of 1.0rem*/
+/* transparent input box with font size of 1.0rem*/
 .task input {
 	outline: none;
 	margin: 0;
@@ -45,5 +37,6 @@ will be approximately vertically centered */
 	padding: 0;
 	width: 100%;
 	font-size: 1.0rem;
+/* 	background-color: blue; */
 	background-color: rgb(0, 0, 0, 0);
 }

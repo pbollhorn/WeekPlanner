@@ -4,13 +4,21 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="css/navbars.css">
 <link rel="stylesheet" type="text/css" href="css/task.css">
-<script src="js/test.js" defer></script>
 <script src="js/createTrialData.js" defer></script>
 <script src="js/manipulateDOM.js" defer></script>
 <title>Week Planner</title>
 </head>
 <body>
+
+
+	<header>
+		Week Planner - Frontend Demo:<br>
+		• Only optimized for smartphones.<br>
+		• Cannot save data to backend yet.<br>
+	</header>
+
 
 
 	<main>
@@ -24,7 +32,17 @@
 <!-- 	</div> -->
 
 	</main>
-	
+
+
+	<footer>
+		<button onclick="addTask()">+</button>
+		<button onclick="deleteTask()">✘</button>
+		<button onclick="moveTaskUp()">↑</button>
+		<button onclick="moveTaskDown()">↓</button>
+		<button onclick="moveTaskFree()">←</button>
+		<button onclick="markTaskDone()">✓</button>
+	</footer>
+
 
 
 </body>

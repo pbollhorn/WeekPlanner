@@ -9,7 +9,7 @@ const monday = {
 	{ description: "Code Java", done: false },
 	{ description: "Debug Java", done: false },
 	{ description: "Go to bed", done: false },
-	{ description: "Dream of Java", done: false }]
+	{ description: "Dream of Java", done: true }]
 };
 
 const tuesday = {
@@ -29,12 +29,12 @@ const thursday = {
 
 const friday = {
 	name: "Friday",
-	tasks: [{ description: "f is for friday", done: false }]
+	tasks: [{ description: "abcdefghijklmnopqrstuvxyzæøå", done: false }]
 };
 
 const saturday = {
 	name: "Saturday",
-	tasks: [{ description: "s is for saturday", done: false }]
+	tasks: [{ description: "ABCDEFGHIJKLMNOPQRSTUVXYZÆØÅ", done: false }]
 };
 
 const sunday = {
