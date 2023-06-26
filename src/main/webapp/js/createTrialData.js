@@ -6,10 +6,7 @@ const monday = {
 	name: "Monday",
 	tasks: [{ description: "Wake up", done: true },
 	{ description: "Drink a cup of Java", done: true },
-	{ description: "Code Java", done: false },
-	{ description: "Debug Java", done: false },
-	{ description: "Go to bed", done: false },
-	{ description: "Dream of Java", done: true }]
+	{ description: "Code Java", done: false }]
 };
 
 const tuesday = {
@@ -39,7 +36,8 @@ const saturday = {
 
 const sunday = {
 	name: "Sunday",
-	tasks: [{ description: "s is also for sunday", done: false }]
+	tasks: [{ description: 'That&apos;s my fun day', done: false },
+	        { description: "My I don&apos;t have to run day", done: false }]
 };
 
 const week = {
@@ -49,12 +47,12 @@ const week = {
 
 const month = {
 	name: "Within a Month",
-	tasks: [{ description: "stuff to do next week", done: false }]
+	tasks: [{ description: "Shower day", done: false }]
 };
 
 const year = {
 	name: "Within a Year",
-	tasks: [{ description: "stuff to do next week", done: false }]
+	tasks: [{ description: "stuff to do this year", done: false }]
 };
 
 
