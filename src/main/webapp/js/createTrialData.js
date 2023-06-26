@@ -5,7 +5,7 @@
 const monday = {
 	name: "Monday",
 	tasks: [{ description: "Wake up", done: true },
-	{ description: "Drink a cup of Java", done: true },
+	{ description: "Drink a cup of Java ☕", done: true },
 	{ description: "Code Java", done: false }]
 };
 
