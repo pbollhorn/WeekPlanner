@@ -30,7 +30,7 @@ public class Controller extends HttpServlet {
 
 		// Initialize empty tasksLists and read in data from database
 		taskLists = new ArrayList<TaskList>();
-		// Model.databaseReadEverything();
+		//  Model.databaseReadEverything();
 
 	}
 
