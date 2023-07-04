@@ -191,7 +191,3 @@ function buildView() {
 }
 
 
-/////// MAIN FUNCTION ////////////////////////
-// Build the view and select the first task
-buildView();
-selectTask(mainElement.querySelector(".task"));
