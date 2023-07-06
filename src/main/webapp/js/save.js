@@ -19,7 +19,6 @@ function stringToBoolean(string) {
 function saveToBackend() {
 
 	const newPlan = {
-		username: "egon",
 		lists: []
 	};
 	let list;

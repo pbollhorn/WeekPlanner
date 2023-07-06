@@ -57,9 +57,6 @@ const year = {
 
 
 
-
-
 const plan = {
-	username: "egon",
 	lists: [monday, tuesday, wednesday, thursday, friday, saturday, sunday, week, month, year]
 };

@@ -38,7 +38,7 @@ public class Model {
 
 	}
 
-	public static void databasePostData(String jsonString) {
+	public static void saveData(Credentials credentials, String jsonString) {
 
 		try {
 			// Establish connection
@@ -47,8 +47,10 @@ public class Model {
 			System.out.println("Connected to PostgreSQL");
 
 			// Update user_data via prepared statement
-			PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET plan=? WHERE username='egon'");
+			PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET plan=? WHERE username=? AND password=?");
 			statement.setObject(1, jsonString, java.sql.Types.OTHER);
+			statement.setObject(2, credentials.username);
+			statement.setObject(3, credentials.password);
 			statement.execute();
 
 			// Close connection
@@ -62,7 +64,7 @@ public class Model {
 
 	}
 
-	public static String databaseGetData(String Username, String Password) {
+	public static String loadData(Credentials credentials) {
 
 		String jsonString = null;
 
@@ -73,10 +75,11 @@ public class Model {
 			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
 			System.out.println("Connected to PostgreSQL");
 
-			// Get plan from user_data
-			Statement statement = connection.createStatement();
-			String sql = "SELECT plan FROM user_data WHERE username='"+Username+"' AND password='"+Password+"'";
-			ResultSet result = statement.executeQuery(sql);
+			// Get plan from user_data via prepared statement
+			PreparedStatement statement = connection.prepareStatement("SELECT plan FROM user_data WHERE username=? AND password=?");
+			statement.setObject(1, credentials.username);
+			statement.setObject(2, credentials.password);
+			ResultSet result = statement.executeQuery();
 			while (result.next()) {
 				jsonString = result.getString("plan");
 			}
