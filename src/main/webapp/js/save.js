@@ -56,8 +56,10 @@ function saveToBackend() {
 	
 	// newPlan object is build and now we are ready to send to backend
 	const xhr = new XMLHttpRequest();
-	xhr.open("POST", "controller");
+	xhr.open("POST", "controller?action=savedata");
 	xhr.send(JSON.stringify(newPlan));
+	
+	// GET repsonse code from backend and let user know if save was succesfull or not
 
 	
 }

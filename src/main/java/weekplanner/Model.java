@@ -62,7 +62,7 @@ public class Model {
 
 	}
 
-	public static String databaseGetData() {
+	public static String databaseGetData(String Username, String Password) {
 
 		String jsonString = null;
 
@@ -75,7 +75,7 @@ public class Model {
 
 			// Get plan from user_data
 			Statement statement = connection.createStatement();
-			String sql = "SELECT plan FROM user_data WHERE username='egon'";
+			String sql = "SELECT plan FROM user_data WHERE username='"+Username+"' AND password='"+Password+"'";
 			ResultSet result = statement.executeQuery(sql);
 			while (result.next()) {
 				jsonString = result.getString("plan");

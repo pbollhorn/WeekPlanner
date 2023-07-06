@@ -5,7 +5,7 @@ const xhr = new XMLHttpRequest();
 
 xhr.responseType = "json";
 
-xhr.open("GET", "controller");
+xhr.open("POST", "controller?action=loaddata");
 
 xhr.onload = () => {
 	
