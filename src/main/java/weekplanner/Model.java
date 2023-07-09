@@ -11,7 +11,7 @@ public class Model {
 
 		try {
 			// Establish connection
-			Connection connection = Controller.dataSource.getConnection();
+			Connection connection = Controller.connectionPool.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Create table user_data
@@ -34,12 +34,13 @@ public class Model {
 	public static void saveData(Credentials credentials, String jsonString) {
 
 		try {
-			// Establish connection		
-			Connection connection = Controller.dataSource.getConnection();
+			// Establish connection
+			Connection connection = Controller.connectionPool.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Update user_data via prepared statement
-			PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET plan=? WHERE username=? AND password=?");
+			PreparedStatement statement = connection
+					.prepareStatement("UPDATE user_data SET plan=? WHERE username=? AND password=?");
 			statement.setObject(1, jsonString, java.sql.Types.OTHER);
 			statement.setObject(2, credentials.username);
 			statement.setObject(3, credentials.password);
@@ -63,11 +64,12 @@ public class Model {
 		try {
 
 			// Establish connection
-			Connection connection = Controller.dataSource.getConnection();
+			Connection connection = Controller.connectionPool.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Get plan from user_data via prepared statement
-			PreparedStatement statement = connection.prepareStatement("SELECT plan FROM user_data WHERE username=? AND password=?");
+			PreparedStatement statement = connection
+					.prepareStatement("SELECT plan FROM user_data WHERE username=? AND password=?");
 			statement.setObject(1, credentials.username);
 			statement.setObject(2, credentials.password);
 			ResultSet result = statement.executeQuery();
