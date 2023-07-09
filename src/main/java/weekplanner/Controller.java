@@ -24,6 +24,13 @@ public class Controller extends HttpServlet {
 	@Resource(name = "jdbc/WeekPlannerDB")
 	public static DataSource dataSource;
 
+	private String getRequestType(HttpServletRequest request) {
+		String URI = request.getRequestURI();
+		return URI.substring(URI.lastIndexOf('/') + 1);
+	}
+	
+
+
 	public Controller() {
 		// For debugging purposes
 		System.out.println("Running Controller constructor");
@@ -33,12 +40,21 @@ public class Controller extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		if (Authenticator.checkForCredentials(request) == null) {
-			RequestDispatcher view = request.getRequestDispatcher("login.html");
-			view.forward(request, response);
-		} else {
-			RequestDispatcher view = request.getRequestDispatcher("view.html");
-			view.forward(request, response);
+		String requestType = getRequestType(request);
+		System.out.println(request.getRequestURL());
+		System.out.println(requestType);
+
+        		
+		if ("".equals(requestType)) {
+
+			if (Authenticator.checkForCredentials(request) == null) {
+				RequestDispatcher view = request.getRequestDispatcher("/login.html");
+				view.forward(request, response);
+			} else {
+				RequestDispatcher view = request.getRequestDispatcher("/view.html");
+				view.forward(request, response);
+			}
+
 		}
 
 	}
@@ -46,24 +62,24 @@ public class Controller extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String action = request.getParameter("action");
+		String requestType = getRequestType(request);
+		System.out.println(request.getRequestURL());
+		System.out.println(requestType);
 
-		System.out.println("Controller has recieved POST request with action=" + action);
-
-		if (action.equals("login")) {
+		if ("login".equals(requestType)) {
 
 			Authenticator.loginRequest(request, response);
-			RequestDispatcher view = request.getRequestDispatcher("view.html");
+			RequestDispatcher view = request.getRequestDispatcher("/view.html");
 			view.forward(request, response);
 
-		} else if (action.equals("logout")) {
+		} else if ("logout".equals(requestType)) {
 
 			Authenticator.logoutRequest(request, response);
-			
-			RequestDispatcher view = request.getRequestDispatcher("login.html");
+
+			RequestDispatcher view = request.getRequestDispatcher("/login.html");
 			view.forward(request, response);
 
-		} else if (action.equals("loaddata")) {
+		} else if ("loaddata".equals(requestType)) {
 
 			Credentials credentials = Authenticator.checkForCredentials(request);
 
@@ -73,7 +89,7 @@ public class Controller extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(jsonString);
 
-		} else if (action.equals("savedata")) {
+		} else if ("savedata".equals(requestType)) {
 
 			Credentials credentials = Authenticator.checkForCredentials(request);
 
@@ -87,7 +103,7 @@ public class Controller extends HttpServlet {
 
 		}
 
-		//return;
+		// return;
 
 	}
 

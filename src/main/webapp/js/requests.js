@@ -8,7 +8,8 @@ function login() {
 	const xhr = new XMLHttpRequest();
 	xhr.responseType = "text"; // should this be text/HTML???
 
-	xhr.open("POST", "controller?action=login");
+	xhr.open("POST", "controller/login");
+	//xhr.open("POST", "controller?action=login");
 
 
 	xhr.onload = () => {
@@ -34,7 +35,8 @@ function logout() {
 	const xhr = new XMLHttpRequest();
 	xhr.responseType = "text";
 
-	xhr.open("POST", "controller?action=logout");
+	xhr.open("POST", "controller/logout");
+	//xhr.open("POST", "controller?action=logout");
 
 
 	xhr.onload = () => {
@@ -58,7 +60,8 @@ function loadData() {
 
 	xhr.responseType = "json";
 
-	xhr.open("POST", "controller?action=loaddata");
+	xhr.open("POST", "controller/loaddata");
+	//xhr.open("POST", "controller?action=loaddata");
 
 	xhr.onload = () => {
 
@@ -120,7 +123,8 @@ function saveData() {
 
 	// newPlan object is build and now we are ready to send to backend
 	const xhr = new XMLHttpRequest();
-	xhr.open("POST", "controller?action=savedata");
+	xhr.open("POST", "controller/savedata");
+	//xhr.open("POST", "controller?action=savedata");
 	xhr.send(JSON.stringify(newPlan));
 
 	// GET repsonse code from backend and let user know if save was succesfull or not

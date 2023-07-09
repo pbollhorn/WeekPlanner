@@ -2,6 +2,7 @@ package weekplanner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,13 +32,15 @@ public class Authenticator {
 		}
 
 		if (username != null && password != null) {
+			System.out.println("username: "+username+" password: "+password);
 			return new Credentials(username,password);
 		} else {
 			return null;
 		}
 
 	}
-
+	
+	
 	public static void loginRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		// Read JSON data from the request's input stream
@@ -60,13 +63,15 @@ public class Authenticator {
 		if (plan != null) {
 			System.out.println("Valid Credentials - Access granted");
 			response.setStatus(HttpServletResponse.SC_OK);
-
+			
 			// Create cookies with username and password
 			Cookie theCookie = new Cookie("WeekPlannerUsername", credentials.username);
 			theCookie.setMaxAge(60 * 60 * 24 * 365);
+			theCookie.setPath(request.getContextPath());
 			response.addCookie(theCookie);
 			theCookie = new Cookie("WeekPlannerPassword", credentials.password);
 			theCookie.setMaxAge(60 * 60 * 24 * 365);
+			theCookie.setPath(request.getContextPath());
 			response.addCookie(theCookie);
 
 		} else {
