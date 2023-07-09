@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 
 public class Authenticator {
 
+	
 	public static Credentials checkForCredentials(HttpServletRequest request) {
 
 		String username = null;

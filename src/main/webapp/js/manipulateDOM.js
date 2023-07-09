@@ -1,4 +1,4 @@
-const mainElement = document.querySelector("main");
+let mainElement = document.querySelector("main");
 const myGreen = "rgb(144, 238, 144)";
 const myYellow = "rgb(255,255,153)";
 const myBlack = "rgb(0,0,0)";
@@ -171,6 +171,8 @@ function createTask(description, done) {
 
 
 function buildView() {
+
+	mainElement = document.querySelector("main");
 
 	// Loop through lists in plan
 	for (const list of plan.lists) {

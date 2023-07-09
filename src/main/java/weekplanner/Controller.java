@@ -2,11 +2,15 @@ package weekplanner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.nio.charset.Charset;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -15,6 +19,10 @@ import com.google.gson.JsonParser;
 public class Controller extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	// Define data source (connection pool) for Resource Injection
+	@Resource(name = "jdbc/WeekPlannerDB")
+	public static DataSource dataSource;
 
 	public Controller() {
 		// For debugging purposes
@@ -39,17 +47,21 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 
 		String action = request.getParameter("action");
-		
-		
-		System.out.println("Controller has recieved POST request with action="+action);
+
+		System.out.println("Controller has recieved POST request with action=" + action);
 
 		if (action.equals("login")) {
 
 			Authenticator.loginRequest(request, response);
+			RequestDispatcher view = request.getRequestDispatcher("view.html");
+			view.forward(request, response);
 
 		} else if (action.equals("logout")) {
 
 			Authenticator.logoutRequest(request, response);
+			
+			RequestDispatcher view = request.getRequestDispatcher("login.html");
+			view.forward(request, response);
 
 		} else if (action.equals("loaddata")) {
 
@@ -64,7 +76,7 @@ public class Controller extends HttpServlet {
 		} else if (action.equals("savedata")) {
 
 			Credentials credentials = Authenticator.checkForCredentials(request);
-			
+
 			// Read JSON data from the request's input stream
 			BufferedReader reader = request.getReader();
 			JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
@@ -75,7 +87,7 @@ public class Controller extends HttpServlet {
 
 		}
 
-		return;
+		//return;
 
 	}
 

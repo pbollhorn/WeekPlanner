@@ -8,17 +8,24 @@ function sendLoginRequest() {
 	console.log(credentials);
 
 	const xhr = new XMLHttpRequest();
-	xhr.responseType = "json";
+	xhr.responseType = "text"; // should this be text/HTML???
 
 	xhr.open("POST", "controller?action=login");
 
 
 
 	xhr.onload = () => {
-		console.log(xhr.response);
+		
 
 		if (xhr.status == 200) {
-			window.location.href = "view.html";
+			// THIS LINE MANAGES THE SHOW view.html WITHOUT CHANGING THE URL
+			// BUT DOES ITS JAVASCRIPT RUN ONLOAD? BECAUSE THAT IS IMPORTANT TO ACTUALLY BUILD view.html
+			// I NEED TO FIGURE OUT A WAY TO GET THE JAVASCRIPT TO RUN
+			// PERHAPS PUT ALL MY JAVASCRIPT INTO A FEW FILES AND HAVE BOTH login.html AND view.html REFERENCE THOSE FILES,
+			// SO ALL MY JAVASCRIPT IS ALWAYS AVAILABLE.
+			console.log(xhr.response);
+			document.documentElement.innerHTML=xhr.responseText;
+			loadData();
 		}
 	}
 
@@ -32,7 +39,7 @@ function sendLoginRequest() {
 function sendLogoutRequest() {
 
 	const xhr = new XMLHttpRequest();
-	xhr.responseType = "json";
+	xhr.responseType = "text";
 
 	xhr.open("POST", "controller?action=logout");
 
@@ -41,7 +48,7 @@ function sendLogoutRequest() {
 		console.log(xhr.response);
 
 		if (xhr.status == 200) {
-			window.location.href = "login.html";
+			document.documentElement.innerHTML=xhr.responseText;
 		}
 	}
 

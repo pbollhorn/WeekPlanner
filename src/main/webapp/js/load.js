@@ -1,24 +1,30 @@
 let plan;
 
+function loadData() {
 
-const xhr = new XMLHttpRequest();
 
-xhr.responseType = "json";
+	const xhr = new XMLHttpRequest();
 
-xhr.open("POST", "controller?action=loaddata");
+	xhr.responseType = "json";
 
-xhr.onload = () => {
-	
-	plan = xhr.response;
-	
-	console.log(plan);
-	
-	
-	/////// MAIN FUNCTION ////////////////////////
-	// Build the view and select the first task
-	buildView();
-	selectTask(mainElement.querySelector(".task"));
-	//////////////////////////////////////////////
+	xhr.open("POST", "controller?action=loaddata");
+
+	xhr.onload = () => {
+
+		plan = xhr.response;
+
+		console.log(plan);
+
+
+		/////// MAIN FUNCTION ////////////////////////
+		// Build the view and select the first task
+		buildView();
+		selectTask(mainElement.querySelector(".task"));
+		//////////////////////////////////////////////
+	}
+
+	xhr.send();
+
 }
 
-xhr.send();
+//loadData();

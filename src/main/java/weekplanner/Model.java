@@ -1,24 +1,17 @@
 package weekplanner;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Model {
 
-	private static String jdbcURL = "jdbc:postgresql://localhost:5432/WeekPlannerDB3";
-	//private static String jdbcURL = "jdbc:postgresql://16.16.155.85:5432/WeekPlannerDB3";
-	private static String username = "postgres";
-	private static String password = "crawler";
-
 	public static void databaseCreateTables() {
 
 		try {
 			// Establish connection
-			Class.forName("org.postgresql.Driver");
-			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			Connection connection = Controller.dataSource.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Create table user_data
@@ -41,9 +34,8 @@ public class Model {
 	public static void saveData(Credentials credentials, String jsonString) {
 
 		try {
-			// Establish connection
-			Class.forName("org.postgresql.Driver");
-			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			// Establish connection		
+			Connection connection = Controller.dataSource.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Update user_data via prepared statement
@@ -71,8 +63,7 @@ public class Model {
 		try {
 
 			// Establish connection
-			Class.forName("org.postgresql.Driver");
-			Connection connection = DriverManager.getConnection(jdbcURL, username, password);
+			Connection connection = Controller.dataSource.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Get plan from user_data via prepared statement
