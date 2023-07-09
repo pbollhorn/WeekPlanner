@@ -10,37 +10,41 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
 public class Authenticator {
 
-	
 	public static Credentials checkForCredentials(HttpServletRequest request) {
 
-		String username = null;
-		String password = null;
+		String credentials = null;
 
-		Cookie[] theCookies = request.getCookies();
+		Cookie[] cookies = request.getCookies();
 
-		if (theCookies != null) {
-			for (Cookie tempCookie : theCookies) {
-				if ("WeekPlannerUsername".equals(tempCookie.getName())) {
-					username = tempCookie.getValue();
-				} else if ("WeekPlannerPassword".equals(tempCookie.getName())) {
-					password = tempCookie.getValue();
+		if (cookies != null) {
+
+			for (Cookie c : cookies) {
+				if ("WeekPlannerCredentials".equals(c.getName())) {
+					credentials = c.getValue();
+					break;
 				}
 			}
+
+			if (credentials != null) {
+
+				int index = credentials.indexOf('=');
+				String username = credentials.substring(0, index);
+				String password = credentials.substring(index + 1);
+
+				if (username != null && password != null) {
+					return new Credentials(username, password);
+				}
+
+			}
+
 		}
 
-		if (username != null && password != null) {
-			System.out.println("username: "+username+" password: "+password);
-			return new Credentials(username,password);
-		} else {
-			return null;
-		}
+		return null;
 
 	}
-	
-	
+
 	public static void loginRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		// Read JSON data from the request's input stream
@@ -63,16 +67,12 @@ public class Authenticator {
 		if (plan != null) {
 			System.out.println("Valid Credentials - Access granted");
 			response.setStatus(HttpServletResponse.SC_OK);
-			
-			// Create cookies with username and password
-			Cookie theCookie = new Cookie("WeekPlannerUsername", credentials.username);
-			theCookie.setMaxAge(60 * 60 * 24 * 365);
-			theCookie.setPath(request.getContextPath());
-			response.addCookie(theCookie);
-			theCookie = new Cookie("WeekPlannerPassword", credentials.password);
-			theCookie.setMaxAge(60 * 60 * 24 * 365);
-			theCookie.setPath(request.getContextPath());
-			response.addCookie(theCookie);
+
+			// Create cookie with credentials (username=password)
+			Cookie cookie = new Cookie("WeekPlannerCredentials", credentials.username + "=" + credentials.password);
+			cookie.setMaxAge(60 * 60 * 24 * 365);
+			cookie.setPath(request.getContextPath());
+			response.addCookie(cookie);
 
 		} else {
 			System.out.println("Invalid Credentials - Access denied");
@@ -80,26 +80,24 @@ public class Authenticator {
 		}
 
 	}
-	
-	
-	public static void logoutRequest(HttpServletRequest request, HttpServletResponse response) {
-		
-		response.setStatus(HttpServletResponse.SC_OK);
 
-		// Delete cookies
-		Cookie[] theCookies = request.getCookies();
-		if (theCookies != null) {
-			for (Cookie tempCookie : theCookies) {
-				if ("WeekPlannerUsername".equals(tempCookie.getName())) {
-					tempCookie.setMaxAge(0);
-					response.addCookie(tempCookie);
-				} else if ("WeekPlannerPassword".equals(tempCookie.getName())) {
-					tempCookie.setMaxAge(0);
-					response.addCookie(tempCookie);
+	public static void logoutRequest(HttpServletRequest request, HttpServletResponse response) {
+
+		// Find the credentials cookie and delete it
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie c : cookies) {
+				if ("WeekPlannerCredentials".equals(c.getName())) {
+					c.setMaxAge(0);
+					c.setPath(request.getContextPath());
+					response.addCookie(c);
+					break;
 				}
 			}
 		}
-		
+
+		response.setStatus(HttpServletResponse.SC_OK);
+
 	}
 
 }
