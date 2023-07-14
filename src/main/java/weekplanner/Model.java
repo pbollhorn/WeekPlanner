@@ -5,13 +5,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public class Model {
 
+	public static DataSource connectionPool;
+	
+	
+	public static void init() {
+		
+		try {
+			connectionPool = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/WeekPlannerDB");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static void databaseCreateTables() {
 
 		try {
 			// Establish connection
-			Connection connection = Controller.connectionPool.getConnection();
+			Connection connection = connectionPool.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Create table user_data
@@ -35,7 +52,7 @@ public class Model {
 
 		try {
 			// Establish connection
-			Connection connection = Controller.connectionPool.getConnection();
+			Connection connection = connectionPool.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Update user_data via prepared statement
@@ -64,7 +81,7 @@ public class Model {
 		try {
 
 			// Establish connection
-			Connection connection = Controller.connectionPool.getConnection();
+			Connection connection = connectionPool.getConnection();
 			System.out.println("Connected to PostgreSQL");
 
 			// Get plan from user_data via prepared statement

@@ -14,7 +14,8 @@ import com.google.gson.JsonParser;
 
 public class Helper {
 
-	public static void setFrontPage(HttpServletRequest request, HttpServletResponse response)
+	// Top level GET request, i.e. when the user types pbollhorn.dk/weekplanner in their browser.
+	public static void topLevelGetRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		if (Authenticator.checkForCredentials(request) == null) {

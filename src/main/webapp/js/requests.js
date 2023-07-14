@@ -6,10 +6,13 @@ function login() {
 	};
 
 	const xhr = new XMLHttpRequest();
+
+	
+	
 	xhr.responseType = "text"; // should this be text/HTML???
 
 	xhr.open("POST", "controller/login");
-
+	//xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = () => {
 
@@ -19,6 +22,13 @@ function login() {
 			document.documentElement.innerHTML = xhr.responseText;
 			// Run loadData(), because the above method of navigating to view.html does not run the JavaScript of view.html
 			loadData();
+		}
+		else {
+			
+			const message = document.getElementById("message");
+			message.style.color="red";
+			message.innerText = "Wrong username or password";
+			
 		}
 	}
 
@@ -121,6 +131,7 @@ function saveData() {
 	// newPlan object is build and now we are ready to send to backend
 	const xhr = new XMLHttpRequest();
 	xhr.open("PUT", "controller/savedata");
+	//xhr.setRequestHeader("Content-Type", "application/json");
 	xhr.send(JSON.stringify(newPlan));
 
 	// GET repsonse code from backend and let user know if save was succesfull or not

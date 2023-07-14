@@ -2,8 +2,6 @@ package weekplanner;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,19 +11,21 @@ public class Controller extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	// Define data source (connection pool) for Resource Injection
-	@Resource(name = "jdbc/WeekPlannerDB")
-	public static DataSource connectionPool;
-
 	private String getRequestType(HttpServletRequest request) {
 		String URI = request.getRequestURI();
 		return URI.substring(URI.lastIndexOf('/') + 1);
 	}
 
+	
+	// Constructor for this servlet, which is only run once (on startup)
 	public Controller() {
 		// For debugging purposes
 		System.out.println("Running Controller constructor");
 		System.out.println("Default encoding for this Java installation: " + Charset.defaultCharset().displayName());
+
+		// Establish connection pool to database
+		Model.init();
+
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,7 +34,7 @@ public class Controller extends HttpServlet {
 		String requestType = getRequestType(request);
 
 		if ("".equals(requestType)) {
-			Helper.setFrontPage(request, response);
+			Helper.topLevelGetRequest(request, response);
 		} else if ("loaddata".equals(requestType)) {
 			Helper.loadData(request, response);
 		}
