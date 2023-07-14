@@ -1,3 +1,37 @@
+function hello() {
+	
+	
+	const xhr = new XMLHttpRequest();
+
+	xhr.responseType = "text"; // should this be text/HTML???
+
+	xhr.open("POST", "controller/hello");
+
+	xhr.onload = () => {
+
+		if (xhr.status == 200) {
+			console.log(xhr.response);
+			// Change the HTML of the current document to be what is in the response, which is view.html
+			document.documentElement.innerHTML = xhr.responseText;
+			// Run loadData(), because the above method of navigating to view.html does not run the JavaScript of view.html
+			loadData();
+		}
+		else {
+			
+			console.log(xhr.response);
+			// Change the HTML of the current document to be what is in the response, which is login.html
+			document.documentElement.innerHTML = xhr.responseText;
+			
+		}
+	}
+
+	xhr.send();
+		
+}
+
+
+
+
 function login() {
 
 	credentials = {

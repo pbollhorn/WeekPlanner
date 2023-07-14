@@ -4,7 +4,8 @@
  	<display-name>Week Planner</display-name>
      
  	<welcome-file-list>
-    	<welcome-file>controller</welcome-file>
+		 <welcome-file>index.html</welcome-file>
+<!--    	<welcome-file>controller</welcome-file>-->
 <!--    	<welcome-file>view.jsp</welcome-file>-->
 <!--    	<welcome-file>view.html</welcome-file>-->
  	</welcome-file-list>

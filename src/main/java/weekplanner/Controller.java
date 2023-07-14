@@ -33,9 +33,10 @@ public class Controller extends HttpServlet {
 
 		String requestType = getRequestType(request);
 
-		if ("".equals(requestType)) {
-			Helper.topLevelGetRequest(request, response);
-		} else if ("loaddata".equals(requestType)) {
+		//if ("".equals(requestType)) {
+		//	Helper.topLevelGetRequest(request, response);
+		//}
+		if ("loaddata".equals(requestType)) {
 			Helper.loadData(request, response);
 		}
 
@@ -50,6 +51,8 @@ public class Controller extends HttpServlet {
 			Helper.login(request, response);
 		} else if ("logout".equals(requestType)) {
 			Helper.logout(request, response);
+		}else if ("hello".equals(requestType)) {
+			Helper.hello(request, response);
 		}
 
 	}

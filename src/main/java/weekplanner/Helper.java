@@ -27,6 +27,19 @@ public class Helper {
 		}
 	}
 
+	public static void hello(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		if (Authenticator.checkForCredentials(request) == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			RequestDispatcher view = request.getRequestDispatcher("/login.html");
+			view.forward(request, response);
+		} else {
+			response.setStatus(HttpServletResponse.SC_OK);
+			RequestDispatcher view = request.getRequestDispatcher("/view.html");
+			view.forward(request, response);
+		}
+	}
+	
 	public static void login(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Authenticator.loginRequest(request, response);
