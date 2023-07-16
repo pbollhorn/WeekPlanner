@@ -2,6 +2,7 @@ package weekplanner;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ public class Controller extends HttpServlet {
 		return URI.substring(URI.lastIndexOf('/') + 1);
 	}
 
-	
 	// Constructor for this servlet, which is only run once (on startup)
 	public Controller() {
 		// For debugging purposes
@@ -33,6 +33,12 @@ public class Controller extends HttpServlet {
 
 		String requestType = getRequestType(request);
 
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		if ("loaddata".equals(requestType)) {
 			Helper.loadData(request, response);
 		}
@@ -43,12 +49,18 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
+		
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if ("login".equals(requestType)) {
 			Helper.login(request, response);
 		} else if ("logout".equals(requestType)) {
 			Helper.logout(request, response);
-		}else if ("checkcredentials".equals(requestType)) {
+		} else if ("checkcredentials".equals(requestType)) {
 			Helper.checkCredentials(request, response);
 		}
 
@@ -58,6 +70,12 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
+		
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if ("savedata".equals(requestType)) {
 			Helper.saveData(request, response);

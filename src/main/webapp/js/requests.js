@@ -1,29 +1,29 @@
 function checkCredentials() {
-	
-	
+
+
 	const xhr = new XMLHttpRequest();
 
-	xhr.responseType = "text/html"; // should this be text/HTML???
+	xhr.responseType = "text";
 
 	xhr.open("POST", "controller/checkcredentials");
 
 	xhr.onload = () => {
 
 		if (xhr.status == 200) {
-			// Change the HTML of the current document to be what is in the response, which is view.html
-			document.body.innerHTML = xhr.responseText;
-			// Run loadData(), because the above method of navigating to view.html does not run the JavaScript of view.html
+			// Change the body of the current HTML page to be view-body.html which is in the response
+			// and run loadData()
+			document.body.innerHTML = xhr.response;
 			loadData();
 		}
 		else {
 			// Change the HTML of the current document to be what is in the response, which is login.html
-			document.body.innerHTML = xhr.responseText;
-			
+			document.body.innerHTML = xhr.response;
+
 		}
 	}
 
 	xhr.send();
-		
+
 }
 
 
@@ -38,28 +38,27 @@ function login() {
 
 	const xhr = new XMLHttpRequest();
 
-	
-	
-	xhr.responseType = "text"; // should this be text/HTML???
+
+
+	xhr.responseType = "text";
 
 	xhr.open("POST", "controller/login");
-	//xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = () => {
 
 		if (xhr.status == 200) {
-			console.log(xhr.response);
-			// Change the HTML of the current document to be what is in the response, which is view.html
-			document.body.innerHTML = xhr.responseText;
-			// Run loadData(), because the above method of navigating to view.html does not run the JavaScript of view.html
+			// Change the body of the current HTML page to be view-body.html which is in the response
+			// and run loadData()
+			document.body.innerHTML = xhr.response;
 			loadData();
 		}
 		else {
-			
+
 			const message = document.getElementById("message");
-			message.style.color="red";
+			message.style.color = "red";
 			message.innerText = "Wrong username or password";
-			
+
 		}
 	}
 
@@ -79,10 +78,9 @@ function logout() {
 
 
 	xhr.onload = () => {
-		console.log(xhr.response);
 
 		if (xhr.status == 200) {
-			document.body.innerHTML = xhr.responseText;
+			document.body.innerHTML = xhr.response;
 		}
 	}
 
@@ -104,9 +102,6 @@ function loadData() {
 	xhr.onload = () => {
 
 		plan = xhr.response;
-
-		console.log(plan);
-
 
 		/////// MAIN FUNCTION ////////////////////////
 		// Build the view and select the first task
@@ -162,7 +157,7 @@ function saveData() {
 	// newPlan object is build and now we are ready to send to backend
 	const xhr = new XMLHttpRequest();
 	xhr.open("PUT", "controller/savedata");
-	//xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.setRequestHeader("Content-Type", "application/json");
 	xhr.send(JSON.stringify(newPlan));
 
 	// GET repsonse code from backend and let user know if save was succesfull or not

@@ -2,6 +2,9 @@ package weekplanner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +47,8 @@ public class Authenticator {
 
 	}
 
-	public static void loginRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public static void loginRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		// Read JSON data from the request's input stream
 		BufferedReader reader = request.getReader();
@@ -72,6 +76,9 @@ public class Authenticator {
 			cookie.setHttpOnly(true);
 			cookie.setSecure(true);
 			response.addCookie(cookie);
+
+			RequestDispatcher view = request.getRequestDispatcher("/view-body.html");
+			view.forward(request, response);
 
 		} else {
 			System.out.println("Invalid Credentials - Access denied");

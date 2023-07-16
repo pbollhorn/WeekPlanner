@@ -11,8 +11,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Helper {
-	
-	// checkCredentials request is received from index.html, which is loaded when user performs a top level GET request,
+
+	// checkCredentials request is received from index.html, which is loaded when
+	// user performs a top level GET request,
 	// i.e. when the user types pbollhorn.dk/weekplanner in their browser.
 	public static void checkCredentials(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -20,19 +21,16 @@ public class Helper {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			RequestDispatcher view = request.getRequestDispatcher("/login-body.html");
 			view.forward(request, response);
-
 		} else {
 			response.setStatus(HttpServletResponse.SC_OK);
 			RequestDispatcher view = request.getRequestDispatcher("/view-body.html");
 			view.forward(request, response);
 		}
 	}
-	
+
 	public static void login(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		Authenticator.loginRequest(request, response);
-		RequestDispatcher view = request.getRequestDispatcher("/view-body.html");
-		view.forward(request, response);
 	}
 
 	public static void logout(HttpServletRequest request, HttpServletResponse response)
