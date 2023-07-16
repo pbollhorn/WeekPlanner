@@ -33,7 +33,6 @@ public class Authenticator {
 				String password = credentials.substring(index + 1);
 
 				if (username != null && password != null) {
-					//System.out.println(username+"="+password);
 					return new Credentials(username, password);
 				}
 
@@ -65,17 +64,14 @@ public class Authenticator {
 
 			System.out.println("Valid Credentials - Access granted");
 			response.setStatus(HttpServletResponse.SC_OK);
-			
+
 			// Create credentials cookie with value "username=password"
 			Cookie cookie = new Cookie("WeekPlannerCredentials", credentials.username + "=" + credentials.password);
+			cookie.setPath(request.getContextPath());
 			cookie.setMaxAge(60 * 60 * 24 * 365);
-			cookie.setPath("/");
-			//cookie.setPath(request.getContextPath());
-			//cookie.setHttpOnly(true);
-			//cookie.setSecure(true);
+			cookie.setHttpOnly(true);
+			cookie.setSecure(true);
 			response.addCookie(cookie);
-			
-
 
 		} else {
 			System.out.println("Invalid Credentials - Access denied");
@@ -85,11 +81,11 @@ public class Authenticator {
 	}
 
 	public static void logoutRequest(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		Cookie cookie = new Cookie("WeekPlannerCredentials", "");
+		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(0);
-		cookie.setPath("/");
-		//cookie.setPath(request.getContextPath());
+
 		response.addCookie(cookie);
 
 		response.setStatus(HttpServletResponse.SC_OK);

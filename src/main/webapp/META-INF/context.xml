@@ -6,8 +6,6 @@
 		driverClassName="org.postgresql.Driver"
 		url="jdbc:postgresql://localhost:5432/WeekPlannerDB3" />
 		
-<!--	<CookieProcessor sameSiteCookies="strict" />-->
-<!--	<CookieProcessor sameSiteCookies="none" />-->
-<!--		<CookieProcessor sameSiteCookies="lax" />-->
+	<CookieProcessor sameSiteCookies="strict" />
 		
 </Context>

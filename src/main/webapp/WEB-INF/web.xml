@@ -10,7 +10,7 @@
 <!--    	<welcome-file>view.html</welcome-file>-->
  	</welcome-file-list>
   
-    <!-- Specify ControllerServlet with URL "/controller" -->
+    <!-- Specify ControllerServlet with URL "/controller/*" -->
  	<servlet>  
     	<servlet-name>ControllerServlet</servlet-name>  
     	<servlet-class>weekplanner.Controller</servlet-class>  
