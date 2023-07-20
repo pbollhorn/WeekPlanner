@@ -3,7 +3,6 @@ package weekplanner;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +14,7 @@ import com.google.gson.JsonParser;
 
 public class Authenticator {
 
+	// Returns Credentials object if Credentials cookie is present, else returns null
 	public static Credentials checkForCredentials(HttpServletRequest request) {
 
 		String credentials = null;
@@ -78,8 +78,6 @@ public class Authenticator {
 			cookie.setSecure(true);
 			response.addCookie(cookie);
 
-			RequestDispatcher view = request.getRequestDispatcher("/view-body.html");
-			view.forward(request, response);
 
 		} else {
 			System.out.println("Invalid Credentials - Access denied");

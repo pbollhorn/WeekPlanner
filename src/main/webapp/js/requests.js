@@ -34,21 +34,18 @@ function sendHttpRequest(method, url, contentType, body) {
 
 
 
-
-
 function checkCredentials() {
 
 	sendHttpRequest("POST", "controller/checkcredentials").then(xhr => {
 
 		if (xhr.status == 200) {
-			// Change the body of the current HTML page to be view-body.html which is in the response
-			// and run loadData()
-			document.body.innerHTML = xhr.responseText;
+			// Change the body of the current HTML page to be viewBodyHtml and run loadData()
+			document.body.innerHTML = viewBodyHtml;
 			loadData();
 		}
 		else {
-			// Change the HTML of the current document to be what is in the response, which is login-body.html
-			document.body.innerHTML = xhr.responseText;
+			// Change the HTML of the current document to be loginBodyHtml
+			document.body.innerHTML = loginBodyHtml;
 		}
 
 
@@ -72,7 +69,7 @@ function login() {
 		if (xhr.status == 200) {
 			// Change the body of the current HTML page to be view-body.html which is in the response
 			// and run loadData()
-			document.body.innerHTML = xhr.responseText;
+			document.body.innerHTML = viewBodyHtml;
 			loadData();
 		}
 		else if (xhr.status == 401) {
@@ -83,7 +80,7 @@ function login() {
 		else {
 			const message = document.getElementById("message");
 			message.style.color = "red";
-			message.innerText = "An error occured while attempting to login";
+			message.innerText = "An error occured";
 		}
 
 
@@ -99,7 +96,7 @@ function logout() {
 	sendHttpRequest("POST", "controller/logout").then(xhr => {
 
 		if (xhr.status == 200) {
-			document.body.innerHTML = xhr.responseText;
+			document.body.innerHTML = loginBodyHtml;
 		}
 		else {
 			message.style.color = "red";
@@ -162,7 +159,13 @@ function saveData() {
 
 	}
 
-	sendHttpRequest("PUT", "controller/savedata", "application/json", newPlan);
+	sendHttpRequest("PUT", "controller/savedata", "application/json", newPlan).then(xhr => {
+
+		if (xhr.status == 405) {
+			document.body.innerHTML = loginBodyHtml;
+		}
+
+	});
 
 	// GET repsonse code from backend and let user know if save was succesfull or not
 

@@ -7,7 +7,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="css/navbars.css">
 	<link rel="stylesheet" type="text/css" href="css/task.css">
-	<link rel="stylesheet" type="text/css" href="css/login.css">
 	<script src="js/requests.js"></script>
 	<script src="js/manipulateDOM.js"></script>
 	<title>Week Planner</title>
@@ -16,7 +15,38 @@
 <body>
 	<script>
 
-		checkCredentials();
+
+		let viewBodyHtml;
+		let loginBodyHtml;
+
+		sendHttpRequest("GET", "view-body.html").then(xhr => {
+
+			if (xhr.status == 200) {
+				viewBodyHtml = xhr.responseText;
+
+				sendHttpRequest("GET", "login-body.html").then(xhr => {
+					if (xhr.status == 200) {
+						loginBodyHtml = xhr.responseText;
+						
+						checkCredentials();
+					}
+				});
+
+
+			}
+
+		});
+
+
+
+
+
+
+
+
+
+
+		
 
 	</script>
 </body>
