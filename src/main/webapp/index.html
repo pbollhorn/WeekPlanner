@@ -13,42 +13,7 @@
 </head>
 
 <body>
-	<script>
 
-
-		let viewBodyHtml;
-		let loginBodyHtml;
-
-		sendHttpRequest("GET", "view-body.html").then(xhr => {
-
-			if (xhr.status == 200) {
-				viewBodyHtml = xhr.responseText;
-
-				sendHttpRequest("GET", "login-body.html").then(xhr => {
-					if (xhr.status == 200) {
-						loginBodyHtml = xhr.responseText;
-						
-						checkCredentials();
-					}
-				});
-
-
-			}
-
-		});
-
-
-
-
-
-
-
-
-
-
-		
-
-	</script>
 </body>
 
 </html>

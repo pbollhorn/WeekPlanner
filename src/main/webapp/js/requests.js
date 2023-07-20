@@ -34,23 +34,49 @@ function sendHttpRequest(method, url, contentType, body) {
 
 
 
-function checkCredentials() {
+function loadSite() {
 
-	sendHttpRequest("POST", "controller/checkcredentials").then(xhr => {
+
+	let peter = sendHttpRequest("GET", "controller/slow");
+
+
+	sendHttpRequest("GET", "view-body.html").then(xhr => {
 
 		if (xhr.status == 200) {
-			// Change the body of the current HTML page to be viewBodyHtml and run loadData()
-			document.body.innerHTML = viewBodyHtml;
-			loadData();
-		}
-		else {
-			// Change the HTML of the current document to be loginBodyHtml
-			document.body.innerHTML = loginBodyHtml;
-		}
+			viewBodyHtml = xhr.responseText;
+
+			sendHttpRequest("GET", "login-body.html").then(xhr => {
+				if (xhr.status == 200) {
+					loginBodyHtml = xhr.responseText;
+
+					sendHttpRequest("GET", "controller/session").then(xhr => {
+
+						if (xhr.status == 200) {
+							// Change the body of the current HTML page to be viewBodyHtml and run loadData()
+							document.body.innerHTML = viewBodyHtml;
+							loadData();
+						}
+						else {
+							// Change the HTML of the current document to be loginBodyHtml
+							document.body.innerHTML = loginBodyHtml;
+						}
 
 
+
+					});
+				}
+			});
+
+
+		}
 
 	});
+
+
+
+
+
+
 
 }
 
@@ -64,7 +90,7 @@ function login() {
 		password: document.getElementById("password").value
 	};
 
-	sendHttpRequest("POST", "controller/login", "application/json", credentials).then(xhr => {
+	sendHttpRequest("POST", "controller/session", "application/json", credentials).then(xhr => {
 
 		if (xhr.status == 200) {
 			// Change the body of the current HTML page to be view-body.html which is in the response
@@ -93,7 +119,7 @@ function login() {
 
 function logout() {
 
-	sendHttpRequest("POST", "controller/logout").then(xhr => {
+	sendHttpRequest("DELETE", "controller/session").then(xhr => {
 
 		if (xhr.status == 200) {
 			document.body.innerHTML = loginBodyHtml;
@@ -109,7 +135,7 @@ function logout() {
 
 function loadData() {
 
-	sendHttpRequest("GET", "controller/loaddata").then(xhr => {
+	sendHttpRequest("GET", "controller/data").then(xhr => {
 
 		plan = JSON.parse(xhr.responseText);
 
@@ -159,7 +185,7 @@ function saveData() {
 
 	}
 
-	sendHttpRequest("PUT", "controller/savedata", "application/json", newPlan).then(xhr => {
+	sendHttpRequest("PUT", "controller/data", "application/json", newPlan).then(xhr => {
 
 		if (xhr.status == 405) {
 			document.body.innerHTML = loginBodyHtml;
@@ -187,3 +213,9 @@ function stringToBoolean(string) {
 	}
 
 }
+
+
+// MAIN METHOD
+let viewBodyHtml;
+let loginBodyHtml;
+loadSite();

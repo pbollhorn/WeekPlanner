@@ -40,7 +40,6 @@ public class Helper {
 		// credentials = null;
 
 		String jsonString = Model.loadData(credentials);
-		System.out.println(jsonString);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(jsonString);
