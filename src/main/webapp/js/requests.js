@@ -1,28 +1,59 @@
+// Wrapper function for XMLHttpRequest:
+// if contentType === "application/json" then body is converted to json and sent.
+// if contentType !== undefined then body is sent as is.
+// if contentType === undefined then body is not sent.
+// Return value: The XMLHttpRequest object is returned both onload and onerror.
+// onload: server responded and status is whatever status code the server responded with
+// onerror: something went wrong and server never responded, so status is 0
+function sendHttpRequest(method, url, contentType, body) {
+
+	const promise = new Promise((resolve) => {
+
+		const xhr = new XMLHttpRequest();
+
+		xhr.open(method, url);
+
+		xhr.onload = () => { resolve(xhr); }
+
+		xhr.onerror = () => { resolve(xhr); }
+
+		if (contentType === "application/json") {
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.send(JSON.stringify(body));
+		} else if (contentType !== undefined) {
+			xhr.setRequestHeader("Content-Type", contentType);
+			xhr.send(body);
+		}
+		else if (contentType === undefined) {
+			xhr.send();
+		}
+
+	});
+	return promise;
+}
+
+
+
+
+
 function checkCredentials() {
 
-
-	const xhr = new XMLHttpRequest();
-
-	xhr.responseType = "text";
-
-	xhr.open("POST", "controller/checkcredentials");
-
-	xhr.onload = () => {
+	sendHttpRequest("POST", "controller/checkcredentials").then(xhr => {
 
 		if (xhr.status == 200) {
 			// Change the body of the current HTML page to be view-body.html which is in the response
 			// and run loadData()
-			document.body.innerHTML = xhr.response;
+			document.body.innerHTML = xhr.responseText;
 			loadData();
 		}
 		else {
-			// Change the HTML of the current document to be what is in the response, which is login.html
-			document.body.innerHTML = xhr.response;
-
+			// Change the HTML of the current document to be what is in the response, which is login-body.html
+			document.body.innerHTML = xhr.responseText;
 		}
-	}
 
-	xhr.send();
+
+
+	});
 
 }
 
@@ -36,33 +67,27 @@ function login() {
 		password: document.getElementById("password").value
 	};
 
-	const xhr = new XMLHttpRequest();
-
-
-
-	xhr.responseType = "text";
-
-	xhr.open("POST", "controller/login");
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = () => {
+	sendHttpRequest("POST", "controller/login", "application/json", credentials).then(xhr => {
 
 		if (xhr.status == 200) {
 			// Change the body of the current HTML page to be view-body.html which is in the response
 			// and run loadData()
-			document.body.innerHTML = xhr.response;
+			document.body.innerHTML = xhr.responseText;
 			loadData();
 		}
-		else {
-
+		else if (xhr.status == 401) {
 			const message = document.getElementById("message");
 			message.style.color = "red";
 			message.innerText = "Wrong username or password";
-
 		}
-	}
+		else {
+			const message = document.getElementById("message");
+			message.style.color = "red";
+			message.innerText = "An error occured while attempting to login";
+		}
 
-	xhr.send(JSON.stringify(credentials));
+
+	});
 
 }
 
@@ -71,49 +96,33 @@ function login() {
 
 function logout() {
 
-	const xhr = new XMLHttpRequest();
-	xhr.responseType = "text";
-
-	xhr.open("POST", "controller/logout");
-
-
-	xhr.onload = () => {
+	sendHttpRequest("POST", "controller/logout").then(xhr => {
 
 		if (xhr.status == 200) {
-			document.body.innerHTML = xhr.response;
+			document.body.innerHTML = xhr.responseText;
 		}
-	}
+		else {
+			message.style.color = "red";
+			message.innerText = "An error occured";
+		}
 
-	xhr.send();
+	});
 
 }
-
-
 
 function loadData() {
 
+	sendHttpRequest("GET", "controller/loaddata").then(xhr => {
 
-	const xhr = new XMLHttpRequest();
+		plan = JSON.parse(xhr.responseText);
 
-	xhr.responseType = "json";
-
-	xhr.open("GET", "controller/loaddata");
-
-	xhr.onload = () => {
-
-		plan = xhr.response;
-
-		/////// MAIN FUNCTION ////////////////////////
 		// Build the view and select the first task
 		buildView();
 		selectTask(mainElement.querySelector(".task"));
-		//////////////////////////////////////////////
-	}
 
-	xhr.send();
+	});
 
 }
-
 
 
 // Go trough DOM and create newPlan object
@@ -153,15 +162,9 @@ function saveData() {
 
 	}
 
-
-	// newPlan object is build and now we are ready to send to backend
-	const xhr = new XMLHttpRequest();
-	xhr.open("PUT", "controller/savedata");
-	xhr.setRequestHeader("Content-Type", "application/json");
-	xhr.send(JSON.stringify(newPlan));
+	sendHttpRequest("PUT", "controller/savedata", "application/json", newPlan);
 
 	// GET repsonse code from backend and let user know if save was succesfull or not
-
 
 }
 

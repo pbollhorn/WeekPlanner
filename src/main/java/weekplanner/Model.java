@@ -13,7 +13,6 @@ public class Model {
 
 	public static DataSource connectionPool;
 	
-	
 	public static void init() {
 		
 		try {

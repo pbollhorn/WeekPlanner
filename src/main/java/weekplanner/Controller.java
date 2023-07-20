@@ -2,7 +2,7 @@ package weekplanner;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,14 +33,16 @@ public class Controller extends HttpServlet {
 
 		String requestType = getRequestType(request);
 
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			TimeUnit.SECONDS.sleep(1);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		if ("loaddata".equals(requestType)) {
 			Helper.loadData(request, response);
+		} else {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 
 	}
@@ -49,12 +51,12 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
-		
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+//		try {
+//			TimeUnit.SECONDS.sleep(1);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		if ("login".equals(requestType)) {
 			Helper.login(request, response);
@@ -62,6 +64,8 @@ public class Controller extends HttpServlet {
 			Helper.logout(request, response);
 		} else if ("checkcredentials".equals(requestType)) {
 			Helper.checkCredentials(request, response);
+		} else {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 
 	}
@@ -70,15 +74,17 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
-		
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+//		try {
+//			TimeUnit.SECONDS.sleep(1);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		if ("savedata".equals(requestType)) {
 			Helper.saveData(request, response);
+		} else {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 
 	}

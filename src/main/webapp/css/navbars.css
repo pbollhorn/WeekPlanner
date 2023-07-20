@@ -38,6 +38,10 @@ header {
 	padding-right: 0.3rem;
 }
 
+header button {
+	height: 3.6rem;
+}
+
 footer {
 	position: fixed;
 	bottom: 0;
