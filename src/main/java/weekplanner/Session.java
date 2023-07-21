@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class Authenticator {
+public class Session {
 
 	// Returns Credentials object if Credentials cookie is present, else returns null
 	public static Credentials getCredentialsFromCookie(HttpServletRequest request) {
@@ -47,7 +47,21 @@ public class Authenticator {
 
 	}
 
-	public static void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	// GET session request is received from index.html, because index.html wants to check if a user is logged in or not
+	// Return status code 200 if user is logged in, otherwise status code 401
+	public static void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		if (Session.getCredentialsFromCookie(request) == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+
+	// This is equivalent to login
+	public static void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Read JSON data from the request's input stream
 		BufferedReader reader = request.getReader();
@@ -74,20 +88,20 @@ public class Authenticator {
 		cookie.setMaxAge(60 * 60 * 24 * 365);
 		cookie.setHttpOnly(true);
 		cookie.setSecure(true);
+
 		response.addCookie(cookie);
-		System.out.println("Valid Credentials - Access granted");
 		response.setStatus(HttpServletResponse.SC_OK);
 
 	}
 
-	public static void logout(HttpServletRequest request, HttpServletResponse response) {
+	// This is equivalent to logout
+	public static void delete(HttpServletRequest request, HttpServletResponse response) {
 
 		Cookie cookie = new Cookie("WeekPlannerCredentials", "");
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(0);
 
 		response.addCookie(cookie);
-
 		response.setStatus(HttpServletResponse.SC_OK);
 
 	}

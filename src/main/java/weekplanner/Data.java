@@ -9,22 +9,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class Helper {
+public class Data {
 
-	// checkCredentials request is received from index.html, which is loaded when
-	// user performs a top level GET request,
-	// i.e. when the user types pbollhorn.dk/weekplanner in their browser.
-	public static void checkCredentials(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (Authenticator.getCredentialsFromCookie(request) == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		} else {
-			response.setStatus(HttpServletResponse.SC_OK);
-		}
-	}
+	public static void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-	public static void loadData(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		Credentials credentials = Authenticator.getCredentialsFromCookie(request);
+		Credentials credentials = Session.getCredentialsFromCookie(request);
 		if (credentials == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
@@ -43,9 +32,9 @@ public class Helper {
 
 	}
 
-	public static void saveData(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public static void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		Credentials credentials = Authenticator.getCredentialsFromCookie(request);
+		Credentials credentials = Session.getCredentialsFromCookie(request);
 		if (credentials == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;

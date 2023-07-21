@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 public class Controller extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static int SLEEP_SECONDS = 0;
 
-	private String getRequestType(HttpServletRequest request) {
+	private String getResourceFromURI(HttpServletRequest request) {
 		String URI = request.getRequestURI();
 		return URI.substring(URI.lastIndexOf('/') + 1);
 	}
@@ -30,18 +31,18 @@ public class Controller extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestType = getRequestType(request);
+		String requestedResource = getResourceFromURI(request);
 
 		try {
-			TimeUnit.SECONDS.sleep(5);
+			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if ("data".equals(requestType)) {
-			Helper.loadData(request, response);
-		} else if ("session".equals(requestType)) {
-			Helper.checkCredentials(request, response);
+		if ("data".equals(requestedResource)) {
+			Data.get(request, response);
+		} else if ("session".equals(requestedResource)) {
+			Session.get(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
@@ -50,16 +51,16 @@ public class Controller extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestType = getRequestType(request);
+		String requestedResource = getResourceFromURI(request);
 
 		try {
-			TimeUnit.SECONDS.sleep(5);
+			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if ("session".equals(requestType)) {
-			Authenticator.login(request, response);
+		if ("session".equals(requestedResource)) {
+			Session.post(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
@@ -68,16 +69,16 @@ public class Controller extends HttpServlet {
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestType = getRequestType(request);
+		String requestedResource = getResourceFromURI(request);
 
 		try {
-			TimeUnit.SECONDS.sleep(5);
+			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if ("data".equals(requestType)) {
-			Helper.saveData(request, response);
+		if ("data".equals(requestedResource)) {
+			Data.put(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
@@ -86,16 +87,16 @@ public class Controller extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestType = getRequestType(request);
+		String requestedResource = getResourceFromURI(request);
 
 		try {
-			TimeUnit.SECONDS.sleep(5);
+			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if ("session".equals(requestType)) {
-			Authenticator.logout(request, response);
+		if ("session".equals(requestedResource)) {
+			Session.delete(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
