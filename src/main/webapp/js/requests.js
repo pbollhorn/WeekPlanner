@@ -33,50 +33,50 @@ function sendHttpRequest(method, url, contentType, body) {
 }
 
 
-
 function loadSite() {
-
-
-	let peter = sendHttpRequest("GET", "controller/slow");
-
 
 	sendHttpRequest("GET", "view-body.html").then(xhr => {
 
 		if (xhr.status == 200) {
 			viewBodyHtml = xhr.responseText;
+		} else {
+			viewBodyHtml = "An error occured";
+		}
 
-			sendHttpRequest("GET", "login-body.html").then(xhr => {
-				if (xhr.status == 200) {
-					loginBodyHtml = xhr.responseText;
+		xhr.funkytown = 5;
 
-					sendHttpRequest("GET", "controller/session").then(xhr => {
-
-						if (xhr.status == 200) {
-							// Change the body of the current HTML page to be viewBodyHtml and run loadData()
-							document.body.innerHTML = viewBodyHtml;
-							loadData();
-						}
-						else {
-							// Change the HTML of the current document to be loginBodyHtml
-							document.body.innerHTML = loginBodyHtml;
-						}
+		console.log(xhr);
 
 
+		return sendHttpRequest("GET", "controller/slow");
 
-					});
-				}
-			});
+	}).then(xhr => {
 
+		console.log(xhr);
 
+		return sendHttpRequest("GET", "login-body.html");
+
+	}).then(xhr => {
+
+		if (xhr.status == 200) {
+			loginBodyHtml = xhr.responseText;
+		} else {
+			loginBodyHtml = "An error occured";
+		}
+
+		return sendHttpRequest("GET", "controller/session");
+
+	}).then(xhr => {
+
+		if (xhr.status == 200) {
+			document.body.innerHTML = viewBodyHtml;
+			loadData();
+		}
+		else {
+			document.body.innerHTML = loginBodyHtml;
 		}
 
 	});
-
-
-
-
-
-
 
 }
 
@@ -187,13 +187,20 @@ function saveData() {
 
 	sendHttpRequest("PUT", "controller/data", "application/json", newPlan).then(xhr => {
 
-		if (xhr.status == 405) {
+		if (xhr.status == 200) {
+			const message = document.getElementById("message");
+			message.style.color = "black";
+			message.innerText = "Data saved succesfully";
+		} else if (xhr.status == 401) {
 			document.body.innerHTML = loginBodyHtml;
+		} else {
+			const message = document.getElementById("message");
+			message.style.color = "red";
+			message.innerText = "An error occurred";
 		}
 
 	});
 
-	// GET repsonse code from backend and let user know if save was succesfull or not
 
 }
 

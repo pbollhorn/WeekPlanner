@@ -11,11 +11,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
 public class Authenticator {
 
 	// Returns Credentials object if Credentials cookie is present, else returns null
-	public static Credentials checkForCredentials(HttpServletRequest request) {
+	public static Credentials getCredentialsFromCookie(HttpServletRequest request) {
 
 		String credentials = null;
 
@@ -48,8 +47,7 @@ public class Authenticator {
 
 	}
 
-	public static void loginRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public static void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		// Read JSON data from the request's input stream
 		BufferedReader reader = request.getReader();
@@ -59,34 +57,30 @@ public class Authenticator {
 		Gson gson = new Gson();
 		Credentials credentials = gson.fromJson(jsonObject, Credentials.class);
 
-		// Attempt to read plan from database. Plan will be null if failed.
-		String plan = Model.loadData(credentials);
+		// Check if credentials are in database
+		boolean status = Model.checkCredentials(credentials);
 
-		// If the credentials are valid,
-		// send credentials cookie and set response status to indicated success,
-		// else set response status to indicate failure
-		if (plan != null) {
-
-			System.out.println("Valid Credentials - Access granted");
-			response.setStatus(HttpServletResponse.SC_OK);
-
-			// Create credentials cookie with value "username=password"
-			Cookie cookie = new Cookie("WeekPlannerCredentials", credentials.username + "=" + credentials.password);
-			cookie.setPath(request.getContextPath());
-			cookie.setMaxAge(60 * 60 * 24 * 365);
-			cookie.setHttpOnly(true);
-			cookie.setSecure(true);
-			response.addCookie(cookie);
-
-
-		} else {
+		// If status == false, respond with status code SC_UNAUTHORIZED
+		if (status == false) {
 			System.out.println("Invalid Credentials - Access denied");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 
+		// Since status == true, the credentials are valid,
+		// Create and send credentials cookie with value "username=password"
+		// and set response status to indicated success
+		Cookie cookie = new Cookie("WeekPlannerCredentials", credentials.username + "=" + credentials.password);
+		cookie.setPath(request.getContextPath());
+		cookie.setMaxAge(60 * 60 * 24 * 365);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		response.addCookie(cookie);
+		System.out.println("Valid Credentials - Access granted");
+		response.setStatus(HttpServletResponse.SC_OK);
+
 	}
 
-	public static void logoutRequest(HttpServletRequest request, HttpServletResponse response) {
+	public static void logout(HttpServletRequest request, HttpServletResponse response) {
 
 		Cookie cookie = new Cookie("WeekPlannerCredentials", "");
 		cookie.setPath(request.getContextPath());

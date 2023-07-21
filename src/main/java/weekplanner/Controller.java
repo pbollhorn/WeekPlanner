@@ -28,8 +28,7 @@ public class Controller extends HttpServlet {
 
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
 
@@ -49,8 +48,7 @@ public class Controller extends HttpServlet {
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
 
@@ -59,17 +57,16 @@ public class Controller extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if ("session".equals(requestType)) {
-			Helper.login(request, response);
+			Authenticator.login(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 
 	}
 
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
 
@@ -78,7 +75,7 @@ public class Controller extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if ("data".equals(requestType)) {
 			Helper.saveData(request, response);
 		} else {
@@ -87,8 +84,7 @@ public class Controller extends HttpServlet {
 
 	}
 
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String requestType = getRequestType(request);
 
@@ -97,9 +93,9 @@ public class Controller extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		if ("session".equals(requestType)) {
-			Helper.logout(request, response);
+			Authenticator.logout(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
