@@ -1,4 +1,4 @@
-package weekplanner;
+package controller;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -7,6 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+
+import model.Database;
 
 public class Controller extends HttpServlet {
 
@@ -25,13 +28,13 @@ public class Controller extends HttpServlet {
 		System.out.println("Default encoding for this Java installation: " + Charset.defaultCharset().displayName());
 
 		// Establish connection pool to database
-		Model.init();
+		Database.init();
 
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestedResource = getResourceFromURI(request);
+		String resource = getResourceFromURI(request);
 
 		try {
 			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
@@ -39,9 +42,9 @@ public class Controller extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		if ("data".equals(requestedResource)) {
+		if ("data".equals(resource)) {
 			Data.get(request, response);
-		} else if ("session".equals(requestedResource)) {
+		} else if ("session".equals(resource)) {
 			Session.get(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -51,7 +54,7 @@ public class Controller extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestedResource = getResourceFromURI(request);
+		String resource = getResourceFromURI(request);
 
 		try {
 			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
@@ -59,8 +62,10 @@ public class Controller extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		if ("session".equals(requestedResource)) {
+		if ("session".equals(resource)) {
 			Session.post(request, response);
+		} else if("user".equals(resource)) {
+			User.post(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
@@ -69,7 +74,7 @@ public class Controller extends HttpServlet {
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestedResource = getResourceFromURI(request);
+		String resource = getResourceFromURI(request);
 
 		try {
 			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
@@ -77,7 +82,7 @@ public class Controller extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		if ("data".equals(requestedResource)) {
+		if ("data".equals(resource)) {
 			Data.put(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -87,7 +92,7 @@ public class Controller extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestedResource = getResourceFromURI(request);
+		String resource = getResourceFromURI(request);
 
 		try {
 			TimeUnit.SECONDS.sleep(SLEEP_SECONDS);
@@ -95,12 +100,20 @@ public class Controller extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		if ("session".equals(requestedResource)) {
+		if ("session".equals(resource)) {
 			Session.delete(request, response);
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 
 	}
+	
+	
+	
+	
+	
+
+	
+	
 
 }

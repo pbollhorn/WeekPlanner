@@ -13,7 +13,7 @@
     <!-- Specify ControllerServlet with URL "/controller/*" -->
  	<servlet>  
     	<servlet-name>ControllerServlet</servlet-name>  
-    	<servlet-class>weekplanner.Controller</servlet-class>  
+    	<servlet-class>controller.Controller</servlet-class>  
   	</servlet>  
  	<servlet-mapping>  
     	<servlet-name>ControllerServlet</servlet-name>  

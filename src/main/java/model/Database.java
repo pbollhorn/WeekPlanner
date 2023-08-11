@@ -1,4 +1,4 @@
-package weekplanner;
+package model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import controller.Credentials;
 
-public class Model {
+
+public class Database {
 
 	public static DataSource connectionPool;
 
@@ -22,7 +24,7 @@ public class Model {
 		}
 	}
 
-	public static void databaseCreateTables() {
+	public static void createTables() {
 
 		try {
 			// Establish connection
@@ -146,12 +148,76 @@ public class Model {
 	}
 	
 	
+	// Return true if username is present in database, otherwise failure
+	// HAS TO BE CODED STRONGER, BECAUSE IF AN EXCEPTION OCCURS IT DOES NOT MEAN FALSE (THAT THE USER IS NOT IN THE DATABASE)
+	public static boolean checkUsername(Credentials credentials) {
+
+		try {
+
+			// Establish connection
+			Connection connection = connectionPool.getConnection();
+
+			// Execute prepared statement
+			PreparedStatement statement = connection.prepareStatement("SELECT user_id FROM user_data WHERE username=?");
+			statement.setObject(1, credentials.username);
+			ResultSet result = statement.executeQuery();
+
+			boolean status = false;
+			if (result.next()) {
+				status = true;
+			}
+			
+			// Close connection
+			statement.close();
+			connection.close();
+			
+			return status;
+
+		} catch (Exception e) {
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+			
+			return false;
+		}
+
+	}
 	
+	
+	public static int createUser(Credentials credentials) {
+
+		String jsonString = "{\"lists\":[{\"name\":\"Monday\",\"tasks\":[{\"description\":\"Dette er din test bruger\",\"done\":false}]},{\"name\":\"Tuesday\",\"tasks\":[]},{\"name\":\"Wednesday\",\"tasks\":[]},{\"name\":\"Thursday\",\"tasks\":[]},{\"name\":\"Friday\",\"tasks\":[]},{\"name\":\"Saturday\",\"tasks\":[]},{\"name\":\"Sunday\",\"tasks\":[]},{\"name\":\"Next Week\",\"tasks\":[]},{\"name\":\"Within a Month\",\"tasks\":[]},{\"name\":\"Within a Year\",\"tasks\":[]}]}";
+		
+		try {
+
+			// Establish connection
+			Connection connection = connectionPool.getConnection();
+
+			// Execute prepared statement
+			PreparedStatement statement = connection.prepareStatement("INSERT INTO user_data (username, password, plan) VALUES (?,?,?)");
+			statement.setString(1, credentials.username);
+			statement.setString(2, credentials.password);
+			statement.setObject(3, jsonString, java.sql.Types.OTHER);
+			int rowsAffected = statement.executeUpdate();
+			
+			// Close connection
+			statement.close();
+			connection.close();
+			
+			return rowsAffected;
+
+		} catch (Exception e) {
+			System.out.println("Error in connecting to PostgreSQL server");
+			e.printStackTrace();
+			
+			return -1;
+		}
+
+	}
 	
 	
 	
 	public static void main(String[] args) {
-		databaseCreateTables();
+		createTables();
 	}
 
 }

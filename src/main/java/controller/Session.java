@@ -1,4 +1,4 @@
-package weekplanner;
+package controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import model.Database;
 
 public class Session {
 
@@ -72,12 +74,13 @@ public class Session {
 		Credentials credentials = gson.fromJson(jsonObject, Credentials.class);
 
 		// Check if credentials are in database
-		boolean status = Model.checkCredentials(credentials);
+		boolean status = Database.checkCredentials(credentials);
 
 		// If status == false, respond with status code SC_UNAUTHORIZED
 		if (status == false) {
 			System.out.println("Invalid Credentials - Access denied");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
 		}
 
 		// Since status == true, the credentials are valid,

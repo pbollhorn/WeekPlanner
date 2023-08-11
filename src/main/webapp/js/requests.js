@@ -33,26 +33,26 @@ function sendHttpRequest(method, url, contentType, body) {
 }
 
 
+
+
 function loadSite() {
 
-	sendHttpRequest("GET", "view-body.html").then(xhr => {
+	sendHttpRequest("GET", "trial-body.html").then(xhr => {
+
+		if (xhr.status == 200) {
+			trialBodyHtml = xhr.responseText;
+		} else {
+			trialBodyHtml = "An error occured";
+		}
+
+		return sendHttpRequest("GET", "view-body.html");
+	}).then(xhr => {
 
 		if (xhr.status == 200) {
 			viewBodyHtml = xhr.responseText;
 		} else {
 			viewBodyHtml = "An error occured";
 		}
-
-		xhr.funkytown = 5;
-
-		console.log(xhr);
-
-
-		return sendHttpRequest("GET", "controller/slow");
-
-	}).then(xhr => {
-
-		console.log(xhr);
 
 		return sendHttpRequest("GET", "login-body.html");
 
@@ -137,11 +137,23 @@ function loadData() {
 
 	sendHttpRequest("GET", "controller/data").then(xhr => {
 
-		plan = JSON.parse(xhr.responseText);
+		if (xhr.status == 200) {
 
-		// Build the view and select the first task
-		buildView();
-		selectTask(mainElement.querySelector(".task"));
+			plan = JSON.parse(xhr.responseText);
+
+			// Build the view and select the first task
+			buildView();
+			selectTask(mainElement.querySelector(".task"));
+
+		}
+		else if (xhr.status == 401) {
+			document.body.innerHTML = loginBodyHtml;
+		}
+		else {
+			const message = document.getElementById("message");
+			message.style.color = "red";
+			message.innerText = "An error occurred";
+		}
 
 	});
 
@@ -223,6 +235,7 @@ function stringToBoolean(string) {
 
 
 // MAIN METHOD
+let trialBodyHtml;
 let viewBodyHtml;
 let loginBodyHtml;
 loadSite();

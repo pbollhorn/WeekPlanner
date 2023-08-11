@@ -1,4 +1,4 @@
-package weekplanner;
+package controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import model.Database;
 
 public class Data {
 
@@ -19,7 +21,7 @@ public class Data {
 			return;
 		}
 
-		String jsonString = Model.loadData(credentials);
+		String jsonString = Database.loadData(credentials);
 		if (jsonString == null) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
@@ -46,7 +48,7 @@ public class Data {
 		String jsonString = new Gson().toJson(jsonObject);
 
 		// Save the read in json data to database
-		int rowsAffected = Model.saveData(credentials, jsonString);
+		int rowsAffected = Database.saveData(credentials, jsonString);
 		if (rowsAffected != 1) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;

@@ -1,4 +1,4 @@
-package weekplanner;
+package controller;
 
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
