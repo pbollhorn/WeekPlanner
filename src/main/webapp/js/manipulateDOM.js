@@ -105,12 +105,12 @@ function selectTask(task) {
 		// and make the transparent div (re)appear
 		// The if sentence is only necessary for when starting up the document,
 		// because here selectedTask is undefined
-		if( selectedTask !==undefined ) {
-		selectedTask.querySelector("div").style.borderColor = myTransparent;
-		const transparentDiv = selectedTask.querySelector("div").nextElementSibling;
-		transparentDiv.style.display = "block";
+		if (selectedTask !== undefined) {
+			selectedTask.querySelector("div").style.borderColor = myTransparent;
+			const transparentDiv = selectedTask.querySelector("div").nextElementSibling;
+			transparentDiv.style.display = "block";
 		}
-		
+
 
 		// Put black border around the task and make that the selectedTask
 		task.querySelector("div").style.borderColor = myBlack;
