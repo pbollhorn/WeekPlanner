@@ -44,7 +44,9 @@ header button {
 
 
 .flex-container {
-  display: flex;
+  display: flex; /* Establishes flex container */
+  justify-content: space-between; /* Distributes items evenly */
+  align-items: center; /* Centers items vertically */
 }
 
 

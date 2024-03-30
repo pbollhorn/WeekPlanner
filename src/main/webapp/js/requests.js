@@ -93,20 +93,14 @@ function login() {
 	sendHttpRequest("POST", "controller/session", "application/json", credentials).then(xhr => {
 
 		if (xhr.status == 200) {
-			// Change the body of the current HTML page to be view-body.html which is in the response
-			// and run loadData()
 			document.body.innerHTML = viewBodyHtml;
 			loadData();
 		}
 		else if (xhr.status == 401) {
-			const message = document.getElementById("message");
-			message.style.color = "red";
-			message.innerText = "Wrong username or password";
+			setMessage("Wrong username or password", false);
 		}
 		else {
-			const message = document.getElementById("message");
-			message.style.color = "red";
-			message.innerText = "An error occured";
+			setMessage("Error: An error occured", true);
 		}
 
 
@@ -125,8 +119,7 @@ function logout() {
 			document.body.innerHTML = loginBodyHtml;
 		}
 		else {
-			message.style.color = "red";
-			message.innerText = "An error occured";
+			setMessage("Error: Could not log out", true);
 		}
 
 	});
@@ -150,9 +143,7 @@ function loadData() {
 			document.body.innerHTML = loginBodyHtml;
 		}
 		else {
-			const message = document.getElementById("message");
-			message.style.color = "red";
-			message.innerText = "An error occurred";
+			setMessage("Error: Could not load data", true);
 		}
 
 	});
@@ -200,15 +191,11 @@ function saveData() {
 	sendHttpRequest("PUT", "controller/data", "application/json", newPlan).then(xhr => {
 
 		if (xhr.status == 200) {
-			const message = document.getElementById("message");
-			message.style.color = "black";
-			message.innerText = "Data saved succesfully";
+			setMessage("", false);
 		} else if (xhr.status == 401) {
 			document.body.innerHTML = loginBodyHtml;
 		} else {
-			const message = document.getElementById("message");
-			message.style.color = "red";
-			message.innerText = "An error occurred";
+			setMessage("Error: Could not save data", true);
 		}
 
 	});
@@ -230,6 +217,23 @@ function stringToBoolean(string) {
 	else if (lowerCaseString === "false") {
 		return false;
 	}
+
+}
+
+
+// This function writes to div with id "message"
+// Both viewBodyHtml and loginBodyHtml have such a div
+function setMessage(text, error) {
+
+	const message = document.getElementById("message");
+
+	if (error === true) {
+		message.style.color = "red";
+	} else {
+		message.style.color = "black";
+	}
+
+	message.innerText = text;
 
 }
 

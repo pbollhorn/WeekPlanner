@@ -13,7 +13,7 @@ function deleteTask() {
 
 	// Get array allTasks and find index i of selectedTask in this array
 	const allTasks = Array.from(mainElement.getElementsByClassName("task"));
-	const i = allTasks.indexOf(selectedTask)
+	const i = allTasks.indexOf(selectedTask);
 
 	// Try to find nextTask, either task below, otherwise task above
 	let nextTask = allTasks[i + 1];
@@ -27,6 +27,7 @@ function deleteTask() {
 	if (nextTask !== undefined) {
 		selectedTask.remove();
 		selectTask(nextTask);
+		setMessage("Unsaved changes", false);
 	}
 
 }
@@ -45,6 +46,8 @@ function markTaskDone() {
 		selectedTask.querySelector("div").style.backgroundColor = myYellow;
 	}
 
+	setMessage("Unsaved changes", false);
+
 }
 
 
@@ -54,6 +57,7 @@ function moveTaskUp() {
 
 	if (siblingElement.innerText !== "Monday") {
 		mainElement.insertBefore(selectedTask, siblingElement);
+		setMessage("Unsaved changes", false);
 	}
 
 }
@@ -65,6 +69,7 @@ function moveTaskDown() {
 
 	if (siblingElement !== null) {
 		mainElement.insertBefore(siblingElement, selectedTask);
+		setMessage("Unsaved changes", false);
 	}
 
 }
@@ -75,6 +80,7 @@ function addTask() {
 	let newTask = createTask("", false);
 	selectedTask.insertAdjacentElement("afterend", newTask);
 	selectTask(newTask);
+	setMessage("Unsaved changes", false);
 
 }
 
@@ -96,6 +102,8 @@ function selectTask(task) {
 			const length = inputElement.value.length;
 			inputElement.setSelectionRange(length, length);
 			inputElement.focus();
+			
+			setMessage("Unsaved changes", false);
 		}
 
 	} else {
