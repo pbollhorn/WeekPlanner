@@ -91,7 +91,7 @@ function selectTask(task) {
 			const length = inputElement.value.length;
 			inputElement.setSelectionRange(length, length);
 			inputElement.focus();
-			
+
 			setMessage("Unsaved changes", false);
 		}
 
@@ -126,8 +126,6 @@ function createTask(description, done) {
 	// Create the task which is actually a div element, with two overlapping childs divs inside
 	const task = document.createElement("div");
 	task.className = "task";
-	task.id = "task_" + task_id;
-	task_id++;
 	task.onclick = function fun() { selectTask(this) };
 
 
@@ -166,8 +164,8 @@ function createTask(description, done) {
 }
 
 
-
-function buildView(plan) {
+// Go trough plan object and create DOM
+function buildViewFromPlan(plan) {
 
 	// Set the global variable mainElement to be the <main></main> of viewBodyHtml
 	mainElement = document.querySelector("main");
@@ -187,10 +185,80 @@ function buildView(plan) {
 		}
 
 	}
-	
+
 	// Select the first task
 	selectTask(mainElement.querySelector(".task"));
 
 }
 
+// Go trough DOM and create plan object
+function buildPlanFromView() {
 
+	const plan = {
+		lists: []
+	};
+	let list;
+	let task;
+
+	// Loop through all h1 and div elements (not nested div elements)
+	for (let element = mainElement.querySelector("h1"); element !== null; element = element.nextElementSibling) {
+
+		// If element is a h1 element, then create new list and push it to plan.lists array
+		if (element.tagName.toLowerCase() === "h1") {
+
+			list = {
+				name: element.innerText,
+				tasks: []
+			};
+
+			plan.lists.push(list);
+		}
+
+		// If element is a div element, then create new task and push it to list.tasks array 
+		if (element.tagName.toLowerCase() === "div") {
+
+			task = {
+				description: element.querySelector("input").value,
+				done: stringToBoolean(element.getAttribute("data-done-status"))
+			};
+
+			list.tasks.push(task);
+
+		}
+
+	}
+
+	return plan;
+
+}
+
+// Helper function to convert string to boolean
+function stringToBoolean(string) {
+
+	const lowerCaseString = string.trim().toLowerCase();
+
+	if (lowerCaseString === "true") {
+		return true;
+	}
+	else if (lowerCaseString === "false") {
+		return false;
+	}
+
+}
+
+
+// This function writes to div with id "message"
+// Both viewBodyHtml and loginBodyHtml have such a div
+function setMessage(text, error) {
+
+	const message = document.getElementById("message");
+
+	if (error === true) {
+		message.style.color = "red";
+	} else {
+		message.style.color = "black";
+	}
+
+	message.innerText = text;
+
+}

@@ -33,8 +33,6 @@ function sendHttpRequest(method, url, contentType, body) {
 }
 
 
-
-
 function loadSite() {
 
 	sendHttpRequest("GET", "trial-body.html").then(xhr => {
@@ -81,12 +79,48 @@ function loadSite() {
 
 }
 
+function loadData() {
 
+	sendHttpRequest("GET", "controller/data").then(xhr => {
+
+		if (xhr.status == 200) {
+			const plan = JSON.parse(xhr.responseText);
+			buildViewFromPlan(plan);
+		}
+		else if (xhr.status == 401) {
+			document.body.innerHTML = loginBodyHtml;
+		}
+		else {
+			setMessage("Error: Could not load data", true);
+		}
+
+	});
+
+}
+
+
+function saveData() {
+
+	const plan = buildPlanFromView();
+
+	sendHttpRequest("PUT", "controller/data", "application/json", plan).then(xhr => {
+
+		if (xhr.status == 200) {
+			setMessage("", false);
+		} else if (xhr.status == 401) {
+			document.body.innerHTML = loginBodyHtml;
+		} else {
+			setMessage("Error: Could not save data", true);
+		}
+
+	});
+
+}
 
 
 function login() {
 
-	credentials = {
+	const credentials = {
 		username: document.getElementById("username").value,
 		password: document.getElementById("password").value
 	};
@@ -110,8 +144,6 @@ function login() {
 }
 
 
-
-
 function logout() {
 
 	sendHttpRequest("DELETE", "controller/session").then(xhr => {
@@ -124,113 +156,5 @@ function logout() {
 		}
 
 	});
-
-}
-
-function loadData() {
-
-	sendHttpRequest("GET", "controller/data").then(xhr => {
-
-		if (xhr.status == 200) {
-
-			let plan = JSON.parse(xhr.responseText);
-			buildView(plan);
-
-		}
-		else if (xhr.status == 401) {
-			document.body.innerHTML = loginBodyHtml;
-		}
-		else {
-			setMessage("Error: Could not load data", true);
-		}
-
-	});
-
-}
-
-
-// Go trough DOM and create newPlan object
-function saveData() {
-
-	const newPlan = {
-		lists: []
-	};
-	let list;
-	let task;
-
-	// Loop through all h1 and div elements (not nested div elements)
-	for (let element = mainElement.querySelector("h1"); element !== null; element = element.nextElementSibling) {
-
-		// If element is a h1 element, then create new list and push it to newPlan.lists array
-		if (element.tagName.toLowerCase() === "h1") {
-
-			list = {
-				name: element.innerText,
-				tasks: []
-			};
-
-			newPlan.lists.push(list);
-		}
-
-		// If element is a div element, then create new task and push it to list.tasks array 
-		if (element.tagName.toLowerCase() === "div") {
-
-			task = {
-				description: element.querySelector("input").value,
-				done: stringToBoolean(element.getAttribute("data-done-status"))
-			};
-
-			list.tasks.push(task);
-
-		}
-
-	}
-
-	sendHttpRequest("PUT", "controller/data", "application/json", newPlan).then(xhr => {
-
-		if (xhr.status == 200) {
-			setMessage("", false);
-		} else if (xhr.status == 401) {
-			document.body.innerHTML = loginBodyHtml;
-		} else {
-			setMessage("Error: Could not save data", true);
-		}
-
-	});
-
-
-}
-
-
-
-
-// Helper function to convert string to boolean
-function stringToBoolean(string) {
-
-	const lowerCaseString = string.trim().toLowerCase();
-
-	if (lowerCaseString === "true") {
-		return true;
-	}
-	else if (lowerCaseString === "false") {
-		return false;
-	}
-
-}
-
-
-// This function writes to div with id "message"
-// Both viewBodyHtml and loginBodyHtml have such a div
-function setMessage(text, error) {
-
-	const message = document.getElementById("message");
-
-	if (error === true) {
-		message.style.color = "red";
-	} else {
-		message.style.color = "black";
-	}
-
-	message.innerText = text;
 
 }
