@@ -1,14 +1,3 @@
-let mainElement = document.querySelector("main");
-const myGreen = "rgb(144, 238, 144)";
-const myYellow = "rgb(255,255,153)";
-const myBlack = "rgb(0,0,0)";
-const myTransparent = "rgb(0,0,0,0)";
-let task_id = 0; // Only used for debugging purposes
-let selectedTask;
-
-
-////////// Function declarations //////////////////////////////////////////////
-
 function deleteTask() {
 
 	// Get array allTasks and find index i of selectedTask in this array
@@ -178,8 +167,9 @@ function createTask(description, done) {
 
 
 
-function buildView() {
+function buildView(plan) {
 
+	// Set the global variable mainElement to be the <main></main> of viewBodyHtml
 	mainElement = document.querySelector("main");
 
 	// Loop through lists in plan
@@ -197,6 +187,9 @@ function buildView() {
 		}
 
 	}
+	
+	// Select the first task
+	selectTask(mainElement.querySelector(".task"));
 
 }
 

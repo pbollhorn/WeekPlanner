@@ -46,6 +46,7 @@ function loadSite() {
 		}
 
 		return sendHttpRequest("GET", "view-body.html");
+
 	}).then(xhr => {
 
 		if (xhr.status == 200) {
@@ -132,11 +133,8 @@ function loadData() {
 
 		if (xhr.status == 200) {
 
-			plan = JSON.parse(xhr.responseText);
-
-			// Build the view and select the first task
-			buildView();
-			selectTask(mainElement.querySelector(".task"));
+			let plan = JSON.parse(xhr.responseText);
+			buildView(plan);
 
 		}
 		else if (xhr.status == 401) {
@@ -236,10 +234,3 @@ function setMessage(text, error) {
 	message.innerText = text;
 
 }
-
-
-// MAIN METHOD
-let trialBodyHtml;
-let viewBodyHtml;
-let loginBodyHtml;
-loadSite();
