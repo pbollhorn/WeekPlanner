@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+/* Apple devices have double tap zoom. This should disable it. */
+* {
+	touch-action: manipulation;
+}
+
 body {
 	font-family: Verdana;
 	margin: 0;
@@ -42,15 +47,11 @@ header button {
 	height: 3.6rem;
 }
 
-
 .flex-container {
-  display: flex; /* Establishes flex container */
-  justify-content: space-between; /* Distributes items evenly */
-  align-items: center; /* Centers items vertically */
+	display: flex; /* Establishes flex container */
+	justify-content: space-between; /* Distributes items evenly */
+	align-items: center; /* Centers items vertically */
 }
-
-
-
 
 footer {
 	position: fixed;
