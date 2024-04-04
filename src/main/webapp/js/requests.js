@@ -84,8 +84,8 @@ function loadData() {
 	sendHttpRequest("GET", "controller/data").then(xhr => {
 
 		if (xhr.status == 200) {
-			const plan = JSON.parse(xhr.responseText);
-			buildViewFromPlan(plan);
+			const data = JSON.parse(xhr.responseText);
+			buildViewFromData(data);
 		}
 		else if (xhr.status == 401) {
 			document.body.innerHTML = loginBodyHtml;
@@ -101,9 +101,9 @@ function loadData() {
 
 function saveData() {
 
-	const plan = buildPlanFromView();
+	const data = buildDataFromView();
 
-	sendHttpRequest("PUT", "controller/data", "application/json", plan).then(xhr => {
+	sendHttpRequest("PUT", "controller/data", "application/json", data).then(xhr => {
 
 		if (xhr.status == 200) {
 			setMessage("", false);

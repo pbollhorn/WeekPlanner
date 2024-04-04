@@ -4,15 +4,14 @@ function deleteTask() {
 	const allTasks = Array.from(mainElement.getElementsByClassName("task"));
 	const i = allTasks.indexOf(selectedTask);
 
-	// Try to find nextTask, either task below, otherwise task above
+	// Try to find nextTask, preferentially task below, otherwise task above
 	let nextTask = allTasks[i + 1];
 	if (nextTask === undefined) {
 		nextTask = allTasks[i - 1];
 	}
 
-	// If we havent been able to find a nextTask,
-	// it means there is only one task left,
-	// and we should'nt delete that task
+	// If nextTask is undefined, it means there is only one task left,
+	// and that task should not be deleted.
 	if (nextTask !== undefined) {
 		selectedTask.remove();
 		selectTask(nextTask);
@@ -43,8 +42,9 @@ function markTaskDone() {
 function moveTaskUp() {
 
 	const siblingElement = selectedTask.previousElementSibling;
+	const firstH1Element = mainElement.querySelector("h1");
 
-	if (siblingElement.innerText !== "Monday") {
+	if (siblingElement !== firstH1Element) {
 		mainElement.insertBefore(selectedTask, siblingElement);
 		setMessage("Unsaved changes", false);
 	}
@@ -74,15 +74,13 @@ function addTask() {
 }
 
 
-
-
 function selectTask(task) {
 
 	// If selectedTask is undefined, which is only when site is just loaded (or reloaded)
 	if (selectedTask === undefined) {
 
 		// Make task the selectedTask:
-		// - Put black border around the most backward div
+		// - Put black border around back div
 		selectedTask = task;
 		selectedTask.querySelector("div").style.borderColor = myBlack;
 
@@ -93,13 +91,13 @@ function selectTask(task) {
 	if (task !== selectedTask) {
 
 		// Unselect current selectedTask:
-		// - Put transparent border around most backward div
-		// - Make most forward div reappear
+		// - Put transparent border around back div
+		// - Make front div reappear
 		selectedTask.querySelector("div").style.borderColor = myTransparent;
 		selectedTask.querySelector("div").nextElementSibling.style.display = "block";
 
 		// Make task the selectedTask:
-		// - Put black border around the most backward div
+		// - Put black border around back div
 		selectedTask = task;
 		selectedTask.querySelector("div").style.borderColor = myBlack;
 
@@ -111,11 +109,12 @@ function selectTask(task) {
 	if (task === selectedTask) {
 
 		const inputElement = selectedTask.querySelector("input");
-		
+
 		// If inputElement does not already have focus
+		// (Somehow clicking a button does not make inputElement loose focus)
 		if (inputElement !== document.activeElement) {
 
-			// Make the most forward div temporarily disappear
+			// Make front div temporarily disappear
 			selectedTask.querySelector("div").nextElementSibling.style.display = "none";
 
 			// Sets cursor in inputElement at the end of the text
@@ -126,11 +125,6 @@ function selectTask(task) {
 			inputElement.focus();
 
 		}
-		
-		// (This is necessary to have outside above if-sentence,
-		// because clicking any buttons, e.g. save button, somehow does
-		// not make inputElement loose focus)
-		setMessage("Unsaved changes", false);
 
 		return;
 
@@ -152,7 +146,7 @@ function createTask(description, done) {
 	// Create the two child divs on top of each other
 	task.innerHTML = "<div><input type='text' value='" + description + "'></div><div></div>";
 
-	// Set background color of most backward div depending on if the task is done or not
+	// Set background color of back div depending on if task is done or not
 	if (done === true) {
 		task.setAttribute("data-done-status", "true");
 		task.querySelector("div").style.backgroundColor = myGreen;
@@ -161,6 +155,13 @@ function createTask(description, done) {
 		task.setAttribute("data-done-status", "false");
 		task.querySelector("div").style.backgroundColor = myYellow;
 	}
+
+
+	// NB: oninput event fires everytime user types a character in inputElement
+	// (perhaps a bit wasteful)
+	task.querySelector("input").oninput = function fun() {
+		setMessage("Unsaved changes", false);
+	};
 
 
 	// IMPORTANT:
@@ -184,14 +185,14 @@ function createTask(description, done) {
 }
 
 
-// Go trough plan object and create DOM
-function buildViewFromPlan(plan) {
+// Go trough data object and create DOM
+function buildViewFromData(data) {
 
 	// Set the global variable mainElement to be the <main></main> of viewBodyHtml
 	mainElement = document.querySelector("main");
 
-	// Loop through lists in plan
-	for (const list of plan.lists) {
+	// Loop through lists in data
+	for (const list of data.lists) {
 
 		// Write name of list in h1 element
 		const h1Element = document.createElement("h1");
@@ -211,10 +212,10 @@ function buildViewFromPlan(plan) {
 
 }
 
-// Go trough DOM and create plan object
-function buildPlanFromView() {
+// Go trough DOM and create data object
+function buildDataFromView() {
 
-	const plan = {
+	const data = {
 		lists: []
 	};
 	let list;
@@ -223,7 +224,7 @@ function buildPlanFromView() {
 	// Loop through all h1 and div elements (not nested div elements)
 	for (let element = mainElement.querySelector("h1"); element !== null; element = element.nextElementSibling) {
 
-		// If element is a h1 element, then create new list and push it to plan.lists array
+		// If element is a h1 element, then create new list and push it to data.lists array
 		if (element.tagName.toLowerCase() === "h1") {
 
 			list = {
@@ -231,7 +232,7 @@ function buildPlanFromView() {
 				tasks: []
 			};
 
-			plan.lists.push(list);
+			data.lists.push(list);
 		}
 
 		// If element is a div element, then create new task and push it to list.tasks array 
@@ -248,7 +249,7 @@ function buildPlanFromView() {
 
 	}
 
-	return plan;
+	return data;
 
 }
 

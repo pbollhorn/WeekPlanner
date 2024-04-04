@@ -1,12 +1,11 @@
 @charset "UTF-8";
 /* This css file styles the special task div,
-which has 2 child divs overlapping each other.
-The reason for this is to prevent the keyboard
-on mobile devices popping up, when it is not desired. */
+which has 2 child divs overlapping each other:
+- The back div, which has a background color, border color and transparent input element
+- The front div, which is transparent and sits in front of the back div
 
-/* .task is a div that has 2 child divs overlapping each other:
-.background: Has a background color and a transparent input box
-.transparent: Is a transparent overlay to protect transparent input box from clicks*/
+The front div protects the input element in the back div,
+and thereby prevents the keyboard on mobile devices popping up when not desired. */
 .task {
 	position: relative;
 	height: 2.0rem;
@@ -14,7 +13,7 @@ on mobile devices popping up, when it is not desired. */
 }
 
 /* div with height of 1.8rem and some border and padding,
-so transparent input box with height 1.0rem
+so transparent input element with height 1.0rem
 will be approximately vertically centered */
 .task div {
 	position: absolute;
@@ -29,7 +28,7 @@ will be approximately vertically centered */
 	width: 100%;
 }
 
-/* transparent input box with font size of 1.0rem*/
+/* transparent input element with font size of 1.0rem*/
 .task input {
 	outline: none;
 	margin: 0;

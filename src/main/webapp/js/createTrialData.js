@@ -63,10 +63,10 @@ function createTrialData() {
 	};
 
 
-	const plan = {
+	const data = {
 		lists: [monday, tuesday, wednesday, thursday, friday, saturday, sunday, week, month, year, shopping]
 	};
-	
-	console.log(JSON.stringify(plan));
+
+	console.log(JSON.stringify(data));
 
 }
