@@ -78,43 +78,63 @@ function addTask() {
 
 function selectTask(task) {
 
-	if (task === selectedTask) {
+	// If selectedTask is undefined, which is only when site is just loaded (or reloaded)
+	if (selectedTask === undefined) {
 
-		const inputElement = task.querySelector("input");
-
-		if (inputElement !== document.activeElement) {
-
-			// Make the transparent div temporarily disappear
-			const transparentDiv = task.querySelector("div").nextElementSibling;
-			transparentDiv.style.display = "none";
-
-			const length = inputElement.value.length;
-			inputElement.setSelectionRange(length, length);
-			inputElement.focus();
-
-			setMessage("Unsaved changes", false);
-		}
-
-	} else {
-
-
-		// Put transparent border around previous task element, i.e. unselect it
-		// and make the transparent div (re)appear
-		// The if sentence is only necessary for when starting up the document,
-		// because here selectedTask is undefined
-		if (selectedTask !== undefined) {
-			selectedTask.querySelector("div").style.borderColor = myTransparent;
-			const transparentDiv = selectedTask.querySelector("div").nextElementSibling;
-			transparentDiv.style.display = "block";
-		}
-
-
-		// Put black border around the task and make that the selectedTask
-		task.querySelector("div").style.borderColor = myBlack;
+		// Make task the selectedTask:
+		// - Put black border around the most backward div
 		selectedTask = task;
+		selectedTask.querySelector("div").style.borderColor = myBlack;
+
+		return;
+	}
+
+	// If task is not already selectedTask
+	if (task !== selectedTask) {
+
+		// Unselect current selectedTask:
+		// - Put transparent border around most backward div
+		// - Make most forward div reappear
+		selectedTask.querySelector("div").style.borderColor = myTransparent;
+		selectedTask.querySelector("div").nextElementSibling.style.display = "block";
+
+		// Make task the selectedTask:
+		// - Put black border around the most backward div
+		selectedTask = task;
+		selectedTask.querySelector("div").style.borderColor = myBlack;
+
+		return;
 
 	}
 
+	// If task is already selectedTask
+	if (task === selectedTask) {
+
+		const inputElement = selectedTask.querySelector("input");
+		
+		// If inputElement does not already have focus
+		if (inputElement !== document.activeElement) {
+
+			// Make the most forward div temporarily disappear
+			selectedTask.querySelector("div").nextElementSibling.style.display = "none";
+
+			// Sets cursor in inputElement at the end of the text
+			const length = inputElement.value.length;
+			inputElement.setSelectionRange(length, length);
+
+			// Give inputElement focus
+			inputElement.focus();
+
+		}
+		
+		// (This is necessary to have outside above if-sentence,
+		// because clicking any buttons, e.g. save button, somehow does
+		// not make inputElement loose focus)
+		setMessage("Unsaved changes", false);
+
+		return;
+
+	}
 
 }
 
