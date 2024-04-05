@@ -76,25 +76,17 @@ function addTask() {
 
 function selectTask(task) {
 
-	// If selectedTask is undefined, which is only when site is just loaded (or reloaded)
-	if (selectedTask === undefined) {
-
-		// Make task the selectedTask:
-		// - Put black border around back div
-		selectedTask = task;
-		selectedTask.querySelector("div").style.borderColor = myBlack;
-
-		return;
-	}
-
 	// If task is not already selectedTask
 	if (task !== selectedTask) {
 
 		// Unselect current selectedTask:
 		// - Put transparent border around back div
 		// - Make front div reappear
-		selectedTask.querySelector("div").style.borderColor = myTransparent;
-		selectedTask.querySelector("div").nextElementSibling.style.display = "block";
+		// (Unless selectedTask is undefined, which it is when site is just loaded or reloaded)
+		if (selectedTask !== undefined) {
+			selectedTask.querySelector("div").style.borderColor = myTransparent;
+			selectedTask.querySelector("div").nextElementSibling.style.display = "block";
+		}
 
 		// Make task the selectedTask:
 		// - Put black border around back div
@@ -108,23 +100,17 @@ function selectTask(task) {
 	// If task is already selectedTask
 	if (task === selectedTask) {
 
+		// Make front div temporarily disappear
+		selectedTask.querySelector("div").nextElementSibling.style.display = "none";
+
+		// Sets cursor in inputElement at the end of the text,
+		// because the end of the text is hard to reach on mobile devices
 		const inputElement = selectedTask.querySelector("input");
+		const length = inputElement.value.length;
+		inputElement.setSelectionRange(length, length);
 
-		// If inputElement does not already have focus
-		// (Somehow clicking a button does not make inputElement loose focus)
-		if (inputElement !== document.activeElement) {
-
-			// Make front div temporarily disappear
-			selectedTask.querySelector("div").nextElementSibling.style.display = "none";
-
-			// Sets cursor in inputElement at the end of the text
-			const length = inputElement.value.length;
-			inputElement.setSelectionRange(length, length);
-
-			// Give inputElement focus
-			inputElement.focus();
-
-		}
+		// Give inputElement focus
+		inputElement.focus();
 
 		return;
 
@@ -133,37 +119,44 @@ function selectTask(task) {
 }
 
 
-
-// Create the special task div
+// Create the special task div, with two overlapping childs divs inside (back div and front div)
 function createTask(description, doneStatus) {
 
-	// Create the task which is actually a div element, with two overlapping childs divs inside
+	// Create the task which is actually a div element
 	const task = document.createElement("div");
 	task.className = "task";
-	task.onclick = function() { selectTask(this) };
 
-	// Create the two child divs on top of each other
-	task.innerHTML = "<div><input type='text' value='" + description + "'></div><div></div>";
+	// The back div
+	const backDiv = document.createElement("div");
+	const inputElement = document.createElement("input");
+	inputElement.type = "text";
+	inputElement.value = description;
+	backDiv.appendChild(inputElement);
+	task.appendChild(backDiv);
 
-	// Set background color of back div depending on doneStatus
+	// The front div
+	const frontDiv = document.createElement("div");
+	frontDiv.onclick = function() { selectTask(this.parentElement) };
+	task.appendChild(frontDiv);
+
+	// Set custom "data-done-status" attribute for task
+	// and background color for back div depending on doneStatus
 	if (doneStatus === true) {
 		task.setAttribute("data-done-status", "true");
-		task.querySelector("div").style.backgroundColor = myGreen;
+		backDiv.style.backgroundColor = myGreen;
 	}
 	else {
 		task.setAttribute("data-done-status", "false");
-		task.querySelector("div").style.backgroundColor = myYellow;
+		backDiv.style.backgroundColor = myYellow;
 	}
 
-	// Get inputElement, so we can set events for it
-	const inputElement = task.querySelector("input");
 
-	// oninput event:
+	// oninput event for inputElement:
 	// Fires everytime user types character.
 	// This is necessary to set unsaved changes to true.
 	inputElement.oninput = function() { setUnsavedChangesToTrue() };
 
-	// onkeydown event:
+	// onkeydown event for inputElement:
 	// To detect if user presses Enter, and then blur inputElement.
 	// This is in order for desktop devices to have
 	// same behavior as mobile devices when Enter is pressed. 
@@ -171,7 +164,7 @@ function createTask(description, doneStatus) {
 		if (event.key === "Enter") { this.blur(); }
 	};
 
-	// onfocus event:
+	// onfocus event for inputElement:
 	// This is important for mobile devices.
 	// Because pressing Enter om mobile devices will give the input element below focus.
 	// This blurs inputElement if it got focus that way.
@@ -185,7 +178,7 @@ function createTask(description, doneStatus) {
 }
 
 
-// Go trough data object and create DOM
+// Go trough data object and build DOM
 function buildViewFromData(data) {
 
 	// Set the global variable mainElement to be the <main></main> of viewBodyHtml
@@ -212,7 +205,7 @@ function buildViewFromData(data) {
 
 }
 
-// Go trough DOM and create data object
+// Go trough DOM and build data object
 function buildDataFromView() {
 
 	const data = {
