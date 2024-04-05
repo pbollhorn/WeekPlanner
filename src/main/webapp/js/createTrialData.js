@@ -6,60 +6,60 @@ function createTrialData() {
 
 	const monday = {
 		name: "Monday",
-		tasks: [{ description: "Wake up", done: true },
-		{ description: "Drink a cup of Java ☕", done: true },
-		{ description: "Code Java", done: false }]
+		tasks: [{ description: "Wake up", doneStatus: true },
+		{ description: "Drink a cup of Java ☕", doneStatus: true },
+		{ description: "Code Java", doneStatus: false }]
 	};
 
 	const tuesday = {
 		name: "Tuesday",
-		tasks: [{ description: "t is for tuesday", done: false }]
+		tasks: [{ description: "t is for tuesday", doneStatus: false }]
 	};
 
 	const wednesday = {
 		name: "Wednesday",
-		tasks: [{ description: "w is for wednesday", done: false }]
+		tasks: [{ description: "w is for wednesday", doneStatus: false }]
 	};
 
 	const thursday = {
 		name: "Thursday",
-		tasks: [{ description: "t is also for thursday", done: false }]
+		tasks: [{ description: "t is also for thursday", doneStatus: false }]
 	};
 
 	const friday = {
 		name: "Friday",
-		tasks: [{ description: "abcdefghijklmnopqrstuvxyzæøå", done: false }]
+		tasks: [{ description: "abcdefghijklmnopqrstuvxyzæøå", doneStatus: false }]
 	};
 
 	const saturday = {
 		name: "Saturday",
-		tasks: [{ description: "ABCDEFGHIJKLMNOPQRSTUVXYZÆØÅ", done: false }]
+		tasks: [{ description: "ABCDEFGHIJKLMNOPQRSTUVXYZÆØÅ", doneStatus: false }]
 	};
 
 	const sunday = {
 		name: "Sunday",
-		tasks: [{ description: 'That&apos;s my fun day', done: false },
-		{ description: "My I don&apos;t have to run day", done: false }]
+		tasks: [{ description: 'That&apos;s my fun day', doneStatus: false },
+		{ description: "My I don&apos;t have to run day", doneStatus: false }]
 	};
 
 	const week = {
 		name: "Next Week",
-		tasks: [{ description: "stuff to do next week", done: false }]
+		tasks: [{ description: "stuff to do next week", doneStatus: false }]
 	};
 
 	const month = {
 		name: "Within a Month",
-		tasks: [{ description: "Shower day", done: false }]
+		tasks: [{ description: "Shower day", doneStatus: false }]
 	};
 
 	const year = {
 		name: "Within a Year",
-		tasks: [{ description: "stuff to do this year", done: false }]
+		tasks: [{ description: "stuff to do this year", doneStatus: false }]
 	};
 
 	const shopping = {
 		name: "Shopping",
-		tasks: [{ description: "Stuff to buy", done: false }]
+		tasks: [{ description: "Stuff to buy", doneStatus: false }]
 	};
 
 

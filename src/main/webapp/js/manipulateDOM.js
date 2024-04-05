@@ -201,7 +201,7 @@ function buildViewFromData(data) {
 
 		// Loop through tasks in list
 		for (const task of list.tasks) {
-			const taskElement = createTask(task.description, task.done);
+			const taskElement = createTask(task.description, task.doneStatus);
 			mainElement.appendChild(taskElement);
 		}
 
@@ -239,7 +239,7 @@ function buildDataFromView() {
 
 			const task = {
 				description: element.querySelector("input").value,
-				done: stringToBoolean(element.getAttribute("data-done-status"))
+				doneStatus: stringToBoolean(element.getAttribute("data-done-status"))
 			};
 
 			list.tasks.push(task);
