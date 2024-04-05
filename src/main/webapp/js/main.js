@@ -1,14 +1,14 @@
 /**
- *	main.js
- *	All global variables should be put in this file
+ *	This file is the entry point for the JavaScript code.
+ *	This file is the only place where global variables are allowed.
  */
-
 
 // From manipulateDOM.js
 const myGreen = "rgb(144, 238, 144)";
 const myYellow = "rgb(255,255,153)";
 const myBlack = "rgb(0,0,0)";
 const myTransparent = "rgb(0,0,0,0)";
+let unsavedChanges = false;
 let selectedTask;
 let mainElement;
 

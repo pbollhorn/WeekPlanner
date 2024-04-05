@@ -15,7 +15,7 @@ function deleteTask() {
 	if (nextTask !== undefined) {
 		selectedTask.remove();
 		selectTask(nextTask);
-		setMessage("Unsaved changes", false);
+		setUnsavedChangesToTrue();
 	}
 
 }
@@ -23,9 +23,9 @@ function deleteTask() {
 
 function markTaskDone() {
 
-	const doneStatus = selectedTask.getAttribute("data-done-status");
+	const doneStatus = stringToBoolean(selectedTask.getAttribute("data-done-status"));
 
-	if (doneStatus === "false") {
+	if (doneStatus === false) {
 		selectedTask.setAttribute("data-done-status", "true");
 		selectedTask.querySelector("div").style.backgroundColor = myGreen;
 	}
@@ -34,7 +34,7 @@ function markTaskDone() {
 		selectedTask.querySelector("div").style.backgroundColor = myYellow;
 	}
 
-	setMessage("Unsaved changes", false);
+	setUnsavedChangesToTrue();
 
 }
 
@@ -46,7 +46,7 @@ function moveTaskUp() {
 
 	if (siblingElement !== firstH1Element) {
 		mainElement.insertBefore(selectedTask, siblingElement);
-		setMessage("Unsaved changes", false);
+		setUnsavedChangesToTrue();
 	}
 
 }
@@ -58,7 +58,7 @@ function moveTaskDown() {
 
 	if (siblingElement !== null) {
 		mainElement.insertBefore(siblingElement, selectedTask);
-		setMessage("Unsaved changes", false);
+		setUnsavedChangesToTrue();
 	}
 
 }
@@ -69,7 +69,7 @@ function addTask() {
 	let newTask = createTask("", false);
 	selectedTask.insertAdjacentElement("afterend", newTask);
 	selectTask(newTask);
-	setMessage("Unsaved changes", false);
+	setUnsavedChangesToTrue();
 
 }
 
@@ -135,19 +135,18 @@ function selectTask(task) {
 
 
 // Create the special task div
-function createTask(description, done) {
+function createTask(description, doneStatus) {
 
 	// Create the task which is actually a div element, with two overlapping childs divs inside
 	const task = document.createElement("div");
 	task.className = "task";
-	task.onclick = function fun() { selectTask(this) };
-
+	task.onclick = function() { selectTask(this) };
 
 	// Create the two child divs on top of each other
 	task.innerHTML = "<div><input type='text' value='" + description + "'></div><div></div>";
 
-	// Set background color of back div depending on if task is done or not
-	if (done === true) {
+	// Set background color of back div depending on doneStatus
+	if (doneStatus === true) {
 		task.setAttribute("data-done-status", "true");
 		task.querySelector("div").style.backgroundColor = myGreen;
 	}
@@ -156,30 +155,31 @@ function createTask(description, done) {
 		task.querySelector("div").style.backgroundColor = myYellow;
 	}
 
+	// Get inputElement, so we can set events for it
+	const inputElement = task.querySelector("input");
 
-	// NB: oninput event fires everytime user types a character in inputElement
-	// (perhaps a bit wasteful)
-	task.querySelector("input").oninput = function fun() {
-		setMessage("Unsaved changes", false);
-	};
+	// oninput event:
+	// Fires everytime user types character.
+	// This is necessary to set unsaved changes to true.
+	inputElement.oninput = function() { setUnsavedChangesToTrue() };
 
-
-	// IMPORTANT:
-	// onkeydown event: If user presses Enter, then input element should be blurred
-	task.querySelector("input").onkeydown = function fun(event) {
+	// onkeydown event:
+	// To detect if user presses Enter, and then blur inputElement.
+	// This is in order for desktop devices to have
+	// same behavior as mobile devices when Enter is pressed. 
+	inputElement.onkeydown = function(event) {
 		if (event.key === "Enter") { this.blur(); }
 	};
 
-	// IMPORTANT:
-	// onfocus event: If input elements get focus when its not suppose to,
-	// its because the user pressing Enter has forced it,
-	// and therefore we blur it
-	task.querySelector("input").onfocus = function fun() {
+	// onfocus event:
+	// This is important for mobile devices.
+	// Because pressing Enter om mobile devices will give the input element below focus.
+	// This blurs inputElement if it got focus that way.
+	inputElement.onfocus = function() {
 		if (this !== selectedTask.querySelector("input")) { this.blur(); }
 	};
 
 
-	// Return the task
 	return task;
 
 }
@@ -219,7 +219,6 @@ function buildDataFromView() {
 		lists: []
 	};
 	let list;
-	let task;
 
 	// Loop through all h1 and div elements (not nested div elements)
 	for (let element = mainElement.querySelector("h1"); element !== null; element = element.nextElementSibling) {
@@ -238,7 +237,7 @@ function buildDataFromView() {
 		// If element is a div element, then create new task and push it to list.tasks array 
 		if (element.tagName.toLowerCase() === "div") {
 
-			task = {
+			const task = {
 				description: element.querySelector("input").value,
 				done: stringToBoolean(element.getAttribute("data-done-status"))
 			};
@@ -282,4 +281,14 @@ function setMessage(text, error) {
 
 	message.innerText = text;
 
+}
+
+// Set unsavedChanges to true and set message,
+// but only if unsavedChanges is not already true
+function setUnsavedChangesToTrue() {
+
+	if (unsavedChanges === false) {
+		unsavedChanges = true;
+		setMessage("Unsaved changes", false);
+	}
 }

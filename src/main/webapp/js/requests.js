@@ -1,20 +1,17 @@
 // Wrapper function for XMLHttpRequest:
-// if contentType === "application/json" then body is converted to json and sent.
-// if contentType !== undefined then body is sent as is.
-// if contentType === undefined then body is not sent.
+// if contentType is "application/json" then body is converted to json and sent.
+// if contentType is something else then body is sent as is.
+// if contentType is undefined then body is not sent.
 // Return value: The XMLHttpRequest object is returned both onload and onerror.
-// onload: server responded and status is whatever status code the server responded with
-// onerror: something went wrong and server never responded, so status is 0
+// onload: server responded and status is whatever status code the server responded with.
+// onerror: something went wrong and server never responded so status is 0.
 function sendHttpRequest(method, url, contentType, body) {
 
 	const promise = new Promise((resolve) => {
 
 		const xhr = new XMLHttpRequest();
-
 		xhr.open(method, url);
-
 		xhr.onload = () => { resolve(xhr); }
-
 		xhr.onerror = () => { resolve(xhr); }
 
 		if (contentType === "application/json") {
@@ -34,6 +31,19 @@ function sendHttpRequest(method, url, contentType, body) {
 
 
 function loadSite() {
+
+
+	// If any unsaved changes,
+	// then show warning message to user before reloading or leaving page
+	window.addEventListener("beforeunload", function(event) {
+		if (unsavedChanges) {
+			event.preventDefault();
+			event.returnValue = "";
+		}
+	});
+
+
+
 
 	sendHttpRequest("GET", "trial-body.html").then(xhr => {
 
@@ -83,6 +93,9 @@ function loadData() {
 
 	sendHttpRequest("GET", "controller/data").then(xhr => {
 
+		unsavedChanges = false;
+		setMessage("", false);
+
 		if (xhr.status == 200) {
 			const data = JSON.parse(xhr.responseText);
 			buildViewFromData(data);
@@ -106,6 +119,7 @@ function saveData() {
 	sendHttpRequest("PUT", "controller/data", "application/json", data).then(xhr => {
 
 		if (xhr.status == 200) {
+			unsavedChanges = false;
 			setMessage("", false);
 		} else if (xhr.status == 401) {
 			document.body.innerHTML = loginBodyHtml;
@@ -145,6 +159,17 @@ function login() {
 
 
 function logout() {
+
+	// If any unsaved changes,
+	// then show warning message to user before logging out
+	if (unsavedChanges) {
+
+		const answer = window.confirm("You have unsaved changes.\nAre you sure you want to logout?");
+		if (answer === false) {
+			return;
+		}
+
+	}
 
 	sendHttpRequest("DELETE", "controller/session").then(xhr => {
 
