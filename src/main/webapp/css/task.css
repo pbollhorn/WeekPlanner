@@ -5,7 +5,7 @@ which has 2 child divs overlapping each other:
 - The front div, which is transparent and sits in front of the back div
 
 The front div protects the input element in the back div,
-and thereby prevents the keyboard on mobile devices popping up when not desired. */
+and thereby prevents the virtual keyboard on mobile devices popping up when not desired. */
 .task {
 	position: relative;
 	height: 2.0rem;

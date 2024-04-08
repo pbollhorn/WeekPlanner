@@ -32,7 +32,6 @@ function sendHttpRequest(method, url, contentType, body) {
 
 function loadSite() {
 
-
 	// If any unsaved changes,
 	// then show warning message to user before reloading or leaving page
 	window.addEventListener("beforeunload", function(event) {
@@ -43,50 +42,46 @@ function loadSite() {
 	});
 
 
-
-
+	// Request HTML assets one by one
 	sendHttpRequest("GET", "trial-body.html").then(xhr => {
 
-		if (xhr.status == 200) {
-			trialBodyHtml = xhr.responseText;
-		} else {
-			trialBodyHtml = "An error occured";
-		}
+		if (xhr.status === 200) { trialBodyHtml = xhr.responseText; }
 
 		return sendHttpRequest("GET", "view-body.html");
 
 	}).then(xhr => {
 
-		if (xhr.status == 200) {
-			viewBodyHtml = xhr.responseText;
-		} else {
-			viewBodyHtml = "An error occured";
-		}
+		if (xhr.status === 200) { viewBodyHtml = xhr.responseText; }
 
 		return sendHttpRequest("GET", "login-body.html");
 
 	}).then(xhr => {
 
-		if (xhr.status == 200) {
-			loginBodyHtml = xhr.responseText;
-		} else {
-			loginBodyHtml = "An error occured";
-		}
+		if (xhr.status === 200) { loginBodyHtml = xhr.responseText; }
 
-		return sendHttpRequest("GET", "controller/session");
+		// If all requests for HTML assets were succesful, then continue loading site
+		// else display error message
+		if (trialBodyHtml !== undefined && viewBodyHtml !== undefined && loginBodyHtml !== undefined) {
 
-	}).then(xhr => {
+			sendHttpRequest("GET", "controller/session").then(xhr => {
 
-		if (xhr.status == 200) {
-			document.body.innerHTML = viewBodyHtml;
-			loadData();
+				if (xhr.status === 200) {
+					document.body.innerHTML = viewBodyHtml;
+					loadData();
+				}
+				else {
+					document.body.innerHTML = loginBodyHtml;
+				}
+
+			});
+
 		}
 		else {
-			document.body.innerHTML = loginBodyHtml;
+			document.body.innerHTML = "<div id='message'></div>";
+			setMessage("Error: Error loading site", true);
 		}
 
 	});
-
 }
 
 function loadData() {
@@ -96,11 +91,11 @@ function loadData() {
 		unsavedChanges = false;
 		setMessage("", false);
 
-		if (xhr.status == 200) {
+		if (xhr.status === 200) {
 			const data = JSON.parse(xhr.responseText);
 			buildViewFromData(data);
 		}
-		else if (xhr.status == 401) {
+		else if (xhr.status === 401) {
 			document.body.innerHTML = loginBodyHtml;
 		}
 		else {
@@ -118,10 +113,11 @@ function saveData() {
 
 	sendHttpRequest("PUT", "controller/data", "application/json", data).then(xhr => {
 
-		if (xhr.status == 200) {
+		if (xhr.status === 200) {
 			unsavedChanges = false;
 			setMessage("", false);
-		} else if (xhr.status == 401) {
+		} else if (xhr.status === 401) {
+			unsavedChanges = false;
 			document.body.innerHTML = loginBodyHtml;
 		} else {
 			setMessage("Error: Could not save data", true);
@@ -141,11 +137,11 @@ function login() {
 
 	sendHttpRequest("POST", "controller/session", "application/json", credentials).then(xhr => {
 
-		if (xhr.status == 200) {
+		if (xhr.status === 200) {
 			document.body.innerHTML = viewBodyHtml;
 			loadData();
 		}
-		else if (xhr.status == 401) {
+		else if (xhr.status === 401) {
 			setMessage("Wrong username or password", false);
 		}
 		else {
@@ -173,7 +169,8 @@ function logout() {
 
 	sendHttpRequest("DELETE", "controller/session").then(xhr => {
 
-		if (xhr.status == 200) {
+		if (xhr.status === 200) {
+			unsavedChanges = false;
 			document.body.innerHTML = loginBodyHtml;
 		}
 		else {

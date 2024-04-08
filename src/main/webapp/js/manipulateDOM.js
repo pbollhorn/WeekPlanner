@@ -74,6 +74,12 @@ function addTask() {
 }
 
 
+// This function fires onclick of transparant front div.
+// First click:
+// - Put black border around task
+// Second click:
+// - Make front div temporarily disappear, so it is not clickable
+// - Give input element focus
 function selectTask(task) {
 
 	// If task is not already selectedTask
@@ -136,7 +142,7 @@ function createTask(description, doneStatus) {
 
 	// The front div
 	const frontDiv = document.createElement("div");
-	frontDiv.onclick = function() { selectTask(this.parentElement) };
+	frontDiv.onclick = function() { console.log("onclick"); selectTask(this.parentElement) };
 	task.appendChild(frontDiv);
 
 	// Set custom "data-done-status" attribute for task
@@ -154,14 +160,14 @@ function createTask(description, doneStatus) {
 	// oninput event for inputElement:
 	// Fires everytime user types character.
 	// This is necessary to set unsaved changes to true.
-	inputElement.oninput = function() { setUnsavedChangesToTrue() };
+	inputElement.oninput = function() { console.log("oninput"); setUnsavedChangesToTrue() };
 
 	// onkeydown event for inputElement:
 	// To detect if user presses Enter, and then blur inputElement.
 	// This is in order for desktop devices to have
 	// same behavior as mobile devices when Enter is pressed. 
 	inputElement.onkeydown = function(event) {
-		if (event.key === "Enter") { this.blur(); }
+		if (event.key === "Enter") { console.log("onkeydown"); this.blur(); }
 	};
 
 	// onfocus event for inputElement:
@@ -169,8 +175,12 @@ function createTask(description, doneStatus) {
 	// Because pressing Enter om mobile devices will give the input element below focus.
 	// This blurs inputElement if it got focus that way.
 	inputElement.onfocus = function() {
+		console.log("onfocus");
 		if (this !== selectedTask.querySelector("input")) { this.blur(); }
 	};
+
+	// FOR DEBUGGING - TO BE DELETED:
+	inputElement.onblur = function() { console.log("unblur") };
 
 
 	return task;

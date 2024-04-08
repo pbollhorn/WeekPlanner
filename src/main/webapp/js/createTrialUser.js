@@ -28,16 +28,16 @@ function create() {
 
 	sendHttpRequest("POST", "controller/user", "application/json", credentials).then(xhr => {
 
-		if (xhr.status == 200) {
+		if (xhr.status === 200) {
 
 			// User was created so now, lets login
 			sendHttpRequest("POST", "controller/session", "application/json", credentials).then(xhr => {
-				if (xhr.status == 200) {
+				if (xhr.status === 200) {
 					document.body.innerHTML = viewBodyHtml;
 					loadData();
 				}
 			});
-		} else if (xhr.status == 409) {
+		} else if (xhr.status === 409) {
 
 			// Username already taken
 
