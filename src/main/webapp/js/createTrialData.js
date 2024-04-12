@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * JavaScript object which is a plan with start data for the trial user
  */

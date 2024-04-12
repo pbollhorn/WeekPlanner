@@ -1,3 +1,5 @@
+"use strict";
+
 // Wrapper function for XMLHttpRequest:
 // if contentType is "application/json" then body is converted to json and sent.
 // if contentType is something else then body is sent as is.

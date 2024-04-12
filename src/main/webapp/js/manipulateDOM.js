@@ -1,3 +1,5 @@
+"use strict";
+
 function deleteTask() {
 
 	// Get array allTasks and find index i of selectedTask in this array

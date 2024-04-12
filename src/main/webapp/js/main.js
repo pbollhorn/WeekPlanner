@@ -2,6 +2,7 @@
  *	This file is the entry point for the JavaScript code.
  *	This file is the only place where global variables are allowed.
  */
+"use strict";
 
 // From manipulateDOM.js
 const myGreen = "rgb(144, 238, 144)";
