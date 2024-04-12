@@ -73,22 +73,22 @@ function addTask() {
 
 }
 
-
-// This function fires onclick of transparant front div.
+// This function is used by other functions,
+// and it fires onclick of front div:
 // First click:
 // - Put black border around task
 // Second click:
 // - Make front div temporarily disappear, so it is not clickable
-// - Give input element focus
+// - Give input element focus, with cursor positioned at the end
 function selectTask(task) {
 
 	// If task is not already selectedTask
 	if (task !== selectedTask) {
 
 		// Unselect current selectedTask:
-		// - Put transparent border around back div
-		// - Make front div reappear
 		// (Unless selectedTask is undefined, which it is when site is just loaded or reloaded)
+		// - Put transparent border around back div
+		// - Make front div reappear (PERHAPS REDUNDANT BECAUSE OF ONBLUR EVENT)
 		if (selectedTask !== undefined) {
 			selectedTask.querySelector("div").style.borderColor = myTransparent;
 			selectedTask.querySelector("div").nextElementSibling.style.display = "block";
@@ -141,6 +141,7 @@ function createTask(description, doneStatus) {
 	task.appendChild(backDiv);
 
 	// The front div
+	// onclick event is used to select task
 	const frontDiv = document.createElement("div");
 	frontDiv.onclick = function() { console.log("onclick"); selectTask(this.parentElement) };
 	task.appendChild(frontDiv);
@@ -179,8 +180,11 @@ function createTask(description, doneStatus) {
 		if (this !== selectedTask.querySelector("input")) { this.blur(); }
 	};
 
-	// FOR DEBUGGING - TO BE DELETED:
-	inputElement.onblur = function() { console.log("unblur") };
+	// onblur event for inputElement:
+	// Makes front div reappear.
+	// This ensures that the cursor in inputElement is set at the end of the text,
+	// also after user presses e.g. "Save" button and then clicks on this task again.
+	inputElement.onblur = function() { console.log("onblur"); this.parentElement.nextElementSibling.style.display = "block"; };
 
 
 	return task;

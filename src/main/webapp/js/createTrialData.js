@@ -38,7 +38,7 @@ function createTrialData() {
 
 	const sunday = {
 		name: "Sunday",
-		tasks: [{ description: 'That&apos;s my fun day', doneStatus: false },
+		tasks: [{ description: "That&apos;s my fun day", doneStatus: false },
 		{ description: "My I don&apos;t have to run day", doneStatus: false }]
 	};
 

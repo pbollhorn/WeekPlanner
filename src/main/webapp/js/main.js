@@ -17,4 +17,6 @@ let mainElement;
 let loginBodyHtml;
 let trialBodyHtml;
 let viewBodyHtml;
+let menuBodyHtml;
+let accountBodyHtml;
 loadSite();

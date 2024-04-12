@@ -43,25 +43,28 @@ function loadSite() {
 
 
 	// Request HTML assets one by one
-	sendHttpRequest("GET", "trial-body.html").then(xhr => {
+	sendHttpRequest("GET", "account-body.html").then(xhr => {
+		if (xhr.status === 200) { accountBodyHtml = xhr.responseText; }
 
+		return sendHttpRequest("GET", "menu-body.html");
+	}).then(xhr => {
+		if (xhr.status === 200) { menuBodyHtml = xhr.responseText; }
+
+		return sendHttpRequest("GET", "trial-body.html");
+	}).then(xhr => {
 		if (xhr.status === 200) { trialBodyHtml = xhr.responseText; }
 
 		return sendHttpRequest("GET", "view-body.html");
-
 	}).then(xhr => {
-
 		if (xhr.status === 200) { viewBodyHtml = xhr.responseText; }
 
 		return sendHttpRequest("GET", "login-body.html");
-
 	}).then(xhr => {
-
 		if (xhr.status === 200) { loginBodyHtml = xhr.responseText; }
 
 		// If all requests for HTML assets were succesful, then continue loading site
 		// else display error message
-		if (trialBodyHtml !== undefined && viewBodyHtml !== undefined && loginBodyHtml !== undefined) {
+		if (accountBodyHtml !== undefined && menuBodyHtml !== undefined && trialBodyHtml !== undefined && viewBodyHtml !== undefined && loginBodyHtml !== undefined) {
 
 			sendHttpRequest("GET", "controller/session").then(xhr => {
 
@@ -179,4 +182,9 @@ function logout() {
 
 	});
 
+}
+
+
+function menu() {
+	document.body.innerHTML = menuBodyHtml;
 }
