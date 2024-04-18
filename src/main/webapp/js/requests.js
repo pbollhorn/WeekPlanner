@@ -43,55 +43,58 @@ function loadSite() {
 		}
 	});
 
+	loadData();
 
-	// Request HTML assets one by one
-	sendHttpRequest("GET", "account-body.html").then(xhr => {
-		if (xhr.status === 200) { accountBodyHtml = xhr.responseText; }
 
-		return sendHttpRequest("GET", "menu-body.html");
-	}).then(xhr => {
-		if (xhr.status === 200) { menuBodyHtml = xhr.responseText; }
 
-		return sendHttpRequest("GET", "trial-body.html");
-	}).then(xhr => {
-		if (xhr.status === 200) { trialBodyHtml = xhr.responseText; }
-
-		return sendHttpRequest("GET", "view-body.html");
-	}).then(xhr => {
-		if (xhr.status === 200) { viewBodyHtml = xhr.responseText; }
-
-		return sendHttpRequest("GET", "login-body.html");
-	}).then(xhr => {
-		if (xhr.status === 200) { loginBodyHtml = xhr.responseText; }
-
-		// If all requests for HTML assets were succesful, then continue loading site
-		// else display error message
-		if (accountBodyHtml !== undefined && menuBodyHtml !== undefined && trialBodyHtml !== undefined && viewBodyHtml !== undefined && loginBodyHtml !== undefined) {
-
-			sendHttpRequest("GET", "controller/session").then(xhr => {
-
-				if (xhr.status === 200) {
-					document.body.innerHTML = viewBodyHtml;
-					loadData();
-				}
-				else {
-					document.body.innerHTML = loginBodyHtml;
-				}
-
-			});
-
-		}
-		else {
-			document.body.innerHTML = "<div id='message'></div>";
-			setMessage("Error: Error loading site", true);
-		}
-
-	});
+//	// Request HTML assets one by one
+//	sendHttpRequest("GET", "account-body.html").then(xhr => {
+//		if (xhr.status === 200) { accountBodyHtml = xhr.responseText; }
+//
+//		return sendHttpRequest("GET", "menu-body.html");
+//	}).then(xhr => {
+//		if (xhr.status === 200) { menuBodyHtml = xhr.responseText; }
+//
+//		return sendHttpRequest("GET", "trial-body.html");
+//	}).then(xhr => {
+//		if (xhr.status === 200) { trialBodyHtml = xhr.responseText; }
+//
+//		return sendHttpRequest("GET", "view-body.html");
+//	}).then(xhr => {
+//		if (xhr.status === 200) { viewBodyHtml = xhr.responseText; }
+//
+//		return sendHttpRequest("GET", "login-body.html");
+//	}).then(xhr => {
+//		if (xhr.status === 200) { loginBodyHtml = xhr.responseText; }
+//
+//		// If all requests for HTML assets were succesful, then continue loading site
+//		// else display error message
+//		if (accountBodyHtml !== undefined && menuBodyHtml !== undefined && trialBodyHtml !== undefined && viewBodyHtml !== undefined && loginBodyHtml !== undefined) {
+//
+//			sendHttpRequest("GET", "api/session").then(xhr => {
+//
+//				if (xhr.status === 200) {
+//					document.body.innerHTML = viewBodyHtml;
+//					loadData();
+//				}
+//				else {
+//					document.body.innerHTML = loginBodyHtml;
+//				}
+//
+//			});
+//
+//		}
+//		else {
+//			document.body.innerHTML = "<div id='message'></div>";
+//			setMessage("Error: Error loading site", true);
+//		}
+//
+//	});
 }
 
 function loadData() {
 
-	sendHttpRequest("GET", "controller/data").then(xhr => {
+	sendHttpRequest("GET", "api/data").then(xhr => {
 
 		unsavedChanges = false;
 		setMessage("", false);
@@ -116,7 +119,7 @@ function saveData() {
 
 	const data = buildDataFromView();
 
-	sendHttpRequest("PUT", "controller/data", "application/json", data).then(xhr => {
+	sendHttpRequest("PUT", "api/data", "application/json", data).then(xhr => {
 
 		if (xhr.status === 200) {
 			unsavedChanges = false;
@@ -140,11 +143,13 @@ function login() {
 		password: document.getElementById("password").value
 	};
 
-	sendHttpRequest("POST", "controller/session", "application/json", credentials).then(xhr => {
+	sendHttpRequest("POST", "api/session", "application/json", credentials).then(xhr => {
 
 		if (xhr.status === 200) {
-			document.body.innerHTML = viewBodyHtml;
-			loadData();
+			//document.body.innerHTML = viewBodyHtml;
+			//loadData();
+
+			window.location.href = "plan";
 		}
 		else if (xhr.status === 401) {
 			setMessage("Wrong username or password", false);
@@ -163,20 +168,20 @@ function logout() {
 
 	// If any unsaved changes,
 	// then show warning message to user before logging out
-	if (unsavedChanges) {
+//	if (unsavedChanges) {
+//
+//		const answer = window.confirm("You have unsaved changes.\nAre you sure you want to logout?");
+//		if (answer === false) {
+//			return;
+//		}
+//
+//	}
 
-		const answer = window.confirm("You have unsaved changes.\nAre you sure you want to logout?");
-		if (answer === false) {
-			return;
-		}
-
-	}
-
-	sendHttpRequest("DELETE", "controller/session").then(xhr => {
+	sendHttpRequest("DELETE", "api/session").then(xhr => {
 
 		if (xhr.status === 200) {
-			unsavedChanges = false;
-			document.body.innerHTML = loginBodyHtml;
+			//unsavedChanges = false;
+			window.location.href = "login";
 		}
 		else {
 			setMessage("Error: Could not log out", true);
@@ -188,5 +193,5 @@ function logout() {
 
 
 function menu() {
-	document.body.innerHTML = menuBodyHtml;
+	window.location.href = "menu";
 }

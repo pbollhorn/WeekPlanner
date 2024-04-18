@@ -15,13 +15,13 @@ public class Data {
 
 	public static void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		Credentials credentials = Session.getCredentialsFromCookie(request);
-		if (credentials == null) {
+		int userId = Session.checkAndRenewSessionNEW(request, response);
+		if (userId == 0) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
-		String jsonString = Database.loadData(credentials);
+		String jsonString = Database.loadDataNEW(userId);
 		if (jsonString == null) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
@@ -36,19 +36,19 @@ public class Data {
 
 	public static void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		Credentials credentials = Session.getCredentialsFromCookie(request);
-		if (credentials == null) {
+		int userId = Session.checkAndRenewSessionNEW(request, response);
+		if (userId == 0) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
-
+		
 		// Read JSON data from the request's input stream
 		BufferedReader reader = request.getReader();
 		JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
 		String jsonString = new Gson().toJson(jsonObject);
 
 		// Save the read in json data to database
-		int rowsAffected = Database.saveData(credentials, jsonString);
+		int rowsAffected = Database.saveDataNEW(userId, jsonString);
 		if (rowsAffected != 1) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;

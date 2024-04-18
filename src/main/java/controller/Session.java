@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,55 +17,45 @@ import model.Database;
 
 public class Session {
 
-	// Returns Credentials object if Credentials cookie is present, else returns null
-	public static Credentials getCredentialsFromCookie(HttpServletRequest request) {
+	public static int checkAndRenewSessionNEW(HttpServletRequest request, HttpServletResponse response) {
 
-		String credentials = null;
+		HttpSession session = request.getSession();
+		
+		if(session == null) {
+			System.out.println("Session is null");
+			return 0;
+		}
 
+		// Get the JSESSIONID cookie
 		Cookie[] cookies = request.getCookies();
-
+		Cookie jsessionidCookie = null;
 		if (cookies != null) {
-
-			for (Cookie c : cookies) {
-				if ("WeekPlannerCredentials".equals(c.getName())) {
-					credentials = c.getValue();
+			for (Cookie cookie : cookies) {
+				if ("JSESSIONID".equals(cookie.getName())) {
+					jsessionidCookie = cookie;
 					break;
 				}
 			}
-
-			if (credentials != null) {
-
-				int index = credentials.indexOf('=');
-				String username = credentials.substring(0, index);
-				String password = credentials.substring(index + 1);
-
-				if (username != null && password != null) {
-					return new Credentials(username, password);
-				}
-
-			}
-
+		}
+		if (jsessionidCookie != null) {
+			jsessionidCookie.setMaxAge(-1); // Set the expiration time in seconds
+			response.addCookie(jsessionidCookie); // Add the modified cookie to the response
+		}
+		System.out.println(request.getContextPath());
+		
+		Object o = session.getAttribute("userId");
+		if(o==null) {
+			System.out.println("object is null");
+			return 0;
 		}
 
-		return null;
+		int userId = (int) o;
 
+		return userId;
 	}
 
-	// GET session request is received from index.html, because index.html wants to check if a user is logged in or not
-	// Return status code 200 if user is logged in, otherwise status code 401
-	public static void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		if (Session.getCredentialsFromCookie(request) == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
-
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
-	
-
-	// This is equivalent to login
-	public static void post(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	// My NEW login functionality
+	public static void postNEW(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		// Read JSON data from the request's input stream
 		BufferedReader reader = request.getReader();
@@ -74,25 +66,40 @@ public class Session {
 		Credentials credentials = gson.fromJson(jsonObject, Credentials.class);
 
 		// Check if credentials are in database
-		boolean status = Database.checkCredentials(credentials);
+		int userId = Database.checkCredentialsNEW(credentials);
+		System.out.println("userId: " + userId);
 
-		// If status == false, respond with status code SC_UNAUTHORIZED
-		if (status == false) {
+		// If no such user, respond with status code SC_UNAUTHORIZED
+		if (userId == 0) {
 			System.out.println("Invalid Credentials - Access denied");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
-		// Since status == true, the credentials are valid,
-		// Create and send credentials cookie with value "username=password"
-		// and set response status to indicated success
-		Cookie cookie = new Cookie("WeekPlannerCredentials", credentials.username + "=" + credentials.password);
-		cookie.setPath(request.getContextPath());
-		cookie.setMaxAge(60 * 60 * 24 * 365);
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
+		// LETS WORK WITH THE HTTPSESSION OBJECT
+		// We put userId inside HttpSession object
+		HttpSession session = request.getSession(true);
+		session.setMaxInactiveInterval(86400);
+		session.setAttribute("userId", userId);
 
-		response.addCookie(cookie);
+		// Get the JSESSIONID cookie
+		Cookie[] cookies = request.getCookies();
+		Cookie jsessionidCookie = null;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("JSESSIONID".equals(cookie.getName())) {
+					jsessionidCookie = cookie;
+					break;
+				}
+			}
+		}
+		if (jsessionidCookie != null) {
+			jsessionidCookie.setMaxAge(-1); // Set the expiration time in seconds
+			jsessionidCookie.setPath(request.getContextPath());
+			response.addCookie(jsessionidCookie); // Add the modified cookie to the response
+		}
+		System.out.println(request.getContextPath());
+
 		response.setStatus(HttpServletResponse.SC_OK);
 
 	}
@@ -100,11 +107,8 @@ public class Session {
 	// This is equivalent to logout
 	public static void delete(HttpServletRequest request, HttpServletResponse response) {
 
-		Cookie cookie = new Cookie("WeekPlannerCredentials", "");
-		cookie.setPath(request.getContextPath());
-		cookie.setMaxAge(0);
-
-		response.addCookie(cookie);
+		HttpSession session = request.getSession();
+		session.invalidate();
 		response.setStatus(HttpServletResponse.SC_OK);
 
 	}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="css/navbars.css">
+<link rel="stylesheet" type="text/css" href="css/task.css">
+<script src="js/requests.js" defer></script>
+<script src="js/manipulateDOM.js" defer></script>
+<script src="js/createTrialData.js" defer></script>
+<script src="js/createTrialUser.js" defer></script>
+<!-- <script src="js/main.js" defer></script> -->
+<title>Week Planner</title>
+</head>
+
+<body>
+
+	<h1>Account Details</h1>
+	<br> Username: xxxxxx
+	<br> Account status: Trial account - will be deleted in XX days
+	<br>
+	<br>
+	<details>
+		<summary>Change Username</summary>
+		<label for="newUsername">New Username:</label>
+		<input type="text" id="newUsername" name="newUsername" autocapitalize="off" required>
+		<br>
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+		<br>
+		<label for="confirmPassword">Confirm Password:</label>
+		<input type="password" id="confirmPassword" name="confirmPassword" required>
+		<br>
+		<button onclick="changeUsername()">Change Username</button>
+	</details>
+	<br>
+	<details>
+		<summary>Change Password</summary>
+		<p>New Password:</p>
+		<p>Old Password:</p>
+		<p>Confirm Old Password:</p>
+		<button>Change Password</button>
+	</details>
+	<br>
+	<details>
+		<summary>Delete Account</summary>
+		<p>Password:</p>
+		<p>Confirm Password:</p>
+		<button>Delete Account</button>
+	</details>
+
+</body>
+
+</html>
