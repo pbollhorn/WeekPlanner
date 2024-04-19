@@ -1,4 +1,4 @@
-package controller;
+package controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class Data {
 
 	public static void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		int userId = Session.checkAndRenewSessionNEW(request, response);
+		int userId = Session.getUserId(request, response);
 		if (userId == 0) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
@@ -30,13 +30,14 @@ public class Data {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(jsonString);
+		
 		response.setStatus(HttpServletResponse.SC_OK);
 
 	}
 
 	public static void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		int userId = Session.checkAndRenewSessionNEW(request, response);
+		int userId = Session.getUserId(request, response);
 		if (userId == 0) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;

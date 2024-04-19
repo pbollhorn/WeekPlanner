@@ -7,23 +7,13 @@
 	<display-name>Week Planner</display-name>
 
 	<welcome-file-list>
-		<welcome-file>plan</welcome-file>
+		<welcome-file>login</welcome-file>
 	</welcome-file-list>
-
-	<!-- Specify ApiController to handle API endpoints "/api/*" -->
-	<servlet>
-		<servlet-name>ApiController</servlet-name>
-		<servlet-class>controller.ApiController</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ApiController</servlet-name>
-		<url-pattern>/api/*</url-pattern>
-	</servlet-mapping>
 
 	<!-- Specify PageController to handle user-facing URLs -->
 	<servlet>
 		<servlet-name>PageController</servlet-name>
-		<servlet-class>controller.PageController</servlet-class>
+		<servlet-class>controllers.PageController</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PageController</servlet-name>
@@ -34,9 +24,15 @@
 		<url-pattern>/trial</url-pattern>
 	</servlet-mapping>
 
-<!--<session-config>-->
-<!--    <session-timeout>3600</session-timeout>-->
-<!--</session-config>-->
+	<!-- Specify ApiController to handle API endpoints "/api/*" -->
+	<servlet>
+		<servlet-name>ApiController</servlet-name>
+		<servlet-class>controllers.ApiController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ApiController</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
 
 
 	<!--  Specify UTF-8 encoding-->

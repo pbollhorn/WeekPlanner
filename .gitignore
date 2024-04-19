@@ -3,6 +3,7 @@
 #############################
 .settings/
 build/
+doc/
 .classpath
 .project
 

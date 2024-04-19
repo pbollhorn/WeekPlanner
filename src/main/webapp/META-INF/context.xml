@@ -6,6 +6,11 @@
 		driverClassName="org.postgresql.Driver"
 		url="${WEEK_PLANNER_DB_URL}" />
 		
-	<CookieProcessor sameSiteCookies="strict" />
+<!--	<CookieProcessor sameSiteCookies="strict" />-->
+
+<!--    <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"-->
+<!--                    sameSiteCookies="none"-->
+<!--                    />-->
+<!--    <SessionCookie path="/hej/"/>-->
 		
 </Context>

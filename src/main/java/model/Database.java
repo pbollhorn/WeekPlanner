@@ -8,7 +8,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import controller.Credentials;
+import controllers.Credentials;
 
 public class Database {
 
@@ -109,8 +109,13 @@ public class Database {
 	}
 	
 	
-	// Return userID on success, return 0 on failure
-	public static int checkCredentialsNEW(Credentials credentials) {
+	/**
+	 * Gets userId corresponding to credentials, or 0 if no such credentials.
+	 * 
+	 * @param credentials	Username and password
+	 * @return userId
+	 */
+	public static int getUserId(Credentials credentials) {
 
 		try {
 
