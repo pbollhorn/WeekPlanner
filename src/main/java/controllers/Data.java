@@ -13,6 +13,12 @@ import model.Database;
 
 public class Data {
 
+	/**
+	 * API endpoint GET data. For loading data.
+	 * 
+	 * @param request  The HttpServletRequest object
+	 * @param response The HttpServletResponse object
+	 */
 	public static void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		int userId = Session.getUserId(request, response);
@@ -30,11 +36,17 @@ public class Data {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(jsonString);
-		
+
 		response.setStatus(HttpServletResponse.SC_OK);
 
 	}
 
+	/**
+	 * API endpoint PUT data. For saving data.
+	 * 
+	 * @param request  The HttpServletRequest object
+	 * @param response The HttpServletResponse object
+	 */
 	public static void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int userId = Session.getUserId(request, response);
@@ -42,7 +54,7 @@ public class Data {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
-		
+
 		// Read JSON data from the request's input stream
 		BufferedReader reader = request.getReader();
 		JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
