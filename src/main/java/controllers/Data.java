@@ -21,13 +21,13 @@ public class Data {
 	 */
 	public static void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		int userId = Session.getUserId(request, response);
-		if (userId == 0) {
+		Credentials credentials = Session.getCredentials(request, response);
+		if (credentials == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
-		String jsonString = Database.loadDataNEW(userId);
+		String jsonString = Database.loadDataNEW(credentials);
 		if (jsonString == null) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;
@@ -49,8 +49,8 @@ public class Data {
 	 */
 	public static void put(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		int userId = Session.getUserId(request, response);
-		if (userId == 0) {
+		Credentials credentials = Session.getCredentials(request, response);
+		if (credentials == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
@@ -61,7 +61,7 @@ public class Data {
 		String jsonString = new Gson().toJson(jsonObject);
 
 		// Save the read in json data to database
-		int rowsAffected = Database.saveDataNEW(userId, jsonString);
+		int rowsAffected = Database.saveDataNEW(credentials, jsonString);
 		if (rowsAffected != 1) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			return;

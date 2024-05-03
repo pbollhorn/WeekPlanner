@@ -50,8 +50,7 @@ public class Debugger {
 		System.out.println("Status Code: " + response.getStatus());
 		System.out.println("Content Type: " + response.getContentType());
 		System.out.println("Headers:");
-		response.getHeaderNames()
-				.forEach(headerName -> System.out.println(headerName + ": " + response.getHeader(headerName)));
+		response.getHeaderNames().forEach(headerName -> System.out.println(headerName + ": " + response.getHeader(headerName)));
 		System.out.println("Body: " + response.toString());
 		System.out.println("---------------------------------------------------");
 

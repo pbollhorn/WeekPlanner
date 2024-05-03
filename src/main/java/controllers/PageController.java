@@ -40,7 +40,7 @@ public class PageController extends HttpServlet {
 	 */
 	private void handleTopLevelGetRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		if (Session.getUserId(request, response) == 0) {
+		if (Session.getCredentials(request, response) == null) {
 			response.sendRedirect("login");
 		} else {
 			response.sendRedirect("plan");
@@ -69,7 +69,7 @@ public class PageController extends HttpServlet {
 
 		// If there is no session, user can see trial.html and login.html
 		// default to login.html if user requests anything else
-		if (Session.getUserId(request, response) == 0) {
+		if (Session.getCredentials(request, response) == null) {
 
 			if ("trial".equals(pageName)) {
 				request.getRequestDispatcher("html/trial.html").forward(request, response);

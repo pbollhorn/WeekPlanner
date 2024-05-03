@@ -30,13 +30,13 @@ public class User {
 		boolean status = Database.checkUsername(credentials);
 
 		// If status == true, respond with status code 409 (CONFLICT)
-		if( status == true) {
+		if (status == true) {
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
-			return;	
+			return;
 		}
-		
+
 		Database.createUser(credentials);
-		
+
 		// WE JUST ASSUME EVERYTHING IS SUCCESSFULL
 
 	}
