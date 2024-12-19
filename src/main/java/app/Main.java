@@ -12,16 +12,15 @@ public class Main {
         // Create Jetty server on port 7070
         Server server = new Server(7070);
 
-        // Create handler for handling servlets
+        // Create handler
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         handler.setContextPath("/");  // TODO: Is the example.com/path/ ?
+        handler.setBaseResourceAsString("src/main/resources/public");
 
         // Create defaultServlet for serving static resources
         ServletHolder defaultServlet = new ServletHolder(new DefaultServlet());
-        defaultServlet.setInitParameter("dirAllowed", "false"); // Disable directory listing
-        defaultServlet.setInitParameter("welcomeFiles", "index.html"); // Default file in directories
-        defaultServlet.setInitParameter("resourceBase", "src/main/resources/public"); // Explicitly set resource base for DefaultServlet
-
+        defaultServlet.setInitParameter("welcomeFiles", "index.html");
+        defaultServlet.setInitParameter("dirAllowed", "false");
 
         // Add servlets to handler
         handler.addServlet(defaultServlet, "/*");
