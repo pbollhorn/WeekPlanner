@@ -14,7 +14,7 @@ public class Main {
 
         // Create handler
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        handler.setContextPath("/");  // TODO: Is the example.com/path/ ?
+//        handler.setContextPath("/");  // TODO: Is the example.com/path/ ?
         handler.setBaseResourceAsString("src/main/resources/public");
 
         // Create defaultServlet for serving static resources
