@@ -12,21 +12,29 @@ public class Main {
         // Create a Jetty server on port 7070
         Server server = new Server(7070);
 
-        // Create a ServletContextHandler to map the servlet
+        // Create a servlet holder for the DefaultServlet
+        ServletHolder holder = new ServletHolder(new DefaultServlet());
+
+        // Create a context handler to manage servlets and static resources
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
+        context.setBaseResourceAsString("src/main/resources/public"); // path to your static resources
 
-        // Add the SimpleServlet to the context
-        context.addServlet(new ServletHolder(new MyServlet()), "/");
 
-        // Add the DefaultServlet to serve static resources (optional)
-        context.addServlet(DefaultServlet.class, "/static/*");
 
-        // Set the context handler for the server
+        // Optionally, configure DefaultServlet's parameters:
+        holder.setInitParameter("dirAllowed", "false"); // Disable directory listing
+        holder.setInitParameter("welcomeFiles", "index.html"); // Default file in directories
+
+        // Map the DefaultServlet to the URL pattern (e.g., serve everything under "/")
+        context.addServlet(holder, "/");
+
+        // Add the context to the server
         server.setHandler(context);
 
         // Start the server
         server.start();
         server.join();
+
     }
 }
