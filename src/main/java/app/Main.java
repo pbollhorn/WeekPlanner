@@ -1,38 +1,34 @@
 package app;
 
-import org.eclipse.jetty.ee10.servlet.DefaultServlet;
-import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.Server;
-//import org.eclipse.jetty.ee10.servlet.ServletHandler;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.DefaultServlet;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        // Create a Jetty server on port 7070
+        // Create Jetty server on port 7070
         Server server = new Server(7070);
 
-        // Create a servlet holder for the DefaultServlet
-        ServletHolder holder = new ServletHolder(new DefaultServlet());
+        // Create handler for handling servlets
+        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        handler.setContextPath("/");  // TODO: Is the example.com/path/ ?
 
-        // Create a context handler to manage servlets and static resources
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        context.setBaseResourceAsString("src/main/resources/public"); // path to your static resources
+        // Create defaultServlet for serving static resources
+        ServletHolder defaultServlet = new ServletHolder(new DefaultServlet());
+        defaultServlet.setInitParameter("dirAllowed", "false"); // Disable directory listing
+        defaultServlet.setInitParameter("welcomeFiles", "index.html"); // Default file in directories
+        defaultServlet.setInitParameter("resourceBase", "src/main/resources/public"); // Explicitly set resource base for DefaultServlet
 
 
+        // Add servlets to handler
+        handler.addServlet(defaultServlet, "/*");
+        handler.addServlet(ApiServlet.class, "/api/*");
 
-        // Optionally, configure DefaultServlet's parameters:
-        holder.setInitParameter("dirAllowed", "false"); // Disable directory listing
-        holder.setInitParameter("welcomeFiles", "index.html"); // Default file in directories
-
-        // Map the DefaultServlet to the URL pattern (e.g., serve everything under "/")
-        context.addServlet(holder, "/");
-
-        // Add the context to the server
-        server.setHandler(context);
-
-        // Start the server
+        // Set handler for server and start server
+        server.setHandler(handler);
         server.start();
         server.join();
 
