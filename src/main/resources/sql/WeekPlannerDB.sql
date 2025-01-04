@@ -1,0 +1,1 @@
+CREATE TABLE user_data(user_id SERIAL PRIMARY KEY, username TEXT UNIQUE, password_hash BYTEA, salt BYTEA, encrypted_data BYTEA)
