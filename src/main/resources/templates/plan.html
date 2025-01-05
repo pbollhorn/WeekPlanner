@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/navbars.css">
+    <link rel="stylesheet" type="text/css" href="css/task.css">
+    <script src="js/requests.js" defer></script>
+    <script src="js/manipulateDOM.js" defer></script>
+    <script src="js/createTrialData.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <title>Week Planner</title>
+</head>
+
+<body>
+
+<header>
+    <div class="flex-container">
+        <div>
+            <button onclick="saveData()">Save</button>
+        </div>
+        <div>
+            <div id="message"></div>
+        </div>
+        <div>
+            <button onclick="window.location.href = 'account'">Account</button>
+        </div>
+    </div>
+</header>
+
+<main></main>
+
+<footer>
+    <button onclick="addTask()">+</button>
+    <button onclick="deleteTask()">✘</button>
+    <button onclick="moveTaskUp()">↑</button>
+    <button onclick="moveTaskDown()">↓</button>
+    <button onclick="markTaskDone()">✓</button>
+</footer>
+
+</body>
+
+</html>

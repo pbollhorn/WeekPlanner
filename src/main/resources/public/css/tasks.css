@@ -1,0 +1,41 @@
+@charset "UTF-8";
+/* This css file styles the special task div,
+which has 2 child divs overlapping each other:
+- The back div, which has a background color, border color and transparent input element
+- The front div, which is transparent and sits in front of the back div
+
+The front div protects the input element in the back div,
+and thereby prevents the virtual keyboard on mobile devices popping up when not desired. */
+.task {
+    position: relative;
+    height: 2.0rem;
+    width: 100%;
+}
+
+/* div with height of 1.8rem and some border and padding,
+so transparent input element with height 1.0rem
+will be approximately vertically centered */
+.task div {
+    position: absolute;
+    box-sizing: border-box;
+    margin: 0;
+    border: 0.1rem solid;
+    border-color: rgb(0, 0, 0, 0);
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    padding-top: 0.2rem;
+    height: 1.8rem;
+    width: 100%;
+}
+
+/* transparent input element with font size of 1.0rem*/
+.task input {
+    outline: none;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 1.0rem;
+    /* 	background-color: blue; */
+    background-color: rgb(0, 0, 0, 0);
+}

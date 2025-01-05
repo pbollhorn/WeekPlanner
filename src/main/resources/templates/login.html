@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/navbars.css">
+    <link rel="stylesheet" type="text/css" href="css/task.css">
+    <script src="js/requests.js" defer></script>
+    <script src="js/manipulateDOM.js" defer></script>
+    <script src="js/createTrialData.js" defer></script>
+    <script src="js/createTrialUser.js" defer></script>
+    <!-- <script src="js/main.js" defer></script> -->
+    <title>Week Planner</title>
+</head>
+
+<body>
+
+<label for="username">Username:</label>
+<input type="text" id="username" name="username" autocapitalize="off" required>
+<br>
+<label for="password">Password:</label>
+<input type="password" id="password" name="password" required>
+<br>
+<button onclick="login()">Login</button>
+<div id="message"></div>
+<br>
+<br>
+
+<button onclick="window.location.href = 'trial'">Create Trial User</button>
+</body>
+
+</html>

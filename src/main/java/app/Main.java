@@ -3,8 +3,8 @@ package app;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
-//import app.controllers.AccountController;
-//import app.controllers.OrderController;
+import app.controllers.ApiController;
+import app.controllers.PageController;
 import app.config.ThymeleafConfig;
 import app.persistence.ConnectionPool;
 
@@ -23,9 +23,7 @@ public class Main {
             config.staticFiles.add("/templates");
         }).start(7070);
 
-        app.get("/", ctx ->  ctx.render("index.html"));
-
-//        AccountController.addRoutes(app, connectionPool);
-//        OrderController.addRoutes(app, connectionPool);
+        ApiController.addRoutes(app, connectionPool);
+        PageController.addRoutes(app, connectionPool);
     }
 }
