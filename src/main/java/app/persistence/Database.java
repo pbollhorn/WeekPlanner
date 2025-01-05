@@ -16,44 +16,19 @@ import app.services.Cryptography;
 
 public class Database {
 
-    public static DataSource connectionPool;
+//    public static DataSource connectionPool;
 
-    public static void init() {
-
-        try {
-            connectionPool = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/WeekPlannerDB");
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void createTables() {
-
-        try {
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-            System.out.println("Connected to PostgreSQL");
-
-            // Create table user_data
-            // TODO: Add UNIQUE constraint on username
-            Statement statement = connection.createStatement();
-            String sql = "CREATE TABLE user_data(user_id SERIAL PRIMARY KEY, username TEXT UNIQUE, password_hash BYTEA, salt BYTEA, encrypted_data BYTEA)";
-            System.out.println(sql);
-            statement.execute(sql);
-
-            // Close connection
-            statement.close();
-            connection.close();
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-        }
-
-    }
+//    public static void init() {
+//
+//        try {
+//            connectionPool = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/WeekPlannerDB");
+//        } catch (NamingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     // Return 1 on success, return 0 on failure
-    public static int saveData(User user, String jsonString) {
+    public static int saveData(User user, String jsonString, ConnectionPool connectionPool) {
 
         try {
             // Establish connection
@@ -84,7 +59,7 @@ public class Database {
     }
 
     // Return jsonString on success, return null on failure
-    public static String loadData(User user) {
+    public static String loadData(User user, ConnectionPool connectionPool) {
 
         String jsonString = null;
 
@@ -127,7 +102,7 @@ public class Database {
      * @param credentials Username and password
      * @return User object on success, null on failure
      */
-    public static User login(Credentials credentials) {
+    public static User login(Credentials credentials, ConnectionPool connectionPool) {
 
         try {
 
@@ -183,7 +158,7 @@ public class Database {
     }
 
     // Return 1 if username is available, 0 if taken, -1 if there was an error
-    public static int usernameAvailable(Credentials credentials) {
+    public static int usernameAvailable(Credentials credentials, ConnectionPool connectionPool) {
 
         try {
 
@@ -215,7 +190,7 @@ public class Database {
 
     }
 
-    public static int deleteUser(User user) {
+    public static int deleteUser(User user, ConnectionPool connectionPool) {
 
         try {
 
@@ -240,7 +215,7 @@ public class Database {
 
     }
 
-    public static int changeUsername(User user, String newUsername) {
+    public static int changeUsername(User user, String newUsername, ConnectionPool connectionPool) {
 
         try {
 
@@ -272,7 +247,7 @@ public class Database {
 
     }
 
-    public static int changePassword(User user, String newPassword) {
+    public static int changePassword(User user, String newPassword, ConnectionPool connectionPool) {
 
         try {
 
@@ -280,7 +255,7 @@ public class Database {
             Connection connection = connectionPool.getConnection();
 
             // Get unencrypted userdata
-            String jsonString = Database.loadData(user);
+            String jsonString = Database.loadData(user, connectionPool);
 
             // Salt and hash new password and create new encryption key
             byte[] hashedPassword = Cryptography.hashPassword(newPassword, user.salt);
@@ -316,7 +291,7 @@ public class Database {
         }
     }
 
-    public static int createUser(Credentials credentials) {
+    public static int createUser(Credentials credentials, ConnectionPool connectionPool) {
 
         String jsonString = "{\"lists\":[{\"name\":\"Monday\",\"tasks\":[{\"description\":\"Dette er din test bruger\",\"done\":false}]},{\"name\":\"Tuesday\",\"tasks\":[]},{\"name\":\"Wednesday\",\"tasks\":[]},{\"name\":\"Thursday\",\"tasks\":[]},{\"name\":\"Friday\",\"tasks\":[]},{\"name\":\"Saturday\",\"tasks\":[]},{\"name\":\"Sunday\",\"tasks\":[]},{\"name\":\"Next Week\",\"tasks\":[]},{\"name\":\"Within a Month\",\"tasks\":[]},{\"name\":\"Within a Year\",\"tasks\":[]}]}";
 
@@ -354,11 +329,6 @@ public class Database {
             return -1;
         }
 
-    }
-
-    public static void main(String[] args) {
-//		init();
-//		createTables();
     }
 
 }
