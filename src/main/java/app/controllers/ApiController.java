@@ -12,11 +12,11 @@ import app.persistence.ConnectionPool;
 
 public class ApiController {
 
-    public static void addRoutes(Javalin app, ConnectionPool connectionPool)
-    {
+    public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.post("api/session", ctx -> login(ctx, connectionPool));
         app.post("api/user", ctx -> createUser(ctx, connectionPool));
         app.get("api/data", ctx -> loadData(ctx, connectionPool));
+        app.put("api/data", ctx -> saveData(ctx, connectionPool));
     }
 
     private static void login(Context ctx, ConnectionPool connectionPool) {
@@ -37,8 +37,7 @@ public class ApiController {
             ctx.sessionAttribute("activeUser", activeUser);
             ctx.status(200);
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
@@ -62,8 +61,7 @@ public class ApiController {
 
             // WE JUST ASSUME EVERYTHING IS SUCCESSFULL
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
@@ -73,7 +71,7 @@ public class ApiController {
     private static void loadData(Context ctx, ConnectionPool connectionPool) {
 
         User activeUser = ctx.sessionAttribute("activeUser");
-        if(activeUser == null) {
+        if (activeUser == null) {
             ctx.status(401);
             return;
         }
@@ -85,6 +83,26 @@ public class ApiController {
         }
 
         ctx.status(200).result(jsonString);
+
+    }
+
+    private static void saveData(Context ctx, ConnectionPool connectionPool) {
+
+        User activeUser = ctx.sessionAttribute("activeUser");
+        if (activeUser == null) {
+            ctx.status(401);
+            return;
+        }
+
+        String jsonString = ctx.body();
+
+        int rowsAffected = Database.saveData(activeUser, jsonString, connectionPool);
+        if (rowsAffected != 1) {
+            ctx.status(500);
+            return;
+        }
+
+        ctx.status(200);
 
     }
 
