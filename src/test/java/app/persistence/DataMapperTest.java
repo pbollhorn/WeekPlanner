@@ -18,8 +18,22 @@ public class DataMapperTest extends AbstractMapperTest {
         User user = UserMapper.login(credentials, connectionPool);
         assertEquals("Test data for testuser2", DataMapper.loadData(user, connectionPool));
 
-        // null user
+        // Null user
         assertThrows(DatabaseException.class, () -> DataMapper.loadData(null, connectionPool));
+
+    }
+
+    @Test
+    void saveData() throws DatabaseException {
+
+        // Valid user
+        Credentials credentials = new Credentials("testuser2", "2222");
+        User user = UserMapper.login(credentials, connectionPool);
+        DataMapper.saveData(user, "new data written to database", connectionPool);
+        assertEquals("new data written to database", DataMapper.loadData(user, connectionPool));
+
+        // Null user
+        assertThrows(DatabaseException.class, () -> DataMapper.saveData(null, "new data written to database", connectionPool));
 
     }
 
