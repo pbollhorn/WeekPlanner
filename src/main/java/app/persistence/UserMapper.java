@@ -25,7 +25,7 @@ public class UserMapper {
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setString(1, credentials.username);
+            ps.setString(1, credentials.username());
 
             ResultSet result = ps.executeQuery();
             if (result.next()) {
@@ -34,7 +34,7 @@ public class UserMapper {
                 byte[] salt = result.getBytes(3);
 
                 // Compare password hashes
-                byte[] hashedPasswordFromUser = Cryptography.hashPassword(credentials.password, salt);
+                byte[] hashedPasswordFromUser = Cryptography.hashPassword(credentials.password(), salt);
                 if (Cryptography.compareHashes(hashedPasswordFromUser, hashedPasswordFromDB) == false) {
                     return null;
                 }
@@ -45,7 +45,7 @@ public class UserMapper {
                 user.userId = userId;
                 user.hashedPassword = hashedPasswordFromDB;
                 user.salt = salt;
-                user.encryptionKey = Cryptography.generateKey(credentials.password, salt);
+                user.encryptionKey = Cryptography.generateKey(credentials.password(), salt);
 
                 return user;
             }
@@ -69,7 +69,7 @@ public class UserMapper {
 
             // Execute prepared statement
             PreparedStatement statement = connection.prepareStatement("SELECT user_id FROM user_data WHERE username=?");
-            statement.setObject(1, credentials.username);
+            statement.setObject(1, credentials.username());
             ResultSet result = statement.executeQuery();
 
             int available = 1;
@@ -204,15 +204,15 @@ public class UserMapper {
 
             // Generate salt, hashed password and encryption key
             byte[] salt = Cryptography.generateSalt();
-            byte[] hashedPassword = Cryptography.hashPassword(credentials.password, salt);
-            SecretKey encryptionKey = Cryptography.generateKey(credentials.password, salt);
+            byte[] hashedPassword = Cryptography.hashPassword(credentials.password(), salt);
+            SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
 
             // Encrypt user data
             byte[] encryptedData = Cryptography.encrypt(jsonString, encryptionKey);
 
             // Execute prepared statement
             PreparedStatement statement = connection.prepareStatement("INSERT INTO user_data (username, password_hash, salt, encrypted_data) VALUES (?,?,?,?)");
-            statement.setString(1, credentials.username);
+            statement.setString(1, credentials.username());
             statement.setBytes(2, hashedPassword);
             statement.setBytes(3, salt);
             statement.setBytes(4, encryptedData);
