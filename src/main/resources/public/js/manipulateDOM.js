@@ -194,7 +194,7 @@ function createTask(description, doneStatus) {
 }
 
 
-// Go trough data object and build DOM
+// Go through data object and build DOM
 function buildViewFromData(data) {
 
     // Set the global variable mainElement to be the <main></main> of viewBodyHtml
@@ -221,7 +221,7 @@ function buildViewFromData(data) {
 
 }
 
-// Go trough DOM and build data object
+// Go through DOM and build data object
 function buildDataFromView() {
 
     const data = {
