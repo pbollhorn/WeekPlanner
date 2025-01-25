@@ -1,16 +1,16 @@
 package app.controllers;
 
-import app.exceptions.DatabaseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.persistence.DataMapper;
 import app.entities.Credentials;
 import app.entities.User;
 import app.persistence.ConnectionPool;
+import app.exceptions.DatabaseException;
+import app.persistence.UserMapper;
 
 public class ApiController {
 
@@ -32,7 +32,7 @@ public class ApiController {
         }
 
         try {
-            User activeUser = DataMapper.login(credentials, connectionPool);
+            User activeUser = UserMapper.login(credentials, connectionPool);
             if (activeUser == null) {
                 ctx.status(401);
                 return;
@@ -53,12 +53,12 @@ public class ApiController {
             // Use ObjectMapper to parse the incoming JSON body into a Credentials object
             Credentials credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
 
-            if (DataMapper.usernameAvailable(credentials, connectionPool) != 1) {
+            if (UserMapper.usernameAvailable(credentials, connectionPool) != 1) {
                 ctx.status(409);
                 return;
             }
 
-            DataMapper.createUser(credentials, connectionPool);
+            UserMapper.createUser(credentials, connectionPool);
 
             // WE JUST ASSUME EVERYTHING IS SUCCESSFULL
 
