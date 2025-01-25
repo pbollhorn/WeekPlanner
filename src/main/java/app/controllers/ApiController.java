@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.exceptions.DatabaseException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -93,15 +94,13 @@ public class ApiController {
             return;
         }
 
-        String jsonString = ctx.body();
+        String data = ctx.body();
 
-        int rowsAffected = DataMapper.saveData(activeUser, jsonString, connectionPool);
-        if (rowsAffected != 1) {
+        try {
+            DataMapper.saveData(activeUser, data, connectionPool);
+        } catch (DatabaseException e) {
             ctx.status(500);
-            return;
         }
-
-        ctx.status(200);
 
     }
 

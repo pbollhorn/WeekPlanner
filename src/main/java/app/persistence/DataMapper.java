@@ -3,53 +3,39 @@ package app.persistence;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 import javax.crypto.SecretKey;
 
 import app.entities.User;
 import app.entities.Credentials;
+import app.exceptions.DatabaseException;
 import app.services.Cryptography;
 
 public class DataMapper {
 
-//    public static DataSource connectionPool;
+    public static void saveData(User user, String data, ConnectionPool connectionPool) throws DatabaseException {
 
-//    public static void init() {
-//
-//        try {
-//            connectionPool = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/WeekPlannerDB");
-//        } catch (NamingException e) {
-//            e.printStackTrace();
-//        }
-//    }
+        String sql = "UPDATE user_data SET encrypted_data=? WHERE user_id=? AND password_hash=?";
 
-    // Return 1 on success, return 0 on failure
-    public static int saveData(User user, String jsonString, ConnectionPool connectionPool) {
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-        try {
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-            System.out.println("Connected to PostgreSQL");
+            byte[] encryptedData = Cryptography.encrypt(data, user.encryptionKey);
 
-            byte[] encryptedData = Cryptography.encrypt(jsonString, user.encryptionKey);
+            ps.setBytes(1, encryptedData);
+            ps.setInt(2, user.userId);
+            ps.setBytes(3, user.hashedPassword);
 
-            // Update user_data via prepared statement
-            PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET encrypted_data=? WHERE user_id=? AND password_hash=?");
-            statement.setBytes(1, encryptedData);
-            statement.setInt(2, user.userId);
-            statement.setBytes(3, user.hashedPassword);
-            int rowsAffected = statement.executeUpdate();
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DatabaseException("Error saving data to database: Nothing written to database");
+            }
+            if (rowsAffected > 1) {
+                throw new DatabaseException("Error saving data to database: More than one row affected!!!");
+            }
 
-            // Close connection
-            statement.close();
-            connection.close();
-
-            return rowsAffected;
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-            return 0;
+        } catch (SQLException e) {
+            throw new DatabaseException("Error saving data to database: " + e.getMessage());
         }
 
     }
