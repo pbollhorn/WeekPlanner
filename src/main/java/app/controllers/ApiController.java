@@ -51,27 +51,21 @@ public class ApiController {
 
     private static void createUser(Context ctx, ConnectionPool connectionPool) {
 
-        // TODO: Better exception handling using the Jackson exceptions
+        Credentials credentials;
         try {
+            credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
+        } catch (JsonProcessingException e) {
+            ctx.status(400);
+            return;
+        }
 
-            // Use ObjectMapper to parse the incoming JSON body into a Credentials object
-            Credentials credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
-
-            if (UserMapper.isUsernameAvailable(credentials, connectionPool) != 1) {
-                ctx.status(409);
-                return;
-            }
-
+        try {
             UserMapper.createUser(credentials, connectionPool);
-
-            // WE JUST ASSUME EVERYTHING IS SUCCESSFULL
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (DatabaseException e) {
+            ctx.status(500);
         }
 
     }
-
 
     private static void loadData(Context ctx, ConnectionPool connectionPool) {
 

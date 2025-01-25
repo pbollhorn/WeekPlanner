@@ -83,139 +83,106 @@ public class UserMapper {
 
     }
 
-    // Return 1 if username is available, 0 if taken, -1 if there was an error
-    public static int isUsernameAvailable(Credentials credentials, ConnectionPool connectionPool) {
+//    public static int deleteUser(User user, ConnectionPool connectionPool) {
+//
+//        try {
+//
+//            Connection connection = connectionPool.getConnection();
+//
+//            PreparedStatement statement = connection.prepareStatement("DELETE FROM user_data WHERE user_id = ?");
+//            statement.setInt(1, user.userId());
+//            int rowsAffected = statement.executeUpdate();
+//
+//            statement.close();
+//            connection.close();
+//
+//            return rowsAffected;
+//
+//        } catch (Exception e) {
+//
+//            System.out.println("Error in connecting to PostgreSQL server");
+//            e.printStackTrace();
+//
+//            return 0;
+//        }
+//
+//    }
 
-        try {
+//    public static int changeUsername(User user, String newUsername, ConnectionPool connectionPool) {
+//
+//        try {
+//
+//            // Establish connection
+//            Connection connection = connectionPool.getConnection();
+//
+//            // Execute prepared statement
+//            PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET username=? WHERE user_id=?");
+//            statement.setString(1, newUsername);
+//            statement.setInt(2, user.userId());
+//            int rowsAffected = statement.executeUpdate();
+//
+//            // Close connection
+//            statement.close();
+//            connection.close();
+//
+//            if (rowsAffected != 1) {
+//                return -1;
+//            }
+//
+//            return 1;
+//
+//        } catch (Exception e) {
+//            System.out.println("Error in connecting to PostgreSQL server");
+//            e.printStackTrace();
+//
+//            return -1;
+//        }
+//
+//    }
 
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-
-            // Execute prepared statement
-            PreparedStatement statement = connection.prepareStatement("SELECT user_id FROM user_data WHERE username=?");
-            statement.setObject(1, credentials.username());
-            ResultSet result = statement.executeQuery();
-
-            int available = 1;
-            if (result.next()) {
-                available = 0;
-            }
-
-            // Close connection
-            statement.close();
-            connection.close();
-
-            return available;
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-
-            return -1;
-        }
-
-    }
-
-    public static int deleteUser(User user, ConnectionPool connectionPool) {
-
-        try {
-
-            Connection connection = connectionPool.getConnection();
-
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM user_data WHERE user_id = ?");
-            statement.setInt(1, user.userId());
-            int rowsAffected = statement.executeUpdate();
-
-            statement.close();
-            connection.close();
-
-            return rowsAffected;
-
-        } catch (Exception e) {
-
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-
-            return 0;
-        }
-
-    }
-
-    public static int changeUsername(User user, String newUsername, ConnectionPool connectionPool) {
-
-        try {
-
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-
-            // Execute prepared statement
-            PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET username=? WHERE user_id=?");
-            statement.setString(1, newUsername);
-            statement.setInt(2, user.userId());
-            int rowsAffected = statement.executeUpdate();
-
-            // Close connection
-            statement.close();
-            connection.close();
-
-            if (rowsAffected != 1) {
-                return -1;
-            }
-
-            return 1;
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-
-            return -1;
-        }
-
-    }
-
-    public static int changePassword(User user, String newPassword, ConnectionPool connectionPool) {
-
-        try {
-
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-
-            // Get unencrypted userdata
-            String jsonString = DataMapper.loadData(user, connectionPool);
-
-            // Salt and hash new password and create new encryption key
-            byte[] hashedPassword = Cryptography.hashPassword(newPassword, user.salt());
-            SecretKey encryptionKey = Cryptography.generateKey(newPassword, user.salt());
-
-            // Encrypt user data with new encryption key
-            byte[] encryptedData = Cryptography.encrypt(jsonString, encryptionKey);
-
-            // Execute prepared statement
-            PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET password_hash=?, encrypted_data=? WHERE user_id=?");
-            statement.setBytes(1, hashedPassword);
-            statement.setBytes(2, encryptedData);
-            statement.setInt(3, user.userId());
-            int rowsAffected = statement.executeUpdate();
-
-            // Close connection
-            statement.close();
-            connection.close();
-
-            if (rowsAffected != 1) {
-                return -1;
-            }
-
-//            TODO: Fix this beacuse User is now a record
-//            user.hashedPassword = hashedPassword;
-//            user.encryptionKey = encryptionKey;
-            return 1;
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-
-            return -1;
-        }
-    }
+//    public static int changePassword(User user, String newPassword, ConnectionPool connectionPool) {
+//
+//        try {
+//
+//            // Establish connection
+//            Connection connection = connectionPool.getConnection();
+//
+//            // Get unencrypted userdata
+//            String jsonString = DataMapper.loadData(user, connectionPool);
+//
+//            // Salt and hash new password and create new encryption key
+//            byte[] hashedPassword = Cryptography.hashPassword(newPassword, user.salt());
+//            SecretKey encryptionKey = Cryptography.generateKey(newPassword, user.salt());
+//
+//            // Encrypt user data with new encryption key
+//            byte[] encryptedData = Cryptography.encrypt(jsonString, encryptionKey);
+//
+//            // Execute prepared statement
+//            PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET password_hash=?, encrypted_data=? WHERE user_id=?");
+//            statement.setBytes(1, hashedPassword);
+//            statement.setBytes(2, encryptedData);
+//            statement.setInt(3, user.userId());
+//            int rowsAffected = statement.executeUpdate();
+//
+//            // Close connection
+//            statement.close();
+//            connection.close();
+//
+//            if (rowsAffected != 1) {
+//                return -1;
+//            }
+//
+////            TODO: Fix this beacuse User is now a record
+////            user.hashedPassword = hashedPassword;
+////            user.encryptionKey = encryptionKey;
+//            return 1;
+//
+//        } catch (Exception e) {
+//            System.out.println("Error in connecting to PostgreSQL server");
+//            e.printStackTrace();
+//
+//            return -1;
+//        }
+//    }
 
 }
