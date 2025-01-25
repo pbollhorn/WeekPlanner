@@ -3,7 +3,6 @@ package app.persistence;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.crypto.SecretKey;
 
 import app.entities.User;
@@ -69,60 +68,46 @@ public class DataMapper {
      * Attempt to login.
      *
      * @param credentials Username and password
-     * @return User object on success, null on failure
+     * @return User object on success, null if credentials are wrong
      */
-    public static User login(Credentials credentials, ConnectionPool connectionPool) {
+    public static User login(Credentials credentials, ConnectionPool connectionPool) throws DatabaseException {
 
-        try {
+        String sql = "SELECT user_id, password_hash, salt FROM user_data WHERE username=?";
 
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            // Get hashed password and salt from DB
-            PreparedStatement statement = connection.prepareStatement("SELECT user_id, password_hash, salt FROM user_data WHERE username=?");
-            statement.setString(1, credentials.username);
-            ResultSet result = statement.executeQuery();
+            ps.setString(1, credentials.username);
 
-            int userId;
-            byte[] hashedPasswordFromDB;
-            byte[] salt;
+            ResultSet result = ps.executeQuery();
             if (result.next()) {
-                userId = result.getInt(1);
-                hashedPasswordFromDB = result.getBytes(2);
-                salt = result.getBytes(3);
-            } else {
-                // Close connection
-                statement.close();
-                connection.close();
-                return null;
+                int userId = result.getInt(1);
+                byte[] hashedPasswordFromDB = result.getBytes(2);
+                byte[] salt = result.getBytes(3);
+
+                // Compare password hashes
+                byte[] hashedPasswordFromUser = Cryptography.hashPassword(credentials.password, salt);
+                if (Cryptography.compareHashes(hashedPasswordFromUser, hashedPasswordFromDB) == false) {
+                    return null;
+                }
+
+                // Save hashedPassword and salt to user
+                // and generate key and also store in user
+                User user = new User();
+                user.userId = userId;
+                user.hashedPassword = hashedPasswordFromDB;
+                user.salt = salt;
+                user.encryptionKey = Cryptography.generateKey(credentials.password, salt);
+
+                return user;
             }
-
-            // Close connection
-            statement.close();
-            connection.close();
-
-            // Compare password hashes
-            byte[] hashedPasswordFromUser = Cryptography.hashPassword(credentials.password, salt);
-            if (Cryptography.compareHashes(hashedPasswordFromUser, hashedPasswordFromDB) == false) {
-                return null;
-            }
-
-            // Save hashedPassword and salt to user
-            // and generate key and also store in user
-            User user = new User();
-            user.userId = userId;
-            user.hashedPassword = hashedPasswordFromDB;
-            user.salt = salt;
-            user.encryptionKey = Cryptography.generateKey(credentials.password, salt);
-
-            return user;
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
 
             return null;
+
+        } catch (Exception e) {
+            throw new DatabaseException("Error in login: " + e.getMessage());
         }
+
 
     }
 

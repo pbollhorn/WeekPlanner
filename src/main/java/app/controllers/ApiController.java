@@ -1,6 +1,8 @@
 package app.controllers;
 
 import app.exceptions.DatabaseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,24 +23,23 @@ public class ApiController {
 
     private static void login(Context ctx, ConnectionPool connectionPool) {
 
-        // TODO: Better exception handling using the Jackson exceptions
+        Credentials credentials;
         try {
+            credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
+        } catch (JsonProcessingException e) {
+            ctx.status(400);
+            return;
+        }
 
-            // Use ObjectMapper to parse the incoming JSON body into a Credentials object
-            Credentials credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
-
-            // Attempt to login
+        try {
             User activeUser = DataMapper.login(credentials, connectionPool);
             if (activeUser == null) {
                 ctx.status(401);
                 return;
             }
-
             ctx.sessionAttribute("activeUser", activeUser);
-            ctx.status(200);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (DatabaseException e) {
+            ctx.status(500);
         }
 
     }
