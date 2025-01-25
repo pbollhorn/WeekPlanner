@@ -17,13 +17,13 @@ public class DataMapper {
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, user.userId);
-            ps.setBytes(2, user.hashedPassword);
+            ps.setInt(1, user.userId());
+            ps.setBytes(2, user.hashedPassword());
 
             ResultSet result = ps.executeQuery();
             if (result.next()) {
                 byte[] encryptedData = result.getBytes(1);
-                String data = Cryptography.decrypt(encryptedData, user.encryptionKey);
+                String data = Cryptography.decrypt(encryptedData, user.encryptionKey());
                 return data;
             }
 
@@ -42,11 +42,11 @@ public class DataMapper {
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            byte[] encryptedData = Cryptography.encrypt(data, user.encryptionKey);
+            byte[] encryptedData = Cryptography.encrypt(data, user.encryptionKey());
 
             ps.setBytes(1, encryptedData);
-            ps.setInt(2, user.userId);
-            ps.setBytes(3, user.hashedPassword);
+            ps.setInt(2, user.userId());
+            ps.setBytes(3, user.hashedPassword());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {

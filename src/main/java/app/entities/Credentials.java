@@ -1,3 +1,4 @@
 package app.entities;
 
-public record Credentials (String username, String password) {}
+public record Credentials(String username, String password) {
+}

@@ -18,13 +18,13 @@ public class UserMapperTest extends AbstractMapperTest {
         Credentials credentials = new Credentials("testuser1", "1111");
         User user = UserMapper.login(credentials, connectionPool);
         assertNotNull(user);
-        assertEquals(1, user.userId);
+        assertEquals(1, user.userId());
 
         // Another valid login
         credentials = new Credentials("testuser2", "2222");
         user = UserMapper.login(credentials, connectionPool);
         assertNotNull(user);
-        assertEquals(2, user.userId);
+        assertEquals(2, user.userId());
 
         // Valid username and invalid password
         credentials = new Credentials("testuser2", "WrongPassword");

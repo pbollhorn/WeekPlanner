@@ -39,15 +39,9 @@ public class UserMapper {
                     return null;
                 }
 
-                // Save hashedPassword and salt to user
-                // and generate key and also store in user
-                User user = new User();
-                user.userId = userId;
-                user.hashedPassword = hashedPasswordFromDB;
-                user.salt = salt;
-                user.encryptionKey = Cryptography.generateKey(credentials.password(), salt);
-
-                return user;
+                // Save hashedPassword and salt to user and generate key and also store in user
+                SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
+                return new User(userId, hashedPasswordFromDB, salt, encryptionKey);
             }
 
             return null;
@@ -99,7 +93,7 @@ public class UserMapper {
             Connection connection = connectionPool.getConnection();
 
             PreparedStatement statement = connection.prepareStatement("DELETE FROM user_data WHERE user_id = ?");
-            statement.setInt(1, user.userId);
+            statement.setInt(1, user.userId());
             int rowsAffected = statement.executeUpdate();
 
             statement.close();
@@ -127,7 +121,7 @@ public class UserMapper {
             // Execute prepared statement
             PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET username=? WHERE user_id=?");
             statement.setString(1, newUsername);
-            statement.setInt(2, user.userId);
+            statement.setInt(2, user.userId());
             int rowsAffected = statement.executeUpdate();
 
             // Close connection
@@ -160,8 +154,8 @@ public class UserMapper {
             String jsonString = DataMapper.loadData(user, connectionPool);
 
             // Salt and hash new password and create new encryption key
-            byte[] hashedPassword = Cryptography.hashPassword(newPassword, user.salt);
-            SecretKey encryptionKey = Cryptography.generateKey(newPassword, user.salt);
+            byte[] hashedPassword = Cryptography.hashPassword(newPassword, user.salt());
+            SecretKey encryptionKey = Cryptography.generateKey(newPassword, user.salt());
 
             // Encrypt user data with new encryption key
             byte[] encryptedData = Cryptography.encrypt(jsonString, encryptionKey);
@@ -170,7 +164,7 @@ public class UserMapper {
             PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET password_hash=?, encrypted_data=? WHERE user_id=?");
             statement.setBytes(1, hashedPassword);
             statement.setBytes(2, encryptedData);
-            statement.setInt(3, user.userId);
+            statement.setInt(3, user.userId());
             int rowsAffected = statement.executeUpdate();
 
             // Close connection
@@ -181,8 +175,9 @@ public class UserMapper {
                 return -1;
             }
 
-            user.hashedPassword = hashedPassword;
-            user.encryptionKey = encryptionKey;
+//            TODO: Fix this beacuse User is now a record
+//            user.hashedPassword = hashedPassword;
+//            user.encryptionKey = encryptionKey;
             return 1;
 
         } catch (Exception e) {
