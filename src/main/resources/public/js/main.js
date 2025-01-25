@@ -13,11 +13,5 @@ let unsavedChanges = false;
 let selectedTask;
 let mainElement;
 
-
 // From requests.js
-let loginBodyHtml;
-let trialBodyHtml;
-let viewBodyHtml;
-let menuBodyHtml;
-let accountBodyHtml;
 loadSite();
