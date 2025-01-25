@@ -40,41 +40,28 @@ public class DataMapper {
 
     }
 
-    // Return jsonString on success, return null on failure
-    public static String loadData(User user, ConnectionPool connectionPool) {
+    public static String loadData(User user, ConnectionPool connectionPool) throws DatabaseException {
 
-        String jsonString = null;
+        String sql = "SELECT encrypted_data FROM user_data WHERE user_id=? AND password_hash=?";
 
-        try {
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-            System.out.println("Connected to PostgreSQL");
+            ps.setInt(1, user.userId);
+            ps.setBytes(2, user.hashedPassword);
 
-            // Get encryptedData from user_data via prepared statement
-            PreparedStatement statement = connection.prepareStatement("SELECT encrypted_data FROM user_data WHERE user_id=? AND password_hash=?");
-            statement.setInt(1, user.userId);
-            statement.setBytes(2, user.hashedPassword);
-            ResultSet result = statement.executeQuery();
-
-            byte[] encryptedData = null;
-            while (result.next()) {
-                encryptedData = result.getBytes(1);
+            ResultSet result = ps.executeQuery();
+            if (result.next()) {
+                byte[] encryptedData = result.getBytes(1);
+                String data = Cryptography.decrypt(encryptedData, user.encryptionKey);
+                return data;
             }
 
-            // Decrypt the data
-            jsonString = Cryptography.decrypt(encryptedData, user.encryptionKey);
+            throw new DatabaseException("Error loading data from database: Nothing read from database");
 
-            // Close connection
-            statement.close();
-            connection.close();
-
-        } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error loading data from database: " + e.getMessage());
         }
-
-        return jsonString;
 
     }
 

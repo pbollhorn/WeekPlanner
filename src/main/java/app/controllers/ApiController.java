@@ -76,13 +76,12 @@ public class ApiController {
             return;
         }
 
-        String jsonString = DataMapper.loadData(activeUser, connectionPool);
-        if (jsonString == null) {
+        try {
+            String data = DataMapper.loadData(activeUser, connectionPool);
+            ctx.result(data);
+        } catch (DatabaseException e) {
             ctx.status(500);
-            return;
         }
-
-        ctx.status(200).result(jsonString);
 
     }
 
