@@ -3,18 +3,14 @@ package app.persistence;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.crypto.SecretKey;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import app.entities.User;
 import app.entities.Credentials;
 import app.services.Cryptography;
 
-public class Database {
+public class DataMapper {
 
 //    public static DataSource connectionPool;
 
@@ -255,7 +251,7 @@ public class Database {
             Connection connection = connectionPool.getConnection();
 
             // Get unencrypted userdata
-            String jsonString = Database.loadData(user, connectionPool);
+            String jsonString = DataMapper.loadData(user, connectionPool);
 
             // Salt and hash new password and create new encryption key
             byte[] hashedPassword = Cryptography.hashPassword(newPassword, user.salt);

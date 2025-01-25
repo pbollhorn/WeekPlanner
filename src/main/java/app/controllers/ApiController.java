@@ -1,11 +1,10 @@
 package app.controllers;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import app.persistence.Database;
+import app.persistence.DataMapper;
 import app.entities.Credentials;
 import app.entities.User;
 import app.persistence.ConnectionPool;
@@ -28,7 +27,7 @@ public class ApiController {
             Credentials credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
 
             // Attempt to login
-            User activeUser = Database.login(credentials, connectionPool);
+            User activeUser = DataMapper.login(credentials, connectionPool);
             if (activeUser == null) {
                 ctx.status(401);
                 return;
@@ -52,12 +51,12 @@ public class ApiController {
             // Use ObjectMapper to parse the incoming JSON body into a Credentials object
             Credentials credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
 
-            if (Database.usernameAvailable(credentials, connectionPool) != 1) {
+            if (DataMapper.usernameAvailable(credentials, connectionPool) != 1) {
                 ctx.status(409);
                 return;
             }
 
-            Database.createUser(credentials, connectionPool);
+            DataMapper.createUser(credentials, connectionPool);
 
             // WE JUST ASSUME EVERYTHING IS SUCCESSFULL
 
@@ -76,7 +75,7 @@ public class ApiController {
             return;
         }
 
-        String jsonString = Database.loadData(activeUser, connectionPool);
+        String jsonString = DataMapper.loadData(activeUser, connectionPool);
         if (jsonString == null) {
             ctx.status(500);
             return;
@@ -96,7 +95,7 @@ public class ApiController {
 
         String jsonString = ctx.body();
 
-        int rowsAffected = Database.saveData(activeUser, jsonString, connectionPool);
+        int rowsAffected = DataMapper.saveData(activeUser, jsonString, connectionPool);
         if (rowsAffected != 1) {
             ctx.status(500);
             return;
