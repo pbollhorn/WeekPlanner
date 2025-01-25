@@ -30,8 +30,7 @@ function markTaskDone() {
     if (doneStatus === false) {
         selectedTask.setAttribute("data-done-status", "true");
         selectedTask.querySelector("div").style.backgroundColor = myGreen;
-    }
-    else {
+    } else {
         selectedTask.setAttribute("data-done-status", "false");
         selectedTask.querySelector("div").style.backgroundColor = myYellow;
     }
@@ -67,12 +66,10 @@ function moveTaskDown() {
 
 
 function addTask() {
-
     let newTask = createTask("", false);
     selectedTask.insertAdjacentElement("afterend", newTask);
     selectTask(newTask);
     setUnsavedChangesToTrue();
-
 }
 
 // This function is used by other functions,
@@ -145,7 +142,10 @@ function createTask(description, doneStatus) {
     // The front div
     // onclick event is used to select task
     const frontDiv = document.createElement("div");
-    frontDiv.onclick = function() { console.log("onclick"); selectTask(this.parentElement) };
+    frontDiv.onclick = function () {
+        console.log("onclick");
+        selectTask(this.parentElement)
+    };
     task.appendChild(frontDiv);
 
     // Set custom "data-done-status" attribute for task
@@ -153,8 +153,7 @@ function createTask(description, doneStatus) {
     if (doneStatus === true) {
         task.setAttribute("data-done-status", "true");
         backDiv.style.backgroundColor = myGreen;
-    }
-    else {
+    } else {
         task.setAttribute("data-done-status", "false");
         backDiv.style.backgroundColor = myYellow;
     }
@@ -163,30 +162,41 @@ function createTask(description, doneStatus) {
     // oninput event for inputElement:
     // Fires everytime user types character.
     // This is necessary to set unsaved changes to true.
-    inputElement.oninput = function() { console.log("oninput"); setUnsavedChangesToTrue() };
+    inputElement.oninput = function () {
+        console.log("oninput");
+        setUnsavedChangesToTrue()
+    };
 
     // onkeydown event for inputElement:
     // To detect if user presses Enter, and then blur inputElement.
     // This is in order for desktop devices to have
     // same behavior as mobile devices when Enter is pressed.
-    inputElement.onkeydown = function(event) {
-        if (event.key === "Enter") { console.log("onkeydown"); this.blur(); }
+    inputElement.onkeydown = function (event) {
+        if (event.key === "Enter") {
+            console.log("onkeydown");
+            this.blur();
+        }
     };
 
     // onfocus event for inputElement:
     // This is important for mobile devices.
     // Because pressing Enter om mobile devices will give the input element below focus.
     // This blurs inputElement if it got focus that way.
-    inputElement.onfocus = function() {
+    inputElement.onfocus = function () {
         console.log("onfocus");
-        if (this !== selectedTask.querySelector("input")) { this.blur(); }
+        if (this !== selectedTask.querySelector("input")) {
+            this.blur();
+        }
     };
 
     // onblur event for inputElement:
     // Makes front div reappear.
     // This ensures that the cursor in inputElement is set at the end of the text,
     // also after user presses e.g. "Save" button and then clicks on this task again.
-    inputElement.onblur = function() { console.log("onblur"); this.parentElement.nextElementSibling.style.display = "block"; };
+    inputElement.onblur = function () {
+        console.log("onblur");
+        this.parentElement.nextElementSibling.style.display = "block";
+    };
 
 
     return task;
@@ -195,9 +205,9 @@ function createTask(description, doneStatus) {
 
 
 // Go through data object and build DOM
-function buildViewFromData(data) {
+function buildDOMFromData(data) {
 
-    // Set the global variable mainElement to be the <main></main> of viewBodyHtml
+    // Set the global variable mainElement to be <main></main>
     mainElement = document.querySelector("main");
 
     // Loop through lists in data
@@ -222,7 +232,7 @@ function buildViewFromData(data) {
 }
 
 // Go through DOM and build data object
-function buildDataFromView() {
+function buildDataFromDOM() {
 
     const data = {
         lists: []
@@ -268,8 +278,7 @@ function stringToBoolean(string) {
 
     if (lowerCaseString === "true") {
         return true;
-    }
-    else if (lowerCaseString === "false") {
+    } else if (lowerCaseString === "false") {
         return false;
     }
 
@@ -284,4 +293,21 @@ function setUnsavedChangesToTrue() {
         unsavedChanges = true;
         setMessage("Unsaved changes", false);
     }
+}
+
+
+// This function writes to div with id "message"
+// Both plan.html and login.html have such a div
+function setMessage(text, error) {
+
+    const message = document.getElementById("message");
+
+    if (error === true) {
+        message.style.color = "red";
+    } else {
+        message.style.color = "black";
+    }
+
+    message.innerText = text;
+
 }

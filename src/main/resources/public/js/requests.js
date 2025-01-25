@@ -59,7 +59,7 @@ function loadData() {
 
         if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
-            buildViewFromData(data);
+            buildDOMFromData(data);
         } else if (xhr.status === 401) {
             document.body.innerHTML = loginBodyHtml;
         } else {
@@ -73,7 +73,7 @@ function loadData() {
 
 function saveData() {
 
-    const data = buildDataFromView();
+    const data = buildDataFromDOM();
 
     setMessage("Saving...", false);
 
@@ -132,22 +132,5 @@ function logout() {
         }
 
     });
-
-}
-
-
-// This function writes to div with id "message"
-// Both plan.html and login.html have such a div
-function setMessage(text, error) {
-
-    const message = document.getElementById("message");
-
-    if (error === true) {
-        message.style.color = "red";
-    } else {
-        message.style.color = "black";
-    }
-
-    message.innerText = text;
 
 }

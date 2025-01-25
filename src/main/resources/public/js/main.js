@@ -15,7 +15,3 @@ let mainElement;
 
 // From requests.js
 loadSite();
-
-
-
-
