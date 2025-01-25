@@ -12,7 +12,7 @@ public class PageController {
         app.get("plan", ctx -> showPage("plan", ctx));
         app.get("login", ctx -> showPage("login", ctx));
         app.get("create-account", ctx -> showPage("create-account", ctx));
-        app.get("account", ctx -> showPage("account", ctx));
+        app.get("account-menu", ctx -> showPage("account-menu", ctx));
     }
 
     private static void showPage(String path, Context ctx) {
