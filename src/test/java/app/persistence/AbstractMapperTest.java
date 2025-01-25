@@ -1,7 +1,8 @@
 package app.persistence;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import app.entities.Credentials;
@@ -18,23 +19,26 @@ public class AbstractMapperTest {
     @BeforeEach
     public void setUpDatabase() {
 
+        String pathToSqlFile = "src/main/resources/sql/WeekPlannerDB.sql";
+
         try (Connection connection = connectionPool.getConnection();
              Statement stmt = connection.createStatement()) {
 
             stmt.execute("""
-                    DROP TABLE IF EXISTS user_data;
-                    CREATE TABLE user_data
-                    (
-                        LIKE public.user_data INCLUDING DEFAULTS INCLUDING INDEXES INCLUDING CONSTRAINTS
-                    );
+                    DROP SCHEMA IF EXISTS test CASCADE;
+                    CREATE SCHEMA test;
                     """);
 
-            Credentials credentials = new Credentials("testuser", "1234");
+            String sql = new String(Files.readAllBytes(Paths.get(pathToSqlFile)));
+            stmt.execute(sql);
 
-        } catch (SQLException e) {
+            UserMapper.createUser(new Credentials("testuser1", "1111"), connectionPool);
+            UserMapper.createUser(new Credentials("testuser2", "2222"), connectionPool);
+            UserMapper.createUser(new Credentials("testuser3", "3333"), connectionPool);
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
 
     }
 }
