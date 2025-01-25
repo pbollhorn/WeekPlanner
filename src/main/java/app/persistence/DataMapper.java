@@ -34,7 +34,7 @@ public class DataMapper {
                 throw new DatabaseException("Error saving data to database: More than one row affected!!!");
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new DatabaseException("Error saving data to database: " + e.getMessage());
         }
 
@@ -59,7 +59,7 @@ public class DataMapper {
 
             throw new DatabaseException("Error loading data from database: Nothing read from database");
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new DatabaseException("Error loading data from database: " + e.getMessage());
         }
 
