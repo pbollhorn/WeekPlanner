@@ -1,0 +1,53 @@
+{
+  "lists": [
+    {
+      "name": "Monday",
+      "tasks": [
+        {
+          "description": "This is your new user",
+          "done": false
+        }
+      ]
+    },
+    {
+      "name": "Tuesday",
+      "tasks": []
+    },
+    {
+      "name": "Wednesday",
+      "tasks": []
+    },
+    {
+      "name": "Thursday",
+      "tasks": []
+    },
+    {
+      "name": "Friday",
+      "tasks": []
+    },
+    {
+      "name": "Saturday",
+      "tasks": []
+    },
+    {
+      "name": "Sunday",
+      "tasks": []
+    },
+    {
+      "name": "Next Week",
+      "tasks": []
+    },
+    {
+      "name": "Within a Month",
+      "tasks": []
+    },
+    {
+      "name": "Within a Year",
+      "tasks": []
+    },
+    {
+      "name": "Shopping",
+      "tasks": []
+    }
+  ]
+}

@@ -21,8 +21,6 @@ public class AbstractMapperTest {
     @BeforeEach
     public void setUpDatabase() {
 
-        String pathToSqlFile = "src/main/resources/sql/WeekPlannerDB.sql";
-
         try (Connection connection = connectionPool.getConnection();
              Statement stmt = connection.createStatement()) {
 
@@ -31,6 +29,7 @@ public class AbstractMapperTest {
                     CREATE SCHEMA test;
                     """);
 
+            String pathToSqlFile = "src/main/resources/sql/WeekPlannerDB.sql";
             String sql = new String(Files.readAllBytes(Paths.get(pathToSqlFile)));
             stmt.execute(sql);
 

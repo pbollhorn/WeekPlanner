@@ -1,5 +1,7 @@
 package app.persistence;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -64,7 +66,7 @@ public class UserMapper {
             SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
 
             String data = """
-                    {"lists":[{"name":"Monday","tasks":[{"description":"Dette er din test bruger","done":false}]},{"name":"Tuesday","tasks":[]},{"name":"Wednesday","tasks":[]},{"name":"Thursday","tasks":[]},{"name":"Friday","tasks":[]},{"name":"Saturday","tasks":[]},{"name":"Sunday","tasks":[]},{"name":"Next Week","tasks":[]},{"name":"Within a Month","tasks":[]},{"name":"Within a Year","tasks":[]},{"name":"Shopping","tasks":[]}]}""";
+                    {"lists":[{"name":"Monday","tasks":[{"description":"This is your new user","done":false}]},{"name":"Tuesday","tasks":[]},{"name":"Wednesday","tasks":[]},{"name":"Thursday","tasks":[]},{"name":"Friday","tasks":[]},{"name":"Saturday","tasks":[]},{"name":"Sunday","tasks":[]},{"name":"Next Week","tasks":[]},{"name":"Within a Month","tasks":[]},{"name":"Within a Year","tasks":[]},{"name":"Shopping","tasks":[]}]}""";
             byte[] encryptedData = Cryptography.encrypt(data, encryptionKey);
 
             ps.setString(1, credentials.username());
