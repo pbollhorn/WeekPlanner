@@ -12,8 +12,8 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
+
         <javalin.version>6.1.3</javalin.version>
         <javalin-rendering.version>6.1.3</javalin-rendering.version>
         <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
@@ -25,6 +25,8 @@
         <hamcrest.version>2.2</hamcrest.version>
         <postgresql.version>42.7.2</postgresql.version>
 
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -99,8 +101,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
