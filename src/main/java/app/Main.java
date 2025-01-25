@@ -24,6 +24,6 @@ public class Main {
         }).start(7070);
 
         ApiController.addRoutes(app, connectionPool);
-        PageController.addRoutes(app, connectionPool);
+        PageController.addRoutes(app);
     }
 }

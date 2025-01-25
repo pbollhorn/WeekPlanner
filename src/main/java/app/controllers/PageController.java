@@ -3,21 +3,20 @@ package app.controllers;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
-import app.persistence.ConnectionPool;
 import app.entities.User;
 
 public class PageController {
 
-    public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-        app.get("/", ctx -> showPage("plan", ctx, connectionPool));
-        app.get("plan", ctx -> showPage("plan", ctx, connectionPool));
-        app.get("login", ctx -> showPage("login", ctx, connectionPool));
-        app.get("trial", ctx -> showPage("trial", ctx, connectionPool));
-        app.get("account", ctx -> showPage("account", ctx, connectionPool));
-        app.get("menu", ctx -> showPage("menu", ctx, connectionPool));
+    public static void addRoutes(Javalin app) {
+        app.get("/", ctx -> showPage("plan", ctx));
+        app.get("plan", ctx -> showPage("plan", ctx));
+        app.get("login", ctx -> showPage("login", ctx));
+        app.get("trial", ctx -> showPage("trial", ctx));
+        app.get("account", ctx -> showPage("account", ctx));
+        app.get("menu", ctx -> showPage("menu", ctx));
     }
 
-    private static void showPage(String path, Context ctx, ConnectionPool connectionPool) {
+    private static void showPage(String path, Context ctx) {
 
         // Allow any page to be shown if user is logged in
         User activeUser = ctx.sessionAttribute("activeUser");
