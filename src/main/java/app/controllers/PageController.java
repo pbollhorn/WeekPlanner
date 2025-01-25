@@ -8,11 +8,14 @@ import app.entities.User;
 public class PageController {
 
     public static void addRoutes(Javalin app) {
-        app.get("/", ctx -> showPage("plan", ctx));
+        app.get("/", ctx -> ctx.redirect("plan"));
         app.get("plan", ctx -> showPage("plan", ctx));
         app.get("login", ctx -> showPage("login", ctx));
         app.get("create-account", ctx -> showPage("create-account", ctx));
         app.get("account-menu", ctx -> showPage("account-menu", ctx));
+        app.get("change-username", ctx -> showPage("change-username", ctx));
+        app.get("change-password", ctx -> showPage("change-password", ctx));
+        app.get("delete-account", ctx -> showPage("delete-account", ctx));
     }
 
     private static void showPage(String path, Context ctx) {
