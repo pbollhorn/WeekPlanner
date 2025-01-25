@@ -13,8 +13,12 @@ function sendHttpRequest(method, url, contentType, body) {
 
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
-        xhr.onload = () => { resolve(xhr); }
-        xhr.onerror = () => { resolve(xhr); }
+        xhr.onload = () => {
+            resolve(xhr);
+        }
+        xhr.onerror = () => {
+            resolve(xhr);
+        }
 
         if (contentType === "application/json") {
             xhr.setRequestHeader("Content-Type", "application/json");
@@ -22,8 +26,7 @@ function sendHttpRequest(method, url, contentType, body) {
         } else if (contentType !== undefined) {
             xhr.setRequestHeader("Content-Type", contentType);
             xhr.send(body);
-        }
-        else if (contentType === undefined) {
+        } else if (contentType === undefined) {
             xhr.send();
         }
 
@@ -36,7 +39,7 @@ function loadSite() {
 
     // If any unsaved changes,
     // then show warning message to user before reloading or leaving page
-    window.addEventListener("beforeunload", function(event) {
+    window.addEventListener("beforeunload", function (event) {
         if (unsavedChanges) {
             event.preventDefault();
             event.returnValue = "";
@@ -45,51 +48,6 @@ function loadSite() {
 
     loadData();
 
-
-
-//	// Request HTML assets one by one
-//	sendHttpRequest("GET", "account-body.html").then(xhr => {
-//		if (xhr.status === 200) { accountBodyHtml = xhr.responseText; }
-//
-//		return sendHttpRequest("GET", "menu-body.html");
-//	}).then(xhr => {
-//		if (xhr.status === 200) { menuBodyHtml = xhr.responseText; }
-//
-//		return sendHttpRequest("GET", "trial-body.html");
-//	}).then(xhr => {
-//		if (xhr.status === 200) { trialBodyHtml = xhr.responseText; }
-//
-//		return sendHttpRequest("GET", "view-body.html");
-//	}).then(xhr => {
-//		if (xhr.status === 200) { viewBodyHtml = xhr.responseText; }
-//
-//		return sendHttpRequest("GET", "login-body.html");
-//	}).then(xhr => {
-//		if (xhr.status === 200) { loginBodyHtml = xhr.responseText; }
-//
-//		// If all requests for HTML assets were succesful, then continue loading site
-//		// else display error message
-//		if (accountBodyHtml !== undefined && menuBodyHtml !== undefined && trialBodyHtml !== undefined && viewBodyHtml !== undefined && loginBodyHtml !== undefined) {
-//
-//			sendHttpRequest("GET", "api/session").then(xhr => {
-//
-//				if (xhr.status === 200) {
-//					document.body.innerHTML = viewBodyHtml;
-//					loadData();
-//				}
-//				else {
-//					document.body.innerHTML = loginBodyHtml;
-//				}
-//
-//			});
-//
-//		}
-//		else {
-//			document.body.innerHTML = "<div id='message'></div>";
-//			setMessage("Error: Error loading site", true);
-//		}
-//
-//	});
 }
 
 function loadData() {
@@ -102,11 +60,9 @@ function loadData() {
         if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
             buildViewFromData(data);
-        }
-        else if (xhr.status === 401) {
+        } else if (xhr.status === 401) {
             document.body.innerHTML = loginBodyHtml;
-        }
-        else {
+        } else {
             setMessage("Error: Could not load data", true);
         }
 
@@ -152,11 +108,9 @@ function login() {
             //loadData();
 
             window.location.href = "plan";
-        }
-        else if (xhr.status === 401) {
+        } else if (xhr.status === 401) {
             setMessage("Wrong username or password", false);
-        }
-        else {
+        } else {
             setMessage("Error: An error occured", true);
         }
 
@@ -184,8 +138,7 @@ function logout() {
         if (xhr.status === 200) {
             //unsavedChanges = false;
             window.location.href = "login";
-        }
-        else {
+        } else {
             setMessage("Error: Could not log out", true);
         }
 
