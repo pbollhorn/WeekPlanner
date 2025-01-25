@@ -5,8 +5,10 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import app.entities.Credentials;
 import org.junit.jupiter.api.BeforeEach;
+
+import app.entities.Credentials;
+import app.entities.User;
 
 public class AbstractMapperTest {
 
@@ -32,9 +34,15 @@ public class AbstractMapperTest {
             String sql = new String(Files.readAllBytes(Paths.get(pathToSqlFile)));
             stmt.execute(sql);
 
-            UserMapper.createUser(new Credentials("testuser1", "1111"), connectionPool);
-            UserMapper.createUser(new Credentials("testuser2", "2222"), connectionPool);
-            UserMapper.createUser(new Credentials("testuser3", "3333"), connectionPool);
+            // Create testuser1
+            Credentials credentials = new Credentials("testuser1", "1111");
+            UserMapper.createUser(credentials, connectionPool);
+
+            // Create testuser2
+            credentials = new Credentials("testuser2", "2222");
+            UserMapper.createUser(credentials, connectionPool);
+            User user = UserMapper.login(credentials, connectionPool);
+            DataMapper.saveData(user, "Test data for testuser2", connectionPool);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

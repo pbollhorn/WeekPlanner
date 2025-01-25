@@ -15,16 +15,16 @@ public class UserMapperTest extends AbstractMapperTest {
     void login() throws DatabaseException {
 
         // Valid login
-        Credentials credentials = new Credentials("testuser2", "2222");
+        Credentials credentials = new Credentials("testuser1", "1111");
         User user = UserMapper.login(credentials, connectionPool);
         assertNotNull(user);
-        assertEquals(2, user.userId);
+        assertEquals(1, user.userId);
 
         // Another valid login
-        credentials = new Credentials("testuser3", "3333");
+        credentials = new Credentials("testuser2", "2222");
         user = UserMapper.login(credentials, connectionPool);
         assertNotNull(user);
-        assertEquals(3, user.userId);
+        assertEquals(2, user.userId);
 
         // Valid username and invalid password
         credentials = new Credentials("testuser2", "WrongPassword");
@@ -32,7 +32,7 @@ public class UserMapperTest extends AbstractMapperTest {
         assertNull(user);
 
         // Invalid username and valid password
-        credentials = new Credentials("dontexist", "3333");
+        credentials = new Credentials("dontexist", "2222");
         user = UserMapper.login(credentials, connectionPool);
         assertNull(user);
 
