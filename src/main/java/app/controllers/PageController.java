@@ -11,7 +11,7 @@ public class PageController {
         app.get("/", ctx -> showPage("plan", ctx));
         app.get("plan", ctx -> showPage("plan", ctx));
         app.get("login", ctx -> showPage("login", ctx));
-        app.get("trial", ctx -> showPage("trial", ctx));
+        app.get("create-account", ctx -> showPage("create-account", ctx));
         app.get("account", ctx -> showPage("account", ctx));
     }
 
@@ -24,8 +24,8 @@ public class PageController {
             return;
         }
 
-        // "login" and "trial" are also allowed to be shown if no user is logged in
-        if ("login".equals(path) || "trial".equals(path)) {
+        // "login" and "create-account" are also allowed to be shown if no user is logged in
+        if ("login".equals(path) || "create-account".equals(path)) {
             ctx.render(path);
             return;
         }
