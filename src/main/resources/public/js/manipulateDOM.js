@@ -276,8 +276,6 @@ function stringToBoolean(string) {
 }
 
 
-
-
 // Set unsavedChanges to true and set message,
 // but only if unsavedChanges is not already true
 function setUnsavedChangesToTrue() {

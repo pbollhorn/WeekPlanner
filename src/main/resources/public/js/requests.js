@@ -122,17 +122,6 @@ function login() {
 
 function logout() {
 
-    // If any unsaved changes,
-    // then show warning message to user before logging out
-//	if (unsavedChanges) {
-//
-//		const answer = window.confirm("You have unsaved changes.\nAre you sure you want to logout?");
-//		if (answer === false) {
-//			return;
-//		}
-//
-//	}
-
     sendHttpRequest("DELETE", "api/session").then(xhr => {
 
         if (xhr.status === 200) {
@@ -148,7 +137,7 @@ function logout() {
 
 
 // This function writes to div with id "message"
-// Both viewBodyHtml and loginBodyHtml have such a div
+// Both plan.html and login.html have such a div
 function setMessage(text, error) {
 
     const message = document.getElementById("message");
