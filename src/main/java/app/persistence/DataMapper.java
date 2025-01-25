@@ -49,11 +49,8 @@ public class DataMapper {
             ps.setBytes(3, user.hashedPassword());
 
             int rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new DatabaseException("Error saving data to database: Nothing written to database");
-            }
-            if (rowsAffected > 1) {
-                throw new DatabaseException("Error saving data to database: More than one row affected!!!");
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Error saving data to database: " + rowsAffected + " rows written to database");
             }
 
         } catch (Exception e) {

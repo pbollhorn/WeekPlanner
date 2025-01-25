@@ -52,43 +52,33 @@ public class UserMapper {
 
     }
 
-    public static int createUser(Credentials credentials, ConnectionPool connectionPool) {
+    public static void createUser(Credentials credentials, ConnectionPool connectionPool) throws DatabaseException {
 
-        String data = """
-                {"lists":[{"name":"Monday","tasks":[{"description":"Dette er din test bruger","done":false}]},{"name":"Tuesday","tasks":[]},{"name":"Wednesday","tasks":[]},{"name":"Thursday","tasks":[]},{"name":"Friday","tasks":[]},{"name":"Saturday","tasks":[]},{"name":"Sunday","tasks":[]},{"name":"Next Week","tasks":[]},{"name":"Within a Month","tasks":[]},{"name":"Within a Year","tasks":[]}]}""";
+        String sql = "INSERT INTO user_data (username, password_hash, salt, encrypted_data) VALUES (?,?,?,?)";
 
-        try {
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            // Establish connection
-            Connection connection = connectionPool.getConnection();
-
-            // Generate salt, hashed password and encryption key
             byte[] salt = Cryptography.generateSalt();
             byte[] hashedPassword = Cryptography.hashPassword(credentials.password(), salt);
             SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
 
-            // Encrypt user data
+            String data = """
+                    {"lists":[{"name":"Monday","tasks":[{"description":"Dette er din test bruger","done":false}]},{"name":"Tuesday","tasks":[]},{"name":"Wednesday","tasks":[]},{"name":"Thursday","tasks":[]},{"name":"Friday","tasks":[]},{"name":"Saturday","tasks":[]},{"name":"Sunday","tasks":[]},{"name":"Next Week","tasks":[]},{"name":"Within a Month","tasks":[]},{"name":"Within a Year","tasks":[]},{"name":"Shopping","tasks":[]}]}""";
             byte[] encryptedData = Cryptography.encrypt(data, encryptionKey);
 
-            // Execute prepared statement
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO user_data (username, password_hash, salt, encrypted_data) VALUES (?,?,?,?)");
-            statement.setString(1, credentials.username());
-            statement.setBytes(2, hashedPassword);
-            statement.setBytes(3, salt);
-            statement.setBytes(4, encryptedData);
-            int rowsAffected = statement.executeUpdate();
+            ps.setString(1, credentials.username());
+            ps.setBytes(2, hashedPassword);
+            ps.setBytes(3, salt);
+            ps.setBytes(4, encryptedData);
 
-            // Close connection
-            statement.close();
-            connection.close();
-
-            return rowsAffected;
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Error creating user: " + rowsAffected + " rows written to database");
+            }
 
         } catch (Exception e) {
-            System.out.println("Error in connecting to PostgreSQL server");
-            e.printStackTrace();
-
-            return -1;
+            throw new DatabaseException("Error creating user: " + e.getMessage());
         }
 
     }

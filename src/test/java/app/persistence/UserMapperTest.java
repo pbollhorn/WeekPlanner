@@ -43,4 +43,19 @@ public class UserMapperTest extends AbstractMapperTest {
 
     }
 
+    @Test
+    void createUser() throws DatabaseException {
+
+        // Valid new user
+        Credentials credentials = new Credentials("testuser3", "3333");
+        UserMapper.createUser(credentials, connectionPool);
+        User user = UserMapper.login(credentials, connectionPool);
+        assertNotNull(user);
+        assertEquals(3, user.userId());
+
+        // Invalid new user because username already exists
+        assertThrows(DatabaseException.class, () -> UserMapper.createUser(new Credentials("testuser1", "0000"), connectionPool));
+
+    }
+
 }
