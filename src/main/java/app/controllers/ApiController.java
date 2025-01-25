@@ -57,7 +57,7 @@ public class ApiController {
             // Use ObjectMapper to parse the incoming JSON body into a Credentials object
             Credentials credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
 
-            if (UserMapper.usernameAvailable(credentials, connectionPool) != 1) {
+            if (UserMapper.isUsernameAvailable(credentials, connectionPool) != 1) {
                 ctx.status(409);
                 return;
             }
