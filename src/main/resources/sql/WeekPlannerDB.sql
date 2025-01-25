@@ -1,3 +1,5 @@
+-- Script for creating empty WeekPlannerDB
+-- Delete public schema and then recreate it before running script
 CREATE TABLE user_data
 (
     user_id        SERIAL PRIMARY KEY,
