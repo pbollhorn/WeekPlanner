@@ -165,81 +165,79 @@ function createAccount() {
 
 }
 
-function changeUsername() {
-
-    const newUsername = document.getElementById("newUsername").value;
-    const password = document.getElementById("password").value;
-
-    const wrapper = {
-        newUsername: newUsername,
-        password: password
-    };
-
-
-    sendHttpRequest("PUT", "api/user", "application/json", wrapper).then(xhr => {
-
-        if (xhr.status === 200) {
-
-
-        } else {
-
-            // An error occured
-
-        }
-
-    });
-
-
-}
-
-
-// FOR TESTING STUFF
-function changePassword() {
-
-    const password = document.getElementById("password").value;
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmNewPassword = document.getElementById("confirmNewPassword").value;
-
-    const wrapper = {
-        password: password,
-        newPassword: newPassword
-    };
-
-    sendHttpRequest("PUT", "api/user", "application/json", wrapper).then(xhr => {
-
-        if (xhr.status === 200) {
+// function changeUsername() {
+//
+//     const newUsername = document.getElementById("newUsername").value;
+//     const password = document.getElementById("password").value;
+//
+//     const wrapper = {
+//         newUsername: newUsername,
+//         password: password
+//     };
+//
+//
+//     sendHttpRequest("PUT", "api/user", "application/json", wrapper).then(xhr => {
+//
+//         if (xhr.status === 200) {
+//
+//
+//         } else {
+//
+//             // An error occured
+//
+//         }
+//
+//     });
+//
+// }
 
 
-        } else {
+// function changePassword() {
+//
+//     const password = document.getElementById("password").value;
+//     const newPassword = document.getElementById("newPassword").value;
+//     const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+//
+//     const wrapper = {
+//         password: password,
+//         newPassword: newPassword
+//     };
+//
+//     sendHttpRequest("PUT", "api/user", "application/json", wrapper).then(xhr => {
+//
+//         if (xhr.status === 200) {
+//
+//
+//         } else {
+//
+//             // An error occured
+//
+//         }
+//
+//     });
+//
+// }
 
-            // An error occured
 
-        }
-
-    });
-
-}
-
-
-function deleteAccount() {
-
-    const password = document.getElementById("password").value;
-
-    const wrapper = {
-        password: password
-    };
-
-    sendHttpRequest("DELETE", "api/user", "application/json", wrapper).then(xhr => {
-
-        if (xhr.status === 200) {
-
-
-        } else {
-
-            // An error occured
-
-        }
-
-    });
-
-}
+// function deleteAccount() {
+//
+//     const password = document.getElementById("password").value;
+//
+//     const wrapper = {
+//         password: password
+//     };
+//
+//     sendHttpRequest("DELETE", "api/user", "application/json", wrapper).then(xhr => {
+//
+//         if (xhr.status === 200) {
+//
+//
+//         } else {
+//
+//             // An error occured
+//
+//         }
+//
+//     });
+//
+// }

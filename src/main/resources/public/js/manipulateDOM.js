@@ -1,5 +1,12 @@
 "use strict";
 
+function addTask() {
+    let newTask = createTask("", false);
+    selectedTask.insertAdjacentElement("afterend", newTask);
+    selectTask(newTask);
+    setUnsavedChangesToTrue();
+}
+
 function deleteTask() {
 
     // Get array allTasks and find index i of selectedTask in this array
@@ -22,6 +29,28 @@ function deleteTask() {
 
 }
 
+function moveTaskUp() {
+
+    const siblingElement = selectedTask.previousElementSibling;
+    const firstH1Element = mainElement.querySelector("h1");
+
+    if (siblingElement !== firstH1Element) {
+        mainElement.insertBefore(selectedTask, siblingElement);
+        setUnsavedChangesToTrue();
+    }
+
+}
+
+function moveTaskDown() {
+
+    const siblingElement = selectedTask.nextElementSibling;
+
+    if (siblingElement !== null) {
+        mainElement.insertBefore(siblingElement, selectedTask);
+        setUnsavedChangesToTrue();
+    }
+
+}
 
 function markTaskDone() {
 
@@ -37,39 +66,6 @@ function markTaskDone() {
 
     setUnsavedChangesToTrue();
 
-}
-
-
-function moveTaskUp() {
-
-    const siblingElement = selectedTask.previousElementSibling;
-    const firstH1Element = mainElement.querySelector("h1");
-
-    if (siblingElement !== firstH1Element) {
-        mainElement.insertBefore(selectedTask, siblingElement);
-        setUnsavedChangesToTrue();
-    }
-
-}
-
-
-function moveTaskDown() {
-
-    const siblingElement = selectedTask.nextElementSibling;
-
-    if (siblingElement !== null) {
-        mainElement.insertBefore(siblingElement, selectedTask);
-        setUnsavedChangesToTrue();
-    }
-
-}
-
-
-function addTask() {
-    let newTask = createTask("", false);
-    selectedTask.insertAdjacentElement("afterend", newTask);
-    selectTask(newTask);
-    setUnsavedChangesToTrue();
 }
 
 // This function is used by other functions,
