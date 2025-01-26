@@ -7,7 +7,7 @@ import javax.crypto.SecretKey;
 
 import app.entities.User;
 import app.entities.Credentials;
-import app.exceptions.DatabaseException;
+import app.exceptions.MapperException;
 import app.services.Cryptography;
 
 public class UserMapper {
@@ -18,7 +18,7 @@ public class UserMapper {
      * @param credentials Username and password
      * @return User object on success, null if credentials are wrong
      */
-    public static User login(Credentials credentials, ConnectionPool connectionPool) throws DatabaseException {
+    public static User login(Credentials credentials, ConnectionPool connectionPool) throws MapperException {
 
         String sql = "SELECT user_id, password_hash, salt FROM user_data WHERE username=?";
 
@@ -47,12 +47,12 @@ public class UserMapper {
             return null;
 
         } catch (Exception e) {
-            throw new DatabaseException("Error in login: " + e.getMessage());
+            throw new MapperException("Error in login: " + e.getMessage());
         }
 
     }
 
-    public static void createUser(Credentials credentials, ConnectionPool connectionPool) throws DatabaseException {
+    public static void createUser(Credentials credentials, ConnectionPool connectionPool) throws MapperException {
 
         String sql = "INSERT INTO user_data (username, password_hash, salt, encrypted_data) VALUES (?,?,?,?)";
 
@@ -74,11 +74,11 @@ public class UserMapper {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
-                throw new DatabaseException("Error creating user: " + rowsAffected + " rows written to database");
+                throw new MapperException("Error creating user: " + rowsAffected + " rows written to database");
             }
 
         } catch (Exception e) {
-            throw new DatabaseException("Error creating user: " + e.getMessage());
+            throw new MapperException("Error creating user: " + e.getMessage());
         }
 
     }

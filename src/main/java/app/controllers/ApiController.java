@@ -9,7 +9,7 @@ import app.persistence.DataMapper;
 import app.entities.Credentials;
 import app.entities.User;
 import app.persistence.ConnectionPool;
-import app.exceptions.DatabaseException;
+import app.exceptions.MapperException;
 import app.persistence.UserMapper;
 
 public class ApiController {
@@ -40,7 +40,7 @@ public class ApiController {
                 return;
             }
             ctx.sessionAttribute("activeUser", activeUser);
-        } catch (DatabaseException e) {
+        } catch (MapperException e) {
             ctx.status(500);
         }
 
@@ -62,7 +62,7 @@ public class ApiController {
 
         try {
             UserMapper.createUser(credentials, connectionPool);
-        } catch (DatabaseException e) {
+        } catch (MapperException e) {
             ctx.status(500);
         }
 
@@ -97,7 +97,7 @@ public class ApiController {
         try {
             String data = DataMapper.loadData(activeUser, connectionPool);
             ctx.result(data);
-        } catch (DatabaseException e) {
+        } catch (MapperException e) {
             ctx.status(500);
         }
 
@@ -115,7 +115,7 @@ public class ApiController {
 
         try {
             DataMapper.saveData(activeUser, data, connectionPool);
-        } catch (DatabaseException e) {
+        } catch (MapperException e) {
             ctx.status(500);
         }
 

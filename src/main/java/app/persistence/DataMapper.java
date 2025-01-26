@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import app.entities.User;
-import app.exceptions.DatabaseException;
+import app.exceptions.MapperException;
 import app.services.Cryptography;
 
 public class DataMapper {
 
-    public static String loadData(User user, ConnectionPool connectionPool) throws DatabaseException {
+    public static String loadData(User user, ConnectionPool connectionPool) throws MapperException {
 
         String sql = "SELECT encrypted_data FROM user_data WHERE user_id=? AND password_hash=?";
 
@@ -27,15 +27,15 @@ public class DataMapper {
                 return data;
             }
 
-            throw new DatabaseException("Error loading data from database: Nothing read from database");
+            throw new MapperException("Error loading data from database: Nothing read from database");
 
         } catch (Exception e) {
-            throw new DatabaseException("Error loading data from database: " + e.getMessage());
+            throw new MapperException("Error loading data from database: " + e.getMessage());
         }
 
     }
 
-    public static void saveData(User user, String data, ConnectionPool connectionPool) throws DatabaseException {
+    public static void saveData(User user, String data, ConnectionPool connectionPool) throws MapperException {
 
         String sql = "UPDATE user_data SET encrypted_data=? WHERE user_id=? AND password_hash=?";
 
@@ -52,11 +52,11 @@ public class DataMapper {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
-                throw new DatabaseException("Error saving data to database: " + rowsAffected + " rows written to database");
+                throw new MapperException("Error saving data to database: " + rowsAffected + " rows written to database");
             }
 
         } catch (Exception e) {
-            throw new DatabaseException("Error saving data to database: " + e.getMessage());
+            throw new MapperException("Error saving data to database: " + e.getMessage());
         }
 
     }

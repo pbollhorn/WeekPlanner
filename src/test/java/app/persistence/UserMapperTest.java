@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import app.entities.Credentials;
 import app.entities.User;
-import app.exceptions.DatabaseException;
+import app.exceptions.MapperException;
 
 public class UserMapperTest extends AbstractMapperTest {
 
     @Test
-    void login() throws DatabaseException {
+    void login() throws MapperException {
 
         // Valid login
         Credentials credentials = new Credentials("testuser1", "1111");
@@ -43,7 +43,7 @@ public class UserMapperTest extends AbstractMapperTest {
     }
 
     @Test
-    void createUser() throws DatabaseException {
+    void createUser() throws MapperException {
 
         // Valid new user
         Credentials credentials = new Credentials("testuser3", "3333");
@@ -53,7 +53,7 @@ public class UserMapperTest extends AbstractMapperTest {
         assertEquals(3, user.userId());
 
         // Invalid new user because username already exists
-        assertThrows(DatabaseException.class, () -> UserMapper.createUser(new Credentials("testuser1", "0000"), connectionPool));
+        assertThrows(MapperException.class, () -> UserMapper.createUser(new Credentials("testuser1", "0000"), connectionPool));
 
     }
 
