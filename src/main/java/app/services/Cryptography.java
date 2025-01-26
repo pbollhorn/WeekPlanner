@@ -20,7 +20,7 @@ public class Cryptography {
     private static final int SALT_LENGTH_BYTES = 64;
     private static final int HASH_LENGTH_BITS = 512;
     private static final int KEY_LENGTH_BITS = 256;
-    private static final int ITERATION_COUNT = 65536;
+    private static final int ITERATION_COUNT = 60000;
 
     public static byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
@@ -36,7 +36,7 @@ public class Cryptography {
         return hash;
     }
 
-    // I think this is constant-time comparison method to mitigate certain timing attacks
+    // Constant-time comparison method to mitigate timing attacks
     public static boolean compareHashes(byte[] hashA, byte[] hashB) {
         int diff = hashA.length ^ hashB.length;
         for (int i = 0; i < hashA.length && i < hashB.length; i++) {

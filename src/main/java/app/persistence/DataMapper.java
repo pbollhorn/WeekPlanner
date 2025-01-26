@@ -44,6 +44,8 @@ public class DataMapper {
 
             byte[] encryptedData = Cryptography.encrypt(data, user.encryptionKey());
 
+            System.out.println(encryptedData.length);
+
             ps.setBytes(1, encryptedData);
             ps.setInt(2, user.userId());
             ps.setBytes(3, user.hashedPassword());
