@@ -27,10 +27,10 @@ public class DataMapper {
                 return data;
             }
 
-            throw new MapperException("Error loading data from database: Nothing read from database");
+            throw new Exception("Nothing read from database");
 
         } catch (Exception e) {
-            throw new MapperException("Error loading data from database: " + e.getMessage());
+            throw new MapperException("Error in DataMapper.loadData(): " + e.getMessage());
         }
 
     }
@@ -44,19 +44,17 @@ public class DataMapper {
 
             byte[] encryptedData = Cryptography.encrypt(data, user.encryptionKey());
 
-            System.out.println(encryptedData.length);
-
             ps.setBytes(1, encryptedData);
             ps.setInt(2, user.userId());
             ps.setBytes(3, user.hashedPassword());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
-                throw new MapperException("Error saving data to database: " + rowsAffected + " rows written to database");
+                throw new Exception(rowsAffected + " rows written to database");
             }
 
         } catch (Exception e) {
-            throw new MapperException("Error saving data to database: " + e.getMessage());
+            throw new MapperException("Error in DataMapper.saveData(): " + e.getMessage());
         }
 
     }

@@ -39,7 +39,6 @@ public class UserMapper {
                     return null;
                 }
 
-                // Save hashedPassword and salt to user and generate key and also store in user
                 SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
                 return new User(userId, hashedPasswordFromDB, salt, encryptionKey);
             }
@@ -47,7 +46,7 @@ public class UserMapper {
             return null;
 
         } catch (Exception e) {
-            throw new MapperException("Error in login: " + e.getMessage());
+            throw new MapperException("Error in UserMapper.login(): " + e.getMessage());
         }
 
     }
@@ -74,11 +73,11 @@ public class UserMapper {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected != 1) {
-                throw new MapperException("Error creating user: " + rowsAffected + " rows written to database");
+                throw new Exception(rowsAffected + " rows written to database");
             }
 
         } catch (Exception e) {
-            throw new MapperException("Error creating user: " + e.getMessage());
+            throw new MapperException("Error in UserMapper.createUser(): " + e.getMessage());
         }
 
     }

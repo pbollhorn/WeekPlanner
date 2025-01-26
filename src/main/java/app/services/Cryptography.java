@@ -38,7 +38,7 @@ public class Cryptography {
             byte[] hash = factory.generateSecret(spec).getEncoded();
             return hash;
         } catch (Exception e) {
-            throw new CryptographyException("Error in hashPassword(): " + e.getMessage());
+            throw new CryptographyException("Error in Cryptography.hashPassword(): " + e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class Cryptography {
             SecretKey key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
             return key;
         } catch (Exception e) {
-            throw new CryptographyException("Error in generateKey(): " + e.getMessage());
+            throw new CryptographyException("Error in Cryptography.generateKey(): " + e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class Cryptography {
 
             return encryptedData;
         } catch (Exception e) {
-            throw new CryptographyException("Error in encrypt(): " + e.getMessage());
+            throw new CryptographyException("Error in Cryptography.encrypt(): " + e.getMessage());
         }
 
     }
@@ -101,7 +101,7 @@ public class Cryptography {
             byte[] decryptedText = cipher.doFinal(cipherText);
             return new String(decryptedText, "UTF-8");
         } catch (Exception e) {
-            throw new CryptographyException("Error in decrypt(): " + e.getMessage());
+            throw new CryptographyException("Error in Cryptography.decrypt(): " + e.getMessage());
         }
 
     }
