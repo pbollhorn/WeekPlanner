@@ -61,7 +61,7 @@ function loadData() {
             const data = JSON.parse(xhr.responseText);
             buildDOMFromData(data);
         } else if (xhr.status === 401) {
-            document.body.innerHTML = loginBodyHtml;
+            window.location.href = "login";
         } else {
             setMessage("Error: Could not load data", true);
         }
@@ -84,7 +84,7 @@ function saveData() {
             setMessage("", false);
         } else if (xhr.status === 401) {
             unsavedChanges = false;
-            document.body.innerHTML = loginBodyHtml;
+            window.location.href = "login";
         } else {
             setMessage("Error: Could not save data", true);
         }
@@ -104,16 +104,12 @@ function login() {
     sendHttpRequest("POST", "api/session", "application/json", credentials).then(xhr => {
 
         if (xhr.status === 200) {
-            //document.body.innerHTML = viewBodyHtml;
-            //loadData();
-
             window.location.href = "plan";
         } else if (xhr.status === 401) {
             setMessage("Wrong username or password", false);
         } else {
             setMessage("Error: An error occured", true);
         }
-
 
     });
 
@@ -234,16 +230,10 @@ function createAccount() {
 
     sendHttpRequest("POST", "api/user", "application/json", credentials).then(xhr => {
 
-        if (xhr.status === 409) {
-            setMessage("Username already in use", true);
-            return;
-        }
         if (xhr.status !== 200) {
             setMessage("An error occured", true);
             return;
         }
-
-        //data = createTrialData();
 
         // User was created so now, lets login
         sendHttpRequest("POST", "api/session", "application/json", credentials).then(xhr => {
@@ -251,7 +241,6 @@ function createAccount() {
                 window.location.href = "plan";
             }
         });
-
 
     });
 
