@@ -58,4 +58,20 @@ public class UserMapperTest extends AbstractMapperTest {
 
     }
 
+    @Test
+    void deleteUser() throws DatabaseException {
+
+        // Delete valid user
+        Credentials credentials = new Credentials("testuser1", "1111");
+        User user = UserMapper.login(credentials, connectionPool);
+        assertNotNull(user);
+        UserMapper.deleteUser(user, connectionPool);
+        user = UserMapper.login(credentials, connectionPool);
+        assertNull(user);
+
+        // Delete null user
+        assertThrows(DatabaseException.class, () -> UserMapper.deleteUser(null, connectionPool));
+
+    }
+
 }

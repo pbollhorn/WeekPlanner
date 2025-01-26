@@ -83,30 +83,25 @@ public class UserMapper {
 
     }
 
-//    public static int deleteUser(User user, ConnectionPool connectionPool) {
-//
-//        try {
-//
-//            Connection connection = connectionPool.getConnection();
-//
-//            PreparedStatement statement = connection.prepareStatement("DELETE FROM user_data WHERE user_id = ?");
-//            statement.setInt(1, user.userId());
-//            int rowsAffected = statement.executeUpdate();
-//
-//            statement.close();
-//            connection.close();
-//
-//            return rowsAffected;
-//
-//        } catch (Exception e) {
-//
-//            System.out.println("Error in connecting to PostgreSQL server");
-//            e.printStackTrace();
-//
-//            return 0;
-//        }
-//
-//    }
+    public static void deleteUser(User user, ConnectionPool connectionPool) throws DatabaseException {
+
+        String sql = "DELETE FROM user_data WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, user.userId());
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Error deleting user: " + rowsAffected + " rows deleted from database");
+            }
+
+        } catch (Exception e) {
+            throw new DatabaseException("Error deleting user: " + e.getMessage());
+        }
+
+    }
 
 //    public static int changeUsername(User user, String newUsername, ConnectionPool connectionPool) {
 //
