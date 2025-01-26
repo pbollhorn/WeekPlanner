@@ -131,6 +131,39 @@ function logout() {
 
 }
 
+function createAccount() {
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+        setMessage("Passwords do not match", true);
+        return;
+    }
+
+    const credentials = {
+        username: username,
+        password: password
+    };
+
+    sendHttpRequest("POST", "api/user", "application/json", credentials).then(xhr => {
+
+        if (xhr.status !== 200) {
+            setMessage("An error occured", true);
+            return;
+        }
+
+        // User was created so now, lets login
+        sendHttpRequest("POST", "api/session", "application/json", credentials).then(xhr => {
+            if (xhr.status === 200) {
+                window.location.href = "plan";
+            }
+        });
+
+    });
+
+}
 
 function changeUsername() {
 
@@ -206,41 +239,6 @@ function deleteAccount() {
             // An error occured
 
         }
-
-    });
-
-}
-
-
-function createAccount() {
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (password !== confirmPassword) {
-        setMessage("Passwords do not match", true);
-        return;
-    }
-
-    const credentials = {
-        username: username,
-        password: password
-    };
-
-    sendHttpRequest("POST", "api/user", "application/json", credentials).then(xhr => {
-
-        if (xhr.status !== 200) {
-            setMessage("An error occured", true);
-            return;
-        }
-
-        // User was created so now, lets login
-        sendHttpRequest("POST", "api/session", "application/json", credentials).then(xhr => {
-            if (xhr.status === 200) {
-                window.location.href = "plan";
-            }
-        });
 
     });
 

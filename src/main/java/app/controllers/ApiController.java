@@ -18,6 +18,7 @@ public class ApiController {
         app.post("api/session", ctx -> login(ctx, connectionPool));
         app.delete("api/session", ctx -> logout(ctx));
         app.post("api/user", ctx -> createUser(ctx, connectionPool));
+        app.delete("api/user", ctx -> deleteUser(ctx, connectionPool));
         app.get("api/data", ctx -> loadData(ctx, connectionPool));
         app.put("api/data", ctx -> saveData(ctx, connectionPool));
     }
@@ -50,6 +51,24 @@ public class ApiController {
     }
 
     private static void createUser(Context ctx, ConnectionPool connectionPool) {
+
+        Credentials credentials;
+        try {
+            credentials = new ObjectMapper().readValue(ctx.body(), Credentials.class);
+        } catch (JsonProcessingException e) {
+            ctx.status(400);
+            return;
+        }
+
+        try {
+            UserMapper.createUser(credentials, connectionPool);
+        } catch (DatabaseException e) {
+            ctx.status(500);
+        }
+
+    }
+
+    private static void deleteUser(Context ctx, ConnectionPool connectionPool) {
 
         Credentials credentials;
         try {
