@@ -9,6 +9,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import app.exceptions.CryptographyException;
+
 /**
  * Cryptography class for dealing with password hashing and user data encryption<br>
  * uses PBKDF2 for hashing, more precisely "PBKDF2WithHmacSHA512"<br>
@@ -29,11 +31,15 @@ public class Cryptography {
         return salt;
     }
 
-    public static byte[] hashPassword(String password, byte[] salt) throws Exception {
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, HASH_LENGTH_BITS);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
-        byte[] hash = factory.generateSecret(spec).getEncoded();
-        return hash;
+    public static byte[] hashPassword(String password, byte[] salt) throws CryptographyException {
+        try {
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, HASH_LENGTH_BITS);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+            byte[] hash = factory.generateSecret(spec).getEncoded();
+            return hash;
+        } catch (Exception e) {
+            throw new CryptographyException("Error in hashPassword(): " + e.getMessage());
+        }
     }
 
     // Constant-time comparison method to mitigate timing attacks
@@ -45,46 +51,58 @@ public class Cryptography {
         return diff == 0;
     }
 
-    public static SecretKey generateKey(String password, byte[] salt) throws Exception {
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH_BITS);
-        SecretKey key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
-        return key;
+    public static SecretKey generateKey(String password, byte[] salt) throws CryptographyException {
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION_COUNT, KEY_LENGTH_BITS);
+            SecretKey key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+            return key;
+        } catch (Exception e) {
+            throw new CryptographyException("Error in generateKey(): " + e.getMessage());
+        }
     }
 
-    public static byte[] encrypt(String strToEncrypt, SecretKey key) throws Exception {
+    public static byte[] encrypt(String strToEncrypt, SecretKey key) throws CryptographyException {
 
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] iv = new byte[16];
-        secureRandom.nextBytes(iv);
-        IvParameterSpec ivspec = new IvParameterSpec(iv);
+        try {
+            SecureRandom secureRandom = new SecureRandom();
+            byte[] iv = new byte[16];
+            secureRandom.nextBytes(iv);
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
 
-        byte[] cipherText = cipher.doFinal(strToEncrypt.getBytes("UTF-8"));
-        byte[] encryptedData = new byte[iv.length + cipherText.length];
-        System.arraycopy(iv, 0, encryptedData, 0, iv.length);
-        System.arraycopy(cipherText, 0, encryptedData, iv.length, cipherText.length);
+            byte[] cipherText = cipher.doFinal(strToEncrypt.getBytes("UTF-8"));
+            byte[] encryptedData = new byte[iv.length + cipherText.length];
+            System.arraycopy(iv, 0, encryptedData, 0, iv.length);
+            System.arraycopy(cipherText, 0, encryptedData, iv.length, cipherText.length);
 
-        return encryptedData;
+            return encryptedData;
+        } catch (Exception e) {
+            throw new CryptographyException("Error in encrypt(): " + e.getMessage());
+        }
 
     }
 
-    public static String decrypt(byte[] encryptedData, SecretKey key) throws Exception {
+    public static String decrypt(byte[] encryptedData, SecretKey key) throws CryptographyException {
 
-        byte[] iv = new byte[16];
-        System.arraycopy(encryptedData, 0, iv, 0, iv.length);
-        IvParameterSpec ivspec = new IvParameterSpec(iv);
+        try {
+            byte[] iv = new byte[16];
+            System.arraycopy(encryptedData, 0, iv, 0, iv.length);
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
 
-        byte[] cipherText = new byte[encryptedData.length - iv.length];
-        System.arraycopy(encryptedData, iv.length, cipherText, 0, cipherText.length);
+            byte[] cipherText = new byte[encryptedData.length - iv.length];
+            System.arraycopy(encryptedData, iv.length, cipherText, 0, cipherText.length);
 
-        byte[] decryptedText = cipher.doFinal(cipherText);
-        return new String(decryptedText, "UTF-8");
+            byte[] decryptedText = cipher.doFinal(cipherText);
+            return new String(decryptedText, "UTF-8");
+        } catch (Exception e) {
+            throw new CryptographyException("Error in decrypt(): " + e.getMessage());
+        }
 
     }
 
