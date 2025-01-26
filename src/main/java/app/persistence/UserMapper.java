@@ -16,7 +16,7 @@ public class UserMapper {
      * Attempt to login.
      *
      * @param credentials Username and password
-     * @return User object on success, null if credentials are wrong
+     * @return User object on success, null on failure
      */
     public static User login(Credentials credentials, ConnectionPool connectionPool) throws MapperException {
 
@@ -33,12 +33,13 @@ public class UserMapper {
                 byte[] hashedPasswordFromDB = result.getBytes(2);
                 byte[] salt = result.getBytes(3);
 
-                // Compare password hashes
+                // Compare password hashes, return null if they don't match
                 byte[] hashedPasswordFromUser = Cryptography.hashPassword(credentials.password(), salt);
                 if (Cryptography.compareHashes(hashedPasswordFromUser, hashedPasswordFromDB) == false) {
                     return null;
                 }
 
+                // Return User object
                 SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
                 return new User(userId, hashedPasswordFromDB, salt, encryptionKey);
             }
@@ -63,7 +64,7 @@ public class UserMapper {
             SecretKey encryptionKey = Cryptography.generateKey(credentials.password(), salt);
 
             String data = """
-                    {"lists":[{"name":"Monday","tasks":[{"description":"This is your new user","done":false}]},{"name":"Tuesday","tasks":[]},{"name":"Wednesday","tasks":[]},{"name":"Thursday","tasks":[]},{"name":"Friday","tasks":[]},{"name":"Saturday","tasks":[]},{"name":"Sunday","tasks":[]},{"name":"Next Week","tasks":[]},{"name":"Within a Month","tasks":[]},{"name":"Within a Year","tasks":[]},{"name":"Shopping","tasks":[]}]}""";
+                    {"lists":[{"name":"Monday","tasks":[{"description":"Create Week Planner account","doneStatus":true},{"description":"Fill in some tasks","doneStatus":false}]},{"name":"Tuesday","tasks":[]},{"name":"Wednesday","tasks":[]},{"name":"Thursday","tasks":[]},{"name":"Friday","tasks":[]},{"name":"Saturday","tasks":[]},{"name":"Sunday","tasks":[]},{"name":"Next Week","tasks":[]},{"name":"Within a Month","tasks":[]},{"name":"Within a Year","tasks":[]},{"name":"Shopping","tasks":[]}]}""";
             byte[] encryptedData = Cryptography.encrypt(data, encryptionKey);
 
             ps.setString(1, credentials.username());

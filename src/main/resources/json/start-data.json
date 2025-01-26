@@ -4,8 +4,12 @@
       "name": "Monday",
       "tasks": [
         {
-          "description": "This is your new user",
-          "done": false
+          "description": "Create Week Planner account",
+          "doneStatus": true
+        },
+        {
+          "description": "Fill in some tasks",
+          "doneStatus": false
         }
       ]
     },
